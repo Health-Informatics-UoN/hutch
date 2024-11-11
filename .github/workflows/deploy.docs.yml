@@ -3,7 +3,7 @@ name: Deploy Documentation Site to GitHub Pages
 on:
   push:
     branches:
-      - resolve/96/doc-site
+      - hutch-tools-doc-site
 
     paths:
       - "website/**"
