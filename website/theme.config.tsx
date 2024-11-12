@@ -19,7 +19,7 @@ export default {
     </span>
   ),
   project: {
-    link: "https://github.com/Health-Informatics-UoN/hutch-cohort-discovery",
+    link: "https://github.com/Health-Informatics-UoN/hutch",
   },
   head: (
     <>
