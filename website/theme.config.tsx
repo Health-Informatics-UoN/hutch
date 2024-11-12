@@ -1,6 +1,6 @@
 // https://nextra.site/docs/docs-theme/theme-configuration
 import { Rabbit, Package } from "lucide-react";
-import {Image} from "next/image"
+import {Image} from "next/image";
 
 export default {
   logo: (
