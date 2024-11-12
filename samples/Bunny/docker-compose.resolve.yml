@@ -2,8 +2,6 @@ name: bunny-resolve
 
 services:
   resolve:
-    depends_on:
-      - db
     image: ghcr.io/health-informatics-uon/resolve/daemon
     environment:
       - DATASOURCE_DB_USERNAME=postgres
