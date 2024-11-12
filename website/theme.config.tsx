@@ -1,5 +1,6 @@
 // https://nextra.site/docs/docs-theme/theme-configuration
 import { Rabbit, Package } from "lucide-react";
+import {Image} from "next/image"
 
 export default {
   logo: (
@@ -29,7 +30,7 @@ export default {
       <span>
         ©{new Date().getFullYear()}{" "}
         <a href="https://nottingham.ac.uk" target="_blank">
-          <img src="./public/images/uon_white_text_web.png" />
+          <Image src="/images/uon_white_text_web.png" alt="University of Nottingham"/>
         </a>
         <br />
         MIT licence
