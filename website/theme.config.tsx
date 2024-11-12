@@ -1,5 +1,5 @@
 // https://nextra.site/docs/docs-theme/theme-configuration
-import { Rabbit, Package, PocketKnife } from "lucide-react";
+import { Rabbit, Package } from "lucide-react";
 
 export default {
   logo: (
@@ -12,10 +12,8 @@ export default {
       <Rabbit style={{ marginRight: "5px" }} />
       +
       <Package style={{ marginRight: "5px" }} />
-      +
-      <PocketKnife style={{ marginRight: "5px" }} />
       =
-      <strong style={{ marginRight: "5px" }}>Hutch Tools</strong>Documentation
+      <strong style={{ marginRight: "5px" }}>Hutch</strong>Documentation
     </span>
   ),
   project: {
@@ -31,7 +29,7 @@ export default {
       <span>
         ©{new Date().getFullYear()}{" "}
         <a href="https://nottingham.ac.uk" target="_blank">
-          <img src="/images/uon_white_text_web.png" />
+          <img src="./public/images/uon_white_text_web.png" />
         </a>
         <br />
         MIT licence
