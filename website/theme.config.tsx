@@ -12,7 +12,7 @@ export default {
       +
       <Package style={{ marginRight: "5px" }} />
       =
-      <strong style={{ marginRight: "5px" }}>Hutch</strong>Documentation
+      <strong style={{ marginRight: "5px" }}> Hutch</strong>Documentation
     </span>
   ),
   project: {

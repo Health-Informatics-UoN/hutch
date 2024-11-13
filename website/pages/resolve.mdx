@@ -2,27 +2,3 @@
 
 The Resolve daemon polls the queue for jobs and executes availability and distribution queries against the database.
 A result filtered by the obfuscation as configured for your instance is posted to [Relay](/relay).
-
-## Configuring Obfuscation
-Two methods of result obfuscation are provided
-
-### Low number suppression
-There's a data disclosure risk if low numbers are reported for a given query, so low number suppression is applied to results, such that any result with a count below a given threshold will not be revealed.
-Before building your Hutch tools stack, this can be configured in `docker-compose.yml`
-
-```yaml
-resolve:
-  environment:
-# other environment variables
-    LOW_NUMBER_SUPPRESSION_THRESHOLD=#Add your threshold here
-```
-
-### Rounding
-After low number suppression has been carried out on Resolve queries, results can be rounded to the nearest *n*
-
-```yaml
-resolve:
-  environment:
-# other environment variables
-    ROUNDING_TARGET:#Add your rounding target
-```
