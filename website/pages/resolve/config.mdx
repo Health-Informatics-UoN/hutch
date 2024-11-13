@@ -47,7 +47,25 @@ TASK_API_PASSWORD=<Relay password>
 - If you have Relay running locally, and Resolve running locally, the host should be `localhost`
 - If Relay is running remotely, set the host accordingly
 
+Resolve polls Relay with a delay set by `POLLING_INTERVAL`.
+This is set to the number of seconds provided in the environment.
+
 ## Database
+The database connection is configured by the variables prefixed with `DATASOURCE_DB`
+
+```
+DATASOURCE_DB_USERNAME=<username>
+DATASOURCE_DB_PASSWORD=<password>
+DATASOURCE_DB_DATABASE=<database name - ignored if using Trino>
+DATASOURCE_DB_DRIVERNAME=<driver name - ignored if using Trino>
+DATASOURCE_DB_SCHEMA=<database schema name>
+DATASOURCE_DB_PORT=<port served by database>
+DATASOURCE_DB_HOST=<database host>
+USE_TRINO=
+```
+
+If using the supplied `compose.yml` and running the database in the same stack, unless you modify the database configuration, the defaults will connect Resolve to your database.
+If using a remote database, change accordingly.
 
 ## Obfuscation
 Two methods of result obfuscation are provided
