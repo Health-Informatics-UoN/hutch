@@ -50,7 +50,7 @@ docker exec -it hutch-resolve-dev-db-1 bash
 #### Use pg_restore to load the data into the database
 
 ```bash
-pg_restore --dbname=postgres --host=localhost --port=5432 --username=postgres --password hutch_db.tar
+pg_restore --dbname=postgres --host=localhost --port=5432 --username=postgres --password=postgres hutch_db.tar
 ```
 
 You can then exit the container with `ctrl+d` or `exit`
@@ -71,7 +71,7 @@ DATASOURCE_DB_HOST=localhost
 TASK_API_BASE_URL=http://localhost:8080
 TASK_API_USERNAME=username
 TASK_API_PASSWORD=password
-LOW_NUMBER_SUPPRESSION_THRESHOLD=6000
+LOW_NUMBER_SUPPRESSION_THRESHOLD=
 ROUNDING_TARGET=
 POLLING_INTERVAL=5
 ```
@@ -99,7 +99,7 @@ Resolve has a daemon which polls [Relay](/relay) for jobs, so needs to have a Re
 The compose used to start up the database also contains an implementation of Relay.
 
 ```bash
-docker compose up relay
+docker compose up relay -d
 ```
 
 ### Run the Resolve daemon
