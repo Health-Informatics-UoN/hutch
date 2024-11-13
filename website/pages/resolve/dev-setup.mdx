@@ -38,3 +38,21 @@ graph TD;
   db --> obfuscation;
   obfuscation -- Sends obfuscated results --> relay;
 ```
+
+### resolve-cli
+
+```mermaid
+graph TD;
+  input(User input);
+  db[(OMOP-CDM)];
+  subgraph resolve [Resolve-daemon];
+    dbmanager[Database manager];
+    obfuscation[Obfuscation];
+    parser[Query parsing];
+  end;
+  input --> parser;
+  dbmanager --> db;
+  parser -- Configures query --> dbmanager;
+  db --> obfuscation;
+  obfuscation -- Sends obfuscated results --> output[output.json];
+```
