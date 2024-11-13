@@ -45,7 +45,7 @@ graph TD;
 graph TD;
   input(User input);
   db[(OMOP-CDM)];
-  subgraph resolve [Resolve-daemon];
+  subgraph resolve [Resolve-cli];
     dbmanager[Database manager];
     obfuscation[Obfuscation];
     parser[Query parsing];
