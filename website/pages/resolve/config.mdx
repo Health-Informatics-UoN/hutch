@@ -1,4 +1,4 @@
-# Configuring Resolve
+# Configuration
 
 Resolve can be configured using environment variables.
 If you're running Resolve as part of a composed stack of containers, these are set in the `compose.yml`.
@@ -6,7 +6,7 @@ They can be found under
 
 ```yaml
 services:
-# other containers
+  # other containers, if needed
   resolve:
     depends_on:
       - db
@@ -35,26 +35,34 @@ services:
 
 In development, if you're running Resolve outside a container, you can instead set these with a `.env` file, as described in [quickstart](/resolve/quickstart).
 
-## Task API [#Task]
+## Task API [#task]
+
+```yaml
+TASK_API_BASE_URL=http://<host>:<port>
+TASK_API_USERNAME=<Task API username>
+TASK_API_PASSWORD=<Task API password>
+```
+
+### Relay as Task API host
+
 To configure the resolve-daemon communicating with Relay, the `TASK_API` variables must be set.
 When configuring [Relay](/relay) {/* when there's a relay configuration page, link there */}, you will set a port to poll for jobs, a username and a password.
 
-```
-TASK_API_BASE_URL=http://<host>:<port>
-TASK_API_USERNAME=<Relay username>
-TASK_API_PASSWORD=<Relay password>
-```
-
 - If Resolve and Relay are running in the same stack, the host should be `relay`.
 - If you have Relay running locally, and Resolve running locally, the host should be `localhost`
-- If Relay is running remotely, set the host accordingly
+- If you are not using Relay as Task API host, see below
 
-Alternatively, you might use an RQuest portal. Your credentials can be used here.
+### Other Task API hosts
 
-Resolve polls Relay with a delay set by `POLLING_INTERVAL`.
-This is set to the number of seconds provided in the environment.
+- You need to change the `TASK_API_BASE_URL` value according to your actual Task API host where Resolve connected to `GET` the job and `POST` the results back.
+- The I/O requests from Resolve are authenticated by the `TASK_API_USERNAME` and `TASK_API_PASSWORD`, please put your Task API credentials here
 
-## Database
+### Job Type
+
+- If you would like Resolve to connect directly with Rquest, you have to add one more configuration which is `TASK_API_TYPE`. This can only be either `a` (Availability), `b` (Distribution and PHEWAS) or `c` (AnalyticsGwas, AnalyticsGwasQuantitiveTrait, AnalyticsBurdenTest).
+
+## Database [#database]
+
 The database connection is configured by the variables prefixed with `DATASOURCE_DB`
 
 ```
@@ -72,9 +80,11 @@ If using the supplied `compose.yml` and running the database in the same stack, 
 If using a remote database, change accordingly.
 
 ## Obfuscation
+
 Two methods of result obfuscation are provided
 
 ### Low number suppression
+
 There's a data disclosure risk if low numbers are reported for a given query, so low number suppression is applied to results, such that any result with a count below a given threshold will not be revealed.
 Before building your Hutch tools stack, this can be configured in `docker-compose.yml`
 
@@ -83,8 +93,26 @@ LOW_NUMBER_SUPPRESSION_THRESHOLD=#Add your threshold here
 ```
 
 ### Rounding
-After low number suppression has been carried out on Resolve queries, results can be rounded to the nearest *n*
+
+After low number suppression has been carried out on Resolve queries, results can be rounded to the nearest _n_
 
 ```yaml
 ROUNDING_TARGET=#Add your rounding target
+```
+
+## Polling
+
+This is set to the number of seconds provided in the environment indicating the polling interval duration.
+By default, Resolve will make `GET` request to Task API host every 5 seconds to check for jobs.
+
+```yaml
+POLLING_INTERVAL=5
+```
+
+## Collection ID
+
+This is the collection ID you would like to query.
+
+```yaml
+COLLECTION_ID=collection_id
 ```

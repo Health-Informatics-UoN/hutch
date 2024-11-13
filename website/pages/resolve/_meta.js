@@ -1,5 +1,5 @@
 export default {
   quickstart: "Quickstart",
-  config: "Configuring Resolve",
+  config: "Configuration",
   deployment: "Deployment",
 };
