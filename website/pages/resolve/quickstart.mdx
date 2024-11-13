@@ -1,5 +1,5 @@
-import { Callout } from 'nextra/components'
-import { Steps } from 'nextra/components'
+import { Callout } from "nextra/components";
+import { Steps } from "nextra/components";
 
 # Getting started with Resolve
 
@@ -8,17 +8,20 @@ This page will guide you through getting Resolve running locally.
 Start by cloning [the Hutch tools repository](https://github.com/Health-Informatics-UoN/hutch-cohort-discovery)
 
 ## Prerequisites
-- Resolve runs on Python 3.9
+
+- Resolve runs on Python version >= 3.9 and < 3.11
 - Dependencies are managed with [poetry](https://python-poetry.org/), which needs to be installed if you run Resolve outside a container.
 - Resolve needs to query a database
   - A remote OMOP-CDM database running
   - Or a tarball containing a `pg_dump` of an OMOP-CDM database
 
 ## OMOP-CDM setup
+
 Before Resolve can get up and running, it needs a database to query.
 If you don't have a real OMOP-CDM, you can run a mock database.
 
 ### Mock database setup
+
 <Steps>
 #### Start a containerized database
 
@@ -30,8 +33,9 @@ docker compose up db
 
 This will initialise a Postgres instance in the container.
 
-<Callout type="info" >
-These instructions assume you have a dump of an OMOP-CDM database called `hutch_db.tar`
+<Callout type="info">
+  These instructions assume you have a dump of an OMOP-CDM database called
+  `hutch_db.tar`
 </Callout>
 
 #### Copy the data
@@ -43,6 +47,7 @@ docker cp hutch_db.tar hutch-resolve-dev-db-1:/
 ```
 
 #### Start running bash in your container
+
 ```bash copy
 docker exec -it hutch-resolve-dev-db-1 bash
 ```
@@ -56,13 +61,15 @@ pg_restore --dbname=postgres --host=localhost --port=5432 --username=postgres --
 If prompted, provide "postgres" as a password
 
 You can then exit the container with `ctrl+d` or `exit`
+
 </Steps>
 
 ## Environment configuration
+
 To run resolve locally, your environment needs to have some variables configured.
 
-
 There are various ways to load environment variables, but a convenient way for this purpose is to use a plugin for poetry that loads environment variables from a .env file.
+
 <Steps>
 ### Create a file called .env in app/resolve
 The file should contain the variables required to connect to a database and Relay.
@@ -87,11 +94,13 @@ POLLING_INTERVAL=5
 
 If you are querying a remote database, the variables prefixed with `DATASOURCE` must be configured accordingly.
 If you use another method to set your environment variables, follow the example above.
+
 ### Add the plugin
 
 ```bash copy
 poetry add self poetry-plugin-dotenv
 ```
+
 </Steps>
 ## Installing dependencies
 The first time you run Resolve outside a container, you will need to install its dependencies by running
@@ -141,10 +150,7 @@ You won't see the results here, but if you see the messages, then it's successfu
 
 </Steps>
 
-<Callout emoji="🎉">
-Congratulations on your first Resolve query!
-</Callout>
-
+<Callout emoji="🎉">Congratulations on your first Resolve query!</Callout>
 
 ## Running resolve-cli
 
@@ -154,15 +160,31 @@ This needs a file with the right JSON schema to run.
 An example is:
 
 ```json copy
-{ "task_id" : "job-2023-01-13-14: 20: 38-project",
-"project" : "project_id", "owner" : "user1","cohort" : { "groups" : [
-            { "rules" : [
-                    { "varname" : "OMOP", "varcat": "Person", "type" : "TEXT", "oper" : "=", "value" : "8507"
-                    }
-                ],"rules_oper" : "AND"
-            }
-        ], "groups_oper" : "OR"
-    }, "collection" : "collection_id","protocol_version" : "v2", "char_salt" : "salt","uuid" : "unique_id"
+{
+  "task_id": "job-2023-01-13-14: 20: 38-project",
+  "project": "project_id",
+  "owner": "user1",
+  "cohort": {
+    "groups": [
+      {
+        "rules": [
+          {
+            "varname": "OMOP",
+            "varcat": "Person",
+            "type": "TEXT",
+            "oper": "=",
+            "value": "8507"
+          }
+        ],
+        "rules_oper": "AND"
+      }
+    ],
+    "groups_oper": "OR"
+  },
+  "collection": "collection_id",
+  "protocol_version": "v2",
+  "char_salt": "salt",
+  "uuid": "unique_id"
 }
 ```
 
@@ -175,5 +197,3 @@ poetry run resolve-cli --body <path/to/rquest-query.json>
 ```
 
 This should write a result for your query to `app/resolve/output.json`
-
-

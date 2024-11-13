@@ -81,12 +81,15 @@ If using a remote database, change accordingly.
 
 ## Obfuscation
 
-Two methods of result obfuscation are provided
+Two methods of result obfuscation are providedas below. Before building your Hutch tools stack, these can be configured in `compose.yml`.
 
-### Low number suppression
+<ins>Notice</ins>: The method will be applied when its related value is
+provided. When both values are provided, the Low Number Suppression will be
+applied first, then Rounding.
 
-There's a data disclosure risk if low numbers are reported for a given query, so low number suppression is applied to results, such that any result with a count below a given threshold will not be revealed.
-Before building your Hutch tools stack, this can be configured in `docker-compose.yml`
+### Low Number Suppression
+
+There's a data disclosure risk if low numbers are reported for a given query, so if the `LOW_NUMBER_SUPPRESSION_THRESHOLD` is provided, low number suppression will be applied to results, such that any result with a count below a given threshold will not be revealed.
 
 ```yaml
 LOW_NUMBER_SUPPRESSION_THRESHOLD=#Add your threshold here
@@ -94,7 +97,7 @@ LOW_NUMBER_SUPPRESSION_THRESHOLD=#Add your threshold here
 
 ### Rounding
 
-After low number suppression has been carried out on Resolve queries, results can be rounded to the nearest _n_
+If the `ROUNDING_TARGET` is provided, results can be rounded to the nearest _n_
 
 ```yaml
 ROUNDING_TARGET=#Add your rounding target
