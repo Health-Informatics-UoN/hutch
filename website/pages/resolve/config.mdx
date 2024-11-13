@@ -38,7 +38,7 @@ In development, if you're running Resolve outside a container, you can instead s
 ## Task API [#task]
 
 ```yaml
-TASK_API_BASE_URL=http://<host>:<port>
+TASK_API_BASE_URL=<host>:<port>
 TASK_API_USERNAME=<Task API username>
 TASK_API_PASSWORD=<Task API password>
 ```
@@ -48,8 +48,8 @@ TASK_API_PASSWORD=<Task API password>
 To configure the resolve-daemon communicating with Relay, the `TASK_API` variables must be set.
 When configuring [Relay](/relay) {/* when there's a relay configuration page, link there */}, you will set a port to poll for jobs, a username and a password.
 
-- If Resolve and Relay are running in the same stack, the host should be `relay`.
-- If you have Relay running locally, and Resolve running locally, the host should be `localhost`
+- If Resolve and Relay are running in the same stack, the host should be `http://relay`.
+- If you have Relay running locally, and Resolve running locally, the host should be `http://localhost`
 - If you are not using Relay as Task API host, see below
 
 ### Other Task API hosts
