@@ -1,6 +1,6 @@
 ## Setting up Resolve for development
 
-To make sure you have a working version of Resolve, follow the steps in the Quickstart. <!-- Add the link when the quickstart branch has been merged -->
+To make sure you have a working version of Resolve, follow the steps in the Quickstart. {/* Add the link when the quickstart branch has been merged */}
 
 If the resolve-daemon logs messages saying that it's setting up a database connection, looking for and receiving jobs, and resolving queries, then it's working.
 To double check, you can also use the resolve-cli to generate an output JSON.
@@ -17,4 +17,24 @@ poetry shell
 resolve-[daemon/cli]
 ```
 
-##
+## Architecture
+
+### resolve-daemon
+
+```mermaid
+graph TD;
+  db[(OMOP-CDM)];
+  relay(Relay);
+  subgraph resolve [Resolve-daemon];
+    dbmanager[Database manager];
+    polling[Polling];
+    obfuscation[Obfuscation];
+    parser[Query parsing];
+  end;
+  dbmanager --> db;
+  parser -- Configures query --> dbmanager;
+  polling -- Polls for jobs --> relay;
+  relay -- Sends jobs --> parser;
+  db --> obfuscation;
+  obfuscation -- Sends obfuscated results --> relay;
+```
