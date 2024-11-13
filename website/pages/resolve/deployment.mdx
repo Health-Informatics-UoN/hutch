@@ -7,9 +7,9 @@ This page will guide you through getting Resolve deployed in a Virtual Machine (
 
 ## Prerequisites
 
-- A VM up and running with below apps:
-  - Installed [Docker](https://knowledgebase.aridhia.io/workspaces/analysing-data/virtual-machines/installing-software-on-virtual-machines/installing-docker-on-your-virtual-machine) and [Docker Compose](https://docs.docker.com/compose/install/)
-  - Installed [wget](https://phoenixnap.com/kb/wget-command-with-examples#:~:text=wget%20is%20a%20free%20GNU,this%20tutorial%20uses%20Ubuntu%2022.04)
+- A VM with these apps installed
+  - [Docker](https://knowledgebase.aridhia.io/workspaces/analysing-data/virtual-machines/installing-software-on-virtual-machines/installing-docker-on-your-virtual-machine) and [Docker Compose](https://docs.docker.com/compose/install/)
+  - [wget](https://phoenixnap.com/kb/wget-command-with-examples#:~:text=wget%20is%20a%20free%20GNU,this%20tutorial%20uses%20Ubuntu%2022.04)
 - A OMOP CDM database server up and running
 
 ## Deployment Steps
@@ -24,63 +24,13 @@ wget https://github.com/Health-Informatics-UoN/hutch/blob/main/samples/Bunny/com
 
 ### Environment configuration
 
-Modify the configs of the newly downloaded Compose file following the below reference:
+Modify the configuration of the newly downloaded `compose.resolve.yml` file as described in [Configuring Resolve](/resolve/config) {/* This information is in the config description, or if it isn't it should be */}
 
-#### Database
-
-You need to change the `DATASOURCE_DB_HOST` value according to your actual database host. Also modify other configs about Database if needed.
-
-```yaml
-- DATASOURCE_DB_USERNAME=postgres
-- DATASOURCE_DB_PASSWORD=postgres
-- DATASOURCE_DB_DATABASE=postgres
-- DATASOURCE_DB_DRIVERNAME=postgresql
-- DATASOURCE_DB_SCHEMA=public
-- DATASOURCE_DB_PORT=5432
-- DATASOURCE_DB_HOST=db_host
-```
-
-#### Client Task API
-
-- You need to change the `TASK_API_BASE_URL` value according to your actual task API host where Resolve connected to `GET` the job and `POST` the results back.
-- The I/O requests from Resolve are authenticated by the `TASK_API_USERNAME` and `TASK_API_PASSWORD`, please put your Task API credentials here
-
-```yaml
-- TASK_API_BASE_URL=task_api_host
-- TASK_API_USERNAME=username
-- TASK_API_PASSWORD=password
-```
-
-#### Obfuscation
-
-Below are the settings for obfuscation. More details about these can be found [here](/hutch/resolve/config). Please change this to fit your obfuscation preferences.
-
-```yaml
-- LOW_NUMBER_SUPPRESSION_THRESHOLD=
-- ROUNDING_TARGET=
-```
-
-#### Polling
-
-By default, Resolve will make `GET` request to Task API host every 5 seconds to check for jobs. You can change this setting by put a number here.
-
-```yaml
-- POLLING_INTERVAL=5
-```
-
-#### Collection ID
-
-This is the collection ID you would like to query.
-
-```yaml
-- COLLECTION_ID=collection_id
-```
-
-After setting environment configuration, you are ready to run Resolve on your VM.
+You will need to [configure the database connection](/resolve/config#database), and your [task API connection](/resolve/config#task)
 
 ## Running Resolve
 
-At the downloaded Compose.yml directory, run the command to activate Resolve:
+At the directory containing the `compose.resolve.yml` file, run the command to activate Resolve:
 
 ```bash copy
 docker compose up
