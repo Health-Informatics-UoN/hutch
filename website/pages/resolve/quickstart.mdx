@@ -61,7 +61,14 @@ You can then exit the container with `ctrl+d` or `exit`
 
 ## Environment configuration
 To run resolve locally, your environment needs to have some variables configured.
-For example, if using the containerized mock database:
+
+
+There are various ways to load environment variables, but a convenient way for this purpose is to use a plugin for poetry that loads environment variables from a .env file.
+<Steps>
+### Create a file called .env in app/resolve
+The file should contain the variables required to connect to a database and Relay.
+
+For example, if using the containerized Relay and mock database:
 
 ```sh copy
 DATASOURCE_DB_USERNAME=postgres
@@ -80,12 +87,7 @@ POLLING_INTERVAL=5
 ```
 
 If you are querying a remote database, the variables prefixed with `DATASOURCE` must be configured accordingly.
-
-There are various ways to load environment variables, but a convenient way for this purpose is to use a plugin for poetry that loads environment variables from a .env file.
-<Steps>
-### Create a file called .env in app/resolve
-For a template, copy the variables described above
-
+If you use another method to set your environment variables, follow the example above.
 ### Add the plugin
 
 ```bash copy
