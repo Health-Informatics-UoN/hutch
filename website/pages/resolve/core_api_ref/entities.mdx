@@ -1,0 +1,61 @@
+## core.entities
+
+[source](https://github.com/Health-Informatics-UoN/hutch-cohort-discovery/blob/main/app/resolve/core/entities.py)
+
+### `Concept`
+
+```python
+class Concept(
+  concept_id = Column(Integer, primary_key=True),
+  concept_name = Column(String(255), nullable=False),
+  domain_id = Column(String(20), nullable=False),
+  vocabulary_id = Column(String(20), nullable=False),
+  concept_class_id = Column(String(20), nullable=False),
+  standard_concept = Column(String(1), nullable=True),
+  concept_code = Column(String(50), nullable=False),
+  valid_start_date = Column(Date, nullable=False),
+  valid_end_date = Column(Date, nullable=False),
+  invalid_reason = Column(String(1), nullable=True),
+)
+```
+
+A `sqlalchemy.orm.DeclarativeBase` class representing a row from the `concept` table of the OMOP-CDM
+
+### `Person`
+```python
+class Person:
+    person_id = Column(Integer, primary_key=True)
+    gender_concept_id = Column(
+        Integer, ForeignKey("concept.concept_id"), nullable=False
+    )
+    year_of_birth = Column(Integer, nullable=False)
+    month_of_birth = Column(Integer, nullable=True)
+    day_of_birth = Column(Integer, nullable=True)
+    birth_datetime = Column(DateTime, nullable=True)
+    race_concept_id = Column(Integer, ForeignKey("concept.concept_id"), nullable=False)
+    ethnicity_concept_id = Column(
+        Integer, ForeignKey("concept.concept_id"), nullable=False
+    )
+    location_id = Column(Integer, nullable=True)
+    provider_id = Column(Integer, nullable=True)
+    care_site_id = Column(Integer, nullable=True)
+    person_source_value = Column(String(50), nullable=True)
+    gender_source_value = Column(String(50), nullable=True)
+    gender_source_concept_id = Column(
+        Integer, ForeignKey("concept.concept_id"), nullable=True
+    )
+    race_source_value = Column(String(50), nullable=True)
+    race_source_concept_id = Column(
+        Integer, ForeignKey("concept.concept_id"), nullable=True
+    )
+    ethnicity_source_value = Column(String(50), nullable=True)
+    ethnicity_source_concept_id = Column(
+        Integer, ForeignKey("concept.concept_id"), nullable=True
+    )
+```
+
+A `sqlalchemy.orm.DeclarativeBase` class representing a row from the `person` table of the OMOP-CDM
+
+### Relationships
+
+imported by [`query_solvers`](/resolve/core_api_ref/query_solvers)
