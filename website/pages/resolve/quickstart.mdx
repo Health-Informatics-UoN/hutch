@@ -9,7 +9,7 @@ Start by cloning [the Hutch tools repository](https://github.com/Health-Informat
 
 ## Prerequisites
 - Resolve runs on Python 3.9
-- Dependencies are managed with [poetry](https://python-poetry.org/)
+- Dependencies are managed with [poetry](https://python-poetry.org/), which needs to be installed if you run Resolve outside a container.
 - Resolve needs to query a database
   - A remote OMOP-CDM database running
   - Or a tarball containing a `pg_dump` of an OMOP-CDM database
@@ -89,6 +89,13 @@ There are various ways to load environment variables, but a convenient way for t
 poetry add self poetry-plugin-dotenv
 ```
 </Steps>
+## Installing dependencies
+The first time you run Resolve outside a container, you will need to install its dependencies by running
+```bash
+poetry install
+```
+in `app/resolve`
+
 ## Running the Docker daemon
 
 Resolve has a daemon which polls [Relay](/relay) for jobs, so needs to have a Relay instance running.
