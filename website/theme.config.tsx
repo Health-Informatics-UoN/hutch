@@ -20,7 +20,7 @@ export default {
   },
   head: (
     <>
-      <link rel="icon" type="image/svg+xml" href="/images/favicon.svg" />
+      <link rel="icon" type="image/svg+xml" href="/hutch/images/favicon.svg" />
     </>
   ),
   footer: {
