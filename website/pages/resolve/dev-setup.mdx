@@ -19,40 +19,35 @@ resolve-[daemon/cli]
 
 ## Architecture
 
-### resolve-daemon
+The same core components are used by the daemon and command-line interface.
+
 
 ```mermaid
 graph TD;
+  input(User input);
   db[(OMOP-CDM)];
   relay(Relay);
-  subgraph resolve [Resolve-daemon];
+  subgraph resolve [resolve];
     dbmanager[Database manager];
     polling[Polling];
     obfuscation[Obfuscation];
     parser[Query parsing];
   end;
+  input --> parser
   dbmanager --> db;
   parser -- Configures query --> dbmanager;
   polling -- Polls for jobs --> relay;
   relay -- Sends jobs --> parser;
   db --> obfuscation;
   obfuscation -- Sends obfuscated results --> relay;
+  obfuscation -- Writes obfuscated results --> output[output.json]
+
+
+classDef cli fill: dodgerblue;
+class input,output cli;
+
+classDef daemon fill: olivedrab;
+class relay,polling daemon;
 ```
 
-### resolve-cli
 
-```mermaid
-graph TD;
-  input(User input);
-  db[(OMOP-CDM)];
-  subgraph resolve [Resolve-cli];
-    dbmanager[Database manager];
-    obfuscation[Obfuscation];
-    parser[Query parsing];
-  end;
-  input --> parser;
-  dbmanager --> db;
-  parser -- Configures query --> dbmanager;
-  db --> obfuscation;
-  obfuscation -- Sends obfuscated results --> output[output.json];
-```
