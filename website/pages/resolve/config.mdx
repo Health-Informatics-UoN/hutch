@@ -1,4 +1,51 @@
+Resolve can be configured using environment variables.
+If you're running Resolve as part of a composed stack of containers, these are set in the `compose.yml`.
+They can be found under
+
+```yaml
+services:
+# other containers
+  resolve:
+    depends_on:
+      - db
+      - relay
+      - rabbitmq
+    image: resolve
+    build:
+      context: app/resolve
+      dockerfile: Dockerfile.daemon
+    environment:
+      - DATASOURCE_DB_USERNAME=postgres
+      - DATASOURCE_DB_PASSWORD=postgres
+      - DATASOURCE_DB_DATABASE=postgres
+      - DATASOURCE_DB_DRIVERNAME=postgresql
+      - DATASOURCE_DB_SCHEMA=public
+      - DATASOURCE_DB_PORT=5432
+      - DATASOURCE_DB_HOST=db
+      - TASK_API_BASE_URL=http://relay:8080
+      - TASK_API_USERNAME=username
+      - TASK_API_PASSWORD=password
+      - LOW_NUMBER_SUPPRESSION_THRESHOLD=
+      - ROUNDING_TARGET=
+      - POLLING_INTERVAL=5
+      - COLLECTION_ID=collection_id
+```
+
+In development, if you're running Resolve outside a container, you can instead set these with a `.env` file, as described in [quickstart](/quickstart).
+
 ## Relay
+To configure the resolve-daemon communicating with Relay, the `TASK_API` variables must be set.
+When configuring [Relay](/relay) {/* when there's a relay configuration page, link there */}, you will set a port to poll for jobs, a username and a password.
+
+```
+TASK_API_BASE_URL=http://<host>:<port>
+TASK_API_USERNAME=<Relay username>
+TASK_API_PASSWORD=<Relay password>
+```
+
+- If Resolve and Relay are running in the same stack, the host should be `relay`.
+- If you have Relay running locally, and Resolve running locally, the host should be `localhost`
+- If Relay is running remotely, set the host accordingly
 
 ## Database
 
@@ -10,18 +57,12 @@ There's a data disclosure risk if low numbers are reported for a given query, so
 Before building your Hutch tools stack, this can be configured in `docker-compose.yml`
 
 ```yaml
-resolve:
-  environment:
-# other environment variables
-    LOW_NUMBER_SUPPRESSION_THRESHOLD=#Add your threshold here
+LOW_NUMBER_SUPPRESSION_THRESHOLD=#Add your threshold here
 ```
 
 ### Rounding
 After low number suppression has been carried out on Resolve queries, results can be rounded to the nearest *n*
 
 ```yaml
-resolve:
-  environment:
-# other environment variables
-    ROUNDING_TARGET:#Add your rounding target
+ROUNDING_TARGET=#Add your rounding target
 ```
