@@ -24,7 +24,7 @@ If you don't have a real OMOP-CDM, you can run a mock database.
 
 The `compose.yml` in the root of the Hutch tools repository can start a database container with
 
-```bash
+```bash copy
 docker compose up db
 ```
 
@@ -38,18 +38,18 @@ These instructions assume you have a dump of an OMOP-CDM database called `hutch_
 
 Navigate to the folder containing `hutch_db.tar` and copy it into the container with:
 
-```bash
+```bash copy
 docker cp hutch_db.tar hutch-resolve-dev-db-1:/
 ```
 
 #### Start running bash in your container
-```bash
+```bash copy
 docker exec -it hutch-resolve-dev-db-1 bash
 ```
 
 #### Use pg_restore to load the data into the database
 
-```bash
+```bash copy
 pg_restore --dbname=postgres --host=localhost --port=5432 --username=postgres --password hutch_db.tar
 ```
 
@@ -88,13 +88,13 @@ For a template, copy the variables described above
 
 ### Add the plugin
 
-```bash
+```bash copy
 poetry add self poetry-plugin-dotenv
 ```
 </Steps>
 ## Installing dependencies
 The first time you run Resolve outside a container, you will need to install its dependencies by running
-```bash
+```bash copy
 poetry install
 ```
 in `app/resolve`
@@ -108,7 +108,7 @@ Resolve has a daemon which polls [Relay](/relay) for jobs, so needs to have a Re
 
 The compose used to start up the database also contains an implementation of Relay.
 
-```bash
+```bash copy
 docker compose up relay -d
 ```
 
@@ -116,7 +116,7 @@ docker compose up relay -d
 
 The Resolve daemon can then be run using poetry. This will ensure the dependencies and environment variables are loaded
 
-```bash
+```bash copy
 poetry run resolve-daemon
 ```
 
@@ -152,7 +152,7 @@ This needs a file with the right JSON schema to run.
 
 An example is:
 
-```json
+```json copy
 { "task_id" : "job-2023-01-13-14: 20: 38-project",
 "project" : "project_id", "owner" : "user1","cohort" : { "groups" : [
             { "rules" : [
@@ -169,7 +169,7 @@ To run the CLI, navigate to `hutch-cohort-discovery/app/resolve`
 
 Then run
 
-```bash
+```bash copy
 poetry run resolve-cli --body <path/to/rquest-query.json>
 ```
 
