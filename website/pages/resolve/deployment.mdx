@@ -1,0 +1,57 @@
+import { Callout } from "nextra/components";
+import { Steps } from "nextra/components";
+
+# Resolve Deployment
+
+This page will guide you through getting Resolve deployed in a Virtual Machine (VM).
+
+## Prerequisites
+
+- A VM with these apps installed
+  - [Docker](https://knowledgebase.aridhia.io/workspaces/analysing-data/virtual-machines/installing-software-on-virtual-machines/installing-docker-on-your-virtual-machine) and [Docker Compose](https://docs.docker.com/compose/install/)
+  - [wget](https://phoenixnap.com/kb/wget-command-with-examples#:~:text=wget%20is%20a%20free%20GNU,this%20tutorial%20uses%20Ubuntu%2022.04)
+- A OMOP CDM database server up and running
+
+## Deployment Steps
+
+### Get the example Compose file
+
+Download the example of Resolve's Compose file by running the command:
+
+```bash copy
+wget https://github.com/Health-Informatics-UoN/hutch/blob/main/samples/Bunny/compose.resolve.yml
+```
+
+### Environment configuration
+
+Modify the configuration of the newly downloaded `compose.resolve.yml` file as described in [Configuring Resolve](/resolve/config)
+
+You will need to [configure the database connection](/resolve/config#database), and your [Task API host connection](/resolve/config#task)
+
+## Running Resolve
+
+At the directory containing the `compose.resolve.yml` file, run the command to activate Resolve:
+
+```bash copy
+docker compose up
+```
+
+You should then see a message in your console like this:
+
+```bash
+INFO - 12-Nov-24 12:36:24 - Setting up database connection...
+INFO - 12-Nov-24 12:36:24 - Looking for job...
+INFO - 12-Nov-24 12:36:29 - Job received. Resolving...
+INFO - 12-Nov-24 12:36:29 - Processing query...
+INFO - 12-Nov-24 12:36:30 - Solved availability query
+INFO - 12-Nov-24 12:36:30 - Job resolved.
+INFO - 12-Nov-24 12:36:35 - Looking for job...
+INFO - 12-Nov-24 12:36:40 - Looking for job...
+INFO - 12-Nov-24 12:36:45 - Looking for job...
+```
+
+Resolve establishes a connection to your OMOP-CDM database, then polls the Task API Host for a job.
+When it receives a job, it processes the query, queries the database, and sends the result back to Task API Host.
+You won't see the results here, but if you see the messages, then it's successfully contacting both the database and Task API Host.
+
+<Callout emoji="🎉">Congratulations on your first Resolve deployment!</Callout>

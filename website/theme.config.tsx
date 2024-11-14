@@ -1,4 +1,5 @@
 import { Rabbit, Package } from "lucide-react";
+import React from "react";
 
 export default {
   logo: (
@@ -8,11 +9,11 @@ export default {
         color: "#0E7490",
       }}
     >
-      <Rabbit style={{ marginRight: "5px" }} />
+      <Rabbit style={{ marginRight: "3px" }} />
       +
-      <Package style={{ marginRight: "5px" }} />
-      =
-      <strong style={{ marginRight: "5px", marginLeft: "5px" }}>Hutch</strong>Documentation
+      <Package style={{ marginRight: "5px", marginLeft: "3px" }} />=
+      <strong style={{ marginRight: "5px", marginLeft: "5px" }}>Hutch</strong>
+      Documentation
     </span>
   ),
   project: {
@@ -28,7 +29,12 @@ export default {
       <span>
         © {new Date().getFullYear()}{" "}
         <a href="https://nottingham.ac.uk" target="_blank">
-          <img src="/hutch/images/uon_white_text_web.png" alt="University of Nottingham" width={243} height={90} />
+          <img
+            src="/hutch/images/uon_white_text_web.png"
+            alt="University of Nottingham"
+            width={243}
+            height={90}
+          />
         </a>
         <br />
         MIT licence
