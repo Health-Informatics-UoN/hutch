@@ -19,21 +19,21 @@ This page will guide you through getting Resolve deployed in a Virtual Machine (
 Download the example of Resolve's Compose file by running the command:
 
 ```bash copy
-wget https://github.com/Health-Informatics-UoN/hutch/blob/main/samples/Bunny/compose.resolve.yml
+wget https://github.com/Health-Informatics-UoN/hutch/blob/main/samples/Bunny/resolve-standalone.compose.yml
 ```
 
 ### Environment configuration
 
-Modify the configuration of the newly downloaded `compose.resolve.yml` file as described in [Configuring Resolve](/resolve/config)
+Modify the configuration of the newly downloaded `resolve-standalone.compose.yml` file as described in [Configuring Resolve](/resolve/config)
 
 You will need to [configure the database connection](/resolve/config#database), and your [Task API host connection](/resolve/config#task)
 
 ## Running Resolve
 
-At the directory containing the `compose.resolve.yml` file, run the command to activate Resolve:
+At the directory containing the `resolve-standalone.compose.yml` file, run the command to activate Resolve:
 
 ```bash copy
-docker compose up
+docker compose -f resolve-standalone.compose.yml up
 ```
 
 You should then see a message in your console like this:
