@@ -13,7 +13,7 @@ services:
       RABBITMQ_DEFAULT_PASS: password
 
   relay:
-    image: ghcr.io/health-informatics-uon/hutch/relay:20241114122931 # TODO: change to latest release tag
+    image: ghcr.io/health-informatics-uon/hutch/relay:20241114122931
     restart: always
     ports:
       - 8080:8080
@@ -31,4 +31,4 @@ services:
       UpstreamTaskApi__Username: user
       UpstreamTaskApi__Password: password
 
-      # TODO: https config
+    
