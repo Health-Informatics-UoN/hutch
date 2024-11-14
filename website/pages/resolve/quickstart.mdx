@@ -34,8 +34,8 @@ docker compose up db
 This will initialise a Postgres instance in the container.
 
 <Callout type="info">
-  These instructions assume you have a dump of an OMOP-CDM database called
-  `hutch_db.tar`
+  These instructions assume you have a pre-existing OMOP CDM Postgresql database
+  and it can be called `hutch_db.tar` like a example below.
 </Callout>
 
 #### Copy the data
@@ -66,7 +66,7 @@ You can then exit the container with `ctrl+d` or `exit`
 
 ## Environment configuration
 
-To run resolve locally, your environment needs to have some variables configured.
+To run Resolve locally, your environment needs to have some variables configured.
 
 There are various ways to load environment variables, but a convenient way for this purpose is to use a plugin for poetry that loads environment variables from a .env file.
 
