@@ -1,0 +1,40 @@
+## core.task_api_client
+[source](https://github.com/Health-Informatics-UoN/hutch-cohort-discovery/tree/main/app/resolve/core/task_api_client.py)
+### SupportedMethod
+```python
+class SupportedMethod(Enum):
+```
+
+### TaskApiClient
+```python
+class TaskApiClient:
+```
+
+### __init__
+```python
+    def __init__(
+        self,
+        base_url: Optional[str] = None,
+        username: Optional[str] = None,
+        password: Optional[str] = None,
+    ):
+```
+
+### request
+```python
+    def request(
+        self, method: SupportedMethod, url: str, data: Optional[dict] = None, **kwargs
+    ) -> Response:
+```
+
+### post
+```python
+    def post(
+        self, endpoint: Optional[str] = None, data: dict = dict(), **kwargs
+    ) -> Response:
+```
+
+### get
+```python
+    def get(self, endpoint: Optional[str] = None, **kwargs) -> Response:
+```
