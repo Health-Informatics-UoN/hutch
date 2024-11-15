@@ -1,0 +1,34 @@
+name: hutch-relay
+
+services:
+
+  rabbitmq:
+    image: rabbitmq:3-management
+    ports:
+      - 15672:15672 # expose the management gui to the host
+      # - 5672:5672 # but not the amqp server
+    restart: always
+    environment:
+      RABBITMQ_DEFAULT_USER: user
+      RABBITMQ_DEFAULT_PASS: password
+
+  relay:
+    image: ghcr.io/health-informatics-uon/hutch/relay:20241114122931
+    restart: always
+    ports:
+      - 8080:8080
+      - 8081:8081
+    depends_on:
+      - rabbitmq
+    environment:
+      # TODO: link to docs config section
+      ConnectionStrings__Default: Server=db_host;Port=5432;Database=hutch-relay;User Id=postgres;Password=postgres
+      RelayTaskQueue__ConnectionString: amqp://user:password@rabbitmq:5672
+
+      # Connection settings for the Task API to relay tasks from (e.g. BC|RQuest, Hutch Relay...)
+      UpstreamTaskApi__BaseUrl: https://my-task-api.com
+      UpstreamTaskApi__CollectionId: dd52026b-5a61-4c89-b733-04ba141b3f31
+      UpstreamTaskApi__Username: user
+      UpstreamTaskApi__Password: password
+
+    

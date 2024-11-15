@@ -2,7 +2,7 @@ name: bunny-resolve
 
 services:
   resolve:
-    image: ghcr.io/health-informatics-uon/resolve/daemon
+    image: ghcr.io/health-informatics-uon/resolve/daemon:20241112150418
     environment:
       - DATASOURCE_DB_USERNAME=postgres
       - DATASOURCE_DB_PASSWORD=postgres
