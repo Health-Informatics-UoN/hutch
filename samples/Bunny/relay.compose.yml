@@ -31,4 +31,20 @@ services:
       UpstreamTaskApi__Username: user
       UpstreamTaskApi__Password: password
 
-    
+    # TODO: quickstart guidance on `host.docker.internal`    
+    extra_hosts:
+    - "host.docker.internal:host-gateway"
+
+# # TODO: move to quickstart
+#   db:
+#     image: postgres:16
+#     restart: always
+#     ports:
+#       - 5432:5432
+#     environment:
+#       POSTGRES_PASSWORD: postgres
+#     volumes: 
+#           - pgdata:/var/lib/postgresql/data:Z
+# volumes:
+#   pgdata:
+# ######
