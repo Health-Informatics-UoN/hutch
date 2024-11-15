@@ -1,0 +1,31 @@
+## core.rquest_dto.base_dto
+[source](https://github.com/Health-Informatics-UoN/hutch-cohort-discovery/tree/main/app/resolve/core/rquest_dto/base_dto.py)
+### BaseDto
+```python
+class BaseDto:
+```
+The base of other classes in [rquest_dto](/resolve/core_api_ref/rquest_dto)
+
+#### Methods
+```python
+to_dict(self) -> dict:
+```
+Abstract method (sort of) for serialising the object to a dictionary
+
+```python
+from_dict(cls, dict_: dict):
+```
+classmethod for building the object from a dictionary
+
+### Relationships
+imported by [ActivityJob](/resolve/core_api_ref/rquest_dto/activity_job)
+
+imported by [Cohort](/resolve/core_api_ref/rquest_dto/cohort)
+
+imported by [File](/resolve/core_api_ref/rquest_dto/file)
+
+imported by [Group](/resolve/core_api_ref/rquest_dto/group)
+
+imported by [query](/resolve/core_api_ref/rquest_dto/query)
+
+imported by [RQuestResult](/resolve/core_api_ref/rquest_dto/result)

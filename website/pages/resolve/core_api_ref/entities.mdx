@@ -2,6 +2,8 @@
 
 [source](https://github.com/Health-Informatics-UoN/hutch-cohort-discovery/blob/main/app/resolve/core/entities.py)
 
+This script describes the entities used by the database connection.
+
 ### `Concept`
 
 ```python
@@ -19,7 +21,7 @@ class Concept(
 )
 ```
 
-A `sqlalchemy.orm.DeclarativeBase` class representing a row from the `concept` table of the OMOP-CDM
+A `sqlalchemy.orm.DeclarativeBase` class representing the `concept` table of the OMOP-CDM
 
 ### `Person`
 ```python
@@ -54,7 +56,9 @@ class Person:
     )
 ```
 
-A `sqlalchemy.orm.DeclarativeBase` class representing a row from the `person` table of the OMOP-CDM
+A `sqlalchemy.orm.DeclarativeBase` class representing the `person` table of the OMOP-CDM
+
+
 
 ### Relationships
 

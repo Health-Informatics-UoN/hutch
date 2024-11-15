@@ -1,0 +1,23 @@
+## core.rquest_dto.group
+[source](https://github.com/Health-Informatics-UoN/hutch-cohort-discovery/tree/main/app/resolve/core/rquest_dto/group.py)
+### Group
+```python
+class Group(
+  rules: List[Rule],
+  rules_operator: str,
+)
+```
+
+#### Methods
+```python
+to_dict(self) -> dict:
+```
+
+```python
+from_dict(dict_: dict):
+```
+
+### Relationships
+imports [BaseDto](/resolve/core_api_ref/rquest_dto/base_dto)
+
+imports [Rule](/resolve/core_api_ref/rquest_dto/rule)

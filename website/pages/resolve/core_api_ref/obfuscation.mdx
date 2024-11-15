@@ -1,0 +1,33 @@
+## core.obfuscation
+[source](https://github.com/Health-Informatics-UoN/hutch-cohort-discovery/tree/main/app/resolve/core/obfuscation.py)
+### get_results_modifiers
+```python
+def get_results_modifiers(activity_source_id: int) -> list:
+```
+
+### get_results_modifiers_from_str
+```python
+def get_results_modifiers_from_str(params: str) -> list:
+```
+
+### low_number_suppression
+```python
+def low_number_suppression(
+    value: Union[int, float], threshold: int = 10
+) -> Union[int, float]:
+```
+
+### rounding
+```python
+def rounding(value: Union[int, float], nearest: int = 10) -> int:
+```
+
+### apply_filters
+```python
+def apply_filters(value: Union[int, float], filters: list) -> Union[int, float]:
+```
+
+### apply_filters_v2
+```python
+def apply_filters_v2(value: Union[int, float], filters: list) -> Union[int, float]:
+```
