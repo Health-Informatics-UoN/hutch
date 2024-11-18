@@ -1,8 +1,8 @@
-name: bunny-resolve
+name: hutch-bunny
 
 services:
-  resolve:
-    image: ghcr.io/health-informatics-uon/resolve/daemon:20241112150418
+  bunny:
+    image: ghcr.io/health-informatics-uon/hutch/bunny:dev-latest
     environment:
       - DATASOURCE_DB_USERNAME=postgres
       - DATASOURCE_DB_PASSWORD=postgres
