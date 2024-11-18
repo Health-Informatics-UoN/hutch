@@ -1,9 +1,9 @@
 import { Callout } from "nextra/components";
 import { Steps } from "nextra/components";
 
-# Resolve Deployment
+# Bunny Deployment
 
-This page will guide you through getting Resolve deployed in a Virtual Machine (VM).
+This page will guide you through getting Bunny deployed in a Virtual Machine (VM).
 
 ## Prerequisites
 
@@ -16,24 +16,24 @@ This page will guide you through getting Resolve deployed in a Virtual Machine (
 
 ### Get the example Compose file
 
-Download the example of Resolve's Compose file by running the command:
+Download the example of Bunny's Compose file by running the command:
 
 ```bash copy
-wget https://github.com/Health-Informatics-UoN/hutch/blob/main/samples/Bunny/resolve-standalone.compose.yml
+wget https://raw.githubusercontent.com/Health-Informatics-UoN/hutch/refs/heads/main/samples/Bunny/bunny-standalone.compose.yml
 ```
 
 ### Environment configuration
 
-Modify the configuration of the newly downloaded `resolve-standalone.compose.yml` file as described in [Configuring Resolve](/resolve/config)
+Modify the configuration of the newly downloaded `bunny-standalone.compose.yml` file as described in [Configuring Bunny](/bunny/config)
 
-You will need to [configure the database connection](/resolve/config#database), and your [Task API host connection](/resolve/config#task)
+You will need to [configure the database connection](/bunny/config#database), and your [Task API host connection](/bunny/config#task)
 
-## Running Resolve
+## Running Bunny
 
-At the directory containing the `resolve-standalone.compose.yml` file, run the command to activate Resolve:
+At the directory containing the `bunny-standalone.compose.yml` file, run the command to activate Bunny:
 
 ```bash copy
-docker compose -f resolve-standalone.compose.yml up
+docker compose -f bunny-standalone.compose.yml up
 ```
 
 You should then see a message in your console like this:
@@ -50,8 +50,8 @@ INFO - 12-Nov-24 12:36:40 - Looking for job...
 INFO - 12-Nov-24 12:36:45 - Looking for job...
 ```
 
-Resolve establishes a connection to your OMOP-CDM database, then polls the Task API Host for a job.
+Bunny establishes a connection to your OMOP-CDM database, then polls the Task API Host for a job.
 When it receives a job, it processes the query, queries the database, and sends the result back to Task API Host.
 You won't see the results here, but if you see the messages, then it's successfully contacting both the database and Task API Host.
 
-<Callout emoji="🎉">Congratulations on your first Resolve deployment!</Callout>
+<Callout emoji="🎉">Congratulations on your first Bunny deployment!</Callout>

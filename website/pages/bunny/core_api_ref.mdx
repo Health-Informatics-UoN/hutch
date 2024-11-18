@@ -1,0 +1,21 @@
+## Core API reference
+The scripts in `core` are called by the Bunny daemon and command-line interface (CLI).
+
+### rquest-dto
+The classes used by the core functions are held in [rquest-dto](/bunny/core_api_ref/rquest-dto).
+
+|component|description|
+|:---|---:|
+|[`constants`](/bunny/core_api_ref/constants)| provides names for [`File`s](/bunny/core_api_ref/rquest_dto/file)|
+|[`db_manager`](/bunny/core_api_ref/db_manager)| manages database connections for bunny |
+|[`entities`](/bunny/core_api_ref/entities)| Object Relational Mappings for the OMOP-CDM |
+|[`enums`](/bunny/core_api_ref/enums)| Bunny enumerations |
+|[`execute_query`](/bunny/core_api_ref/execute_query)| executes queries against the database |
+|[`logger`](/bunny/core_api_ref/logger)| logs Bunny's activities |
+|[`obfuscation`](/bunny/core_api_ref/obfuscation)| Result obfuscation to protect personally identifiable information |
+|[`parser`](/bunny/core_api_ref/parser)| parses command-line arguments for bunny-cli |
+|[`query_solvers`](/bunny/core_api_ref/query_solvers)| Solves different types of query against the database |
+|[`results_modifiers`](/bunny/core_api_ref/results_modifiers)| configures [obfuscation](/bunny/core_api_ref/obfuscation) |
+|[`setting_database`](/bunny/core_api_ref/setting_database)| builds [`db_manager`](/bunny/core_api_ref/db_manager) for bunny |
+|[`settings`](/bunny/core_api_ref/settings)| Provides settings for other core modules by reading environment variables |
+|[`task_api_client`](/bunny/core_api_ref/task_api_client)| A client for interacting with the Task API |

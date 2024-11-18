@@ -1,0 +1,86 @@
+## Setting up Bunny for development
+
+To make sure you have a working version of Bunny, follow the steps in the Quickstart. {/* Add the link when the quickstart branch has been merged */}
+
+If the bunny-daemon logs messages saying that it's setting up a database connection, looking for and receiving jobs, and resolving queries, then it's working.
+To double check, you can also use the bunny-cli to generate an output JSON.
+
+### Using the environment
+Bunny uses poetry to manage its dependencies.
+To test any changes made to Bunny in development you can use either
+```bash
+poetry run bunny-[daemon/cli]
+```
+or start a poetry shell
+```bash
+poetry shell
+bunny-[daemon/cli]
+```
+
+## Architecture
+
+The same core components are used by the daemon and command-line interface (CLI).
+CLI components are shown in blue, daemon components shown in green.
+
+
+```mermaid
+graph TD;
+  input(User input);
+  db[(OMOP-CDM)];
+  relay(Relay);
+  subgraph bunny [bunny];
+    dbmanager[Database manager];
+    polling[Polling];
+    obfuscation[Obfuscation];
+    parser[Query parsing];
+  end;
+  input --> parser
+  dbmanager --> db;
+  parser -- Configures query --> dbmanager;
+  polling -- Polls for jobs --> relay;
+  relay -- Sends jobs --> parser;
+  db --> obfuscation;
+  obfuscation -- Sends obfuscated results --> relay;
+  obfuscation -- Writes obfuscated results --> output[output.json]
+
+
+classDef cli fill: dodgerblue;
+class input,output cli;
+
+classDef daemon fill: olivedrab;
+class relay,polling daemon;
+```
+
+## bunny-daemon
+The daemon initialises by
+
+- [Connecting to the database](/bunny/core_api_ref/setting_database)
+- Starting the [logger](/bunny/core_api_ref/logger)
+- Initialising the [task API client](/bunny/core_api_ref/task_api_client)
+- Building the [results modifiers](/bunny/core_api_ref/results_modifiers)
+  - Reads the `LOW_NUMBER_SUPPRESSION_THRESHOLD` and `ROUNDING_TARGET` from [settings](/bunny/core_api_ref/settings)
+- Setting up the polling endpoint
+  - Reads the `COLLECTION_ID` and `TASK_API_TYPE` from [settings](#settings)
+
+### Polling
+The daemon sends GET requests through the [task API client](/bunny/core_api_ref/task_api_client) until the task API endpoint sends a job.
+It uses the JSON of the response body to [execute a query](/bunny/core_api_ref/execute_query).
+If the query executes successfully, it tries to POST the result through the [task API client](/bunny/core_api_ref/task_api_client) five times.
+After executing the query, it polls for jobs again.
+
+The interval between polling requests is set through the `POLLING_INTERVAL` environment variable.
+
+## Bunny core
+
+The components used by the daemon and CLI are held in the [`core`](/bunny/core_api_ref) library. 
+
+## bunny-cli
+The CLI:
+
+- [Connects to the database](/bunny/core_api_ref/db_manager)
+- [Parses command-line arguments](/bunny/core_api_ref/parser)
+- Builds the [results modifiers](/bunny/core_api_ref/results_modifiers)
+  - Reads the `LOW_NUMBER_SUPPRESSION_THRESHOLD` and `ROUNDING_TARGET` from [settings](/bunny/core_api_ref/settings)
+
+It then [executes the query](/bunny/core_api_ref/execute_query), and writes [obfuscated](/bunny/core_api_ref/obfuscation) [results](/bunny/core_api_ref/rquest_dto/result) to a JSON file.
+

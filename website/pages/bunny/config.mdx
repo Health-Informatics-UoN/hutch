@@ -1,20 +1,19 @@
 # Configuration
 
-Resolve can be configured using environment variables.
-If you're running Resolve as part of a composed stack of containers, these are set in the `compose.yml`.
+Bunny can be configured using environment variables.
+If you're running Bunny as part of a composed stack of containers, these are set in the `compose.yml`.
 They can be found under
 
 ```yaml
 services:
   # other containers, if needed
-  resolve:
+  bunny:
     depends_on:
       - db
       - relay
       - rabbitmq
-    image: resolve
     build:
-      context: app/resolve
+      context: app/bunny
       dockerfile: Dockerfile.daemon
     environment:
       - DATASOURCE_DB_USERNAME=postgres
@@ -33,7 +32,7 @@ services:
       - COLLECTION_ID=collection_id
 ```
 
-In development, if you're running Resolve outside a container, you can instead set these with a `.env` file, as described in [quickstart](/resolve/quickstart).
+In development, if you're running Bunny outside a container, you can instead set these with a `.env` file, as described in [quickstart](/bunny/quickstart).
 
 ## Task API [#task]
 
@@ -45,21 +44,21 @@ TASK_API_PASSWORD=<Task API password>
 
 ### Relay as Task API host
 
-To configure the resolve-daemon communicating with Relay, the `TASK_API` variables must be set.
+To configure the bunny-daemon communicating with Relay, the `TASK_API` variables must be set.
 When configuring [Relay](/relay) {/* when there's a relay configuration page, link there */}, you will set a port to poll for jobs, a username and a password.
 
-- If Resolve and Relay are running in the same stack, the host should be `http://relay`.
-- If you have Relay running locally, and Resolve running locally, the host should be `http://localhost`
+- If Bunny and Relay are running in the same stack, the host should be `http://relay`.
+- If you have Relay running locally, and Bunny running locally, the host should be `http://localhost`
 - If you are not using Relay as Task API host, see below
 
 ### Other Task API hosts
 
-- You need to change the `TASK_API_BASE_URL` value according to your actual Task API host where Resolve connected to `GET` the job and `POST` the results back.
-- The I/O requests from Resolve are authenticated by the `TASK_API_USERNAME` and `TASK_API_PASSWORD`, please put your Task API credentials here
+- You need to change the `TASK_API_BASE_URL` value according to your actual Task API host where Bunny connected to `GET` the job and `POST` the results back.
+- The I/O requests from Bunny are authenticated by the `TASK_API_USERNAME` and `TASK_API_PASSWORD`, please put your Task API credentials here
 
 ### Job Type
 
-- If you would like Resolve to connect directly with Rquest, you have to add one more configuration which is `TASK_API_TYPE`. This can only be either `a` (Availability), `b` (Distribution and PHEWAS) or `c` (AnalyticsGwas, AnalyticsGwasQuantitiveTrait, AnalyticsBurdenTest).
+- If you would like Bunny to connect directly with Rquest, you have to add one more configuration which is `TASK_API_TYPE`. This can only be either `a` (Availability), `b` (Distribution and PHEWAS) or `c` (AnalyticsGwas, AnalyticsGwasQuantitiveTrait, AnalyticsBurdenTest).
 
 ## Database [#database]
 
@@ -76,7 +75,7 @@ DATASOURCE_DB_HOST=<database host>
 USE_TRINO=
 ```
 
-If using the supplied `compose.yml` and running the database in the same stack, unless you modify the database configuration, the defaults will connect Resolve to your database.
+If using the supplied `compose.yml` and running the database in the same stack, unless you modify the database configuration, the defaults will connect Bunny to your database.
 If using a remote database, change accordingly.
 
 ## Obfuscation
@@ -106,7 +105,7 @@ ROUNDING_TARGET=#Add your rounding target
 ## Polling
 
 This is set to the number of seconds provided in the environment indicating the polling interval duration.
-By default, Resolve will make `GET` request to Task API host every 5 seconds to check for jobs.
+By default, Bunny will make `GET` request to Task API host every 5 seconds to check for jobs.
 
 ```yaml
 POLLING_INTERVAL=5
