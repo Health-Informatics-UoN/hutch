@@ -175,12 +175,33 @@ Examples:
   </tbody>
 </Table>
 
+**Configuration Section: `Database`**
+
+<Table>
+  <thead>
+    <Tr>
+      <Th>Key</Th>
+      <Th>Description</Th>
+    </Tr>
+  </thead>
+  <tbody>
+    <Tr>
+      <Td>`ApplyMigrationsOnStartup`</Td>
+      <Td>
+        Should Relay automatically apply outstanding database migrations at
+        startup? `true` / `false`. Defaults to `false`.
+      </Td>
+    </Tr>
+  </tbody>
+</Table>
+
 Examples:
 
 <Tabs items={['Environment', 'Compose', 'JSON']}>
   <Tabs.Tab>
     ```bash filename=".env"
     ConnectionStrings__Default="Server=localhost;Port=5432;Database=hutch-relay;User Id=postgres;Password=postgres"
+    Database__ApplyMigrationsOnStartup=true
     ```
 
   </Tabs.Tab>
@@ -188,6 +209,7 @@ Examples:
     ```yaml filename="compose.yml"
     environment:
       ConnectionStrings__Default: "Server=localhost;Port=5432;Database=hutch-relay;User Id=postgres;Password=postgres"
+      Database__ApplyMigrationsOnStartup: true
     ```
 
   </Tabs.Tab>
@@ -197,6 +219,9 @@ Examples:
       "ConnectionStrings": {
         "Default": "Server=localhost;Port=5432;Database=hutch-relay;User Id=postgres;Password=postgres"
       },
+      "Database": {
+        "ApplyMigrationsOnStartup": true
+      }
     }
     ```
 
