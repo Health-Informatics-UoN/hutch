@@ -1,4 +1,4 @@
-import { Callout } from "nextra/components";
+import { Callout, Tabs, Table, Td, Th, Tr, Code } from "nextra/components";
 import { Steps } from "nextra/components";
 
 # Getting started with Bunny
@@ -155,11 +155,46 @@ You won't see the results here, but if you see the messages, then it's successfu
 ## Running bunny-cli
 
 To run Bunny without Relay, the command-line interface can be used.
-This needs a file with the right JSON schema to run.
+This needs a file with the right JSON schema to run (example below).
 
-An example is:
+### How to run
 
-```json copy
+<Tabs items={['Docker', 'From Source']}>
+  <Tabs.Tab>
+    You can use the CLI from the same image as the daemon, by overriding the `entrypoint`.
+
+    You will need to have made the input file available to the docker container, for example by mounting a volume.
+
+    It is possible to pass Docker arguments to `docker run` **before** the image, and arguments to the Bunny CLI **after** the image.
+
+    Here's an example with `docker run`:
+
+    ```bash copy
+    docker run \
+    -v <path/to/rquest-query.json>:./rquest-query.json \
+    --entrypoint poetry \
+    ghcr.io/health-informatics-uon/hutch/bunny:<TAG> \
+    run bunny-cli --body ./rquest-query.json
+    ```
+
+  </Tabs.Tab>
+  <Tabs.Tab>
+    To run the CLI, navigate to `hutch-cohort-discovery/app/bunny`
+
+    Then run
+
+    ```bash copy
+    poetry run bunny-cli --body <path/to/rquest-query.json>
+    ```
+
+    This should write a result for your query to `app/bunny/output.json`
+
+  </Tabs.Tab>
+</Tabs>
+
+### Sample input files
+
+```json copy filename="availability.json"
 {
   "task_id": "job-2023-01-13-14: 20: 38-project",
   "project": "project_id",
@@ -187,13 +222,3 @@ An example is:
   "uuid": "unique_id"
 }
 ```
-
-To run the CLI, navigate to `hutch-cohort-discovery/app/bunny`
-
-Then run
-
-```bash copy
-poetry run bunny-cli --body <path/to/rquest-query.json>
-```
-
-This should write a result for your query to `app/bunny/output.json`
