@@ -1,5 +1,5 @@
 ## core.rquest_dto.cohort
-[source](https://github.com/Health-Informatics-UoN/hutch-cohort-discovery/tree/main/app/resolve/core/rquest_dto/cohort.py)
+[source](https://github.com/Health-Informatics-UoN/hutch-cohort-discovery/tree/main/app/bunny/core/rquest_dto/cohort.py)
 ### Cohort
 ```python
 class Cohort(
@@ -7,8 +7,8 @@ class Cohort(
   groups_operator: str
 )
 ```
-Represents a cohort in a [query](/resolve/core_api_ref/rquest_dto/query).
-Contains a list of [groups](/resolve/core_api_ref/rquest_dto/group), and an operator for those groups.
+Represents a cohort in a [query](/bunny/core_api_ref/rquest_dto/query).
+Contains a list of [groups](/bunny/core_api_ref/rquest_dto/group), and an operator for those groups.
 
 #### Methods
 ```python
@@ -22,6 +22,6 @@ from_dict(cls, dict_: dict):
 Builds a Cohort from a dictionary
 
 ### Relationships
-imports [BaseDto](/resolve/core_api_ref/rquest_dto/base_dto#basedto)
+imports [BaseDto](/bunny/core_api_ref/rquest_dto/base_dto#basedto)
 
-imports [Group](/resolve/core_api_ref/rquest_dto/group#group)
+imports [Group](/bunny/core_api_ref/rquest_dto/group#group)
