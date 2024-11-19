@@ -13,7 +13,7 @@ services:
       RABBITMQ_DEFAULT_PASS: password
 
   relay:
-    image: ghcr.io/health-informatics-uon/hutch/relay:20241115161006
+    image: ghcr.io/health-informatics-uon/hutch/relay:dev-latest
     restart: always
     ports:
       - 8080:8080
@@ -21,7 +21,7 @@ services:
     depends_on:
       - rabbitmq
     environment:
-      # TODO: link to docs config section
+      # Configuration Docs: https://health-informatics-uon.github.io/hutch/relay/config
       ConnectionStrings__Default: Server=db_host;Port=5432;Database=hutch-relay;User Id=postgres;Password=postgres
       RelayTaskQueue__ConnectionString: amqp://user:password@rabbitmq:5672
 
@@ -30,21 +30,3 @@ services:
       UpstreamTaskApi__CollectionId: dd52026b-5a61-4c89-b733-04ba141b3f31
       UpstreamTaskApi__Username: user
       UpstreamTaskApi__Password: password
-
-    # TODO: quickstart guidance on `host.docker.internal`    
-    extra_hosts:
-    - "host.docker.internal:host-gateway"
-
-# # TODO: move to quickstart
-#   db:
-#     image: postgres:16
-#     restart: always
-#     ports:
-#       - 5432:5432
-#     environment:
-#       POSTGRES_PASSWORD: postgres
-#     volumes: 
-#           - pgdata:/var/lib/postgresql/data:Z
-# volumes:
-#   pgdata:
-# ######
