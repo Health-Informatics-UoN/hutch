@@ -1,0 +1,39 @@
+## core.obfuscation
+[source](https://github.com/Health-Informatics-UoN/hutch-cohort-discovery/tree/main/app/bunny/core/obfuscation.py)
+
+Provides methods for obfuscation of results to protect personally identifiable information.
+
+### get_results_modifiers
+```python
+get_results_modifiers(activity_source_id: int) -> list:
+```
+
+### get_results_modifiers_from_str
+```python
+get_results_modifiers_from_str(params: str) -> list:
+```
+
+### low_number_suppression
+```python
+low_number_suppression(
+    value: Union[int, float], threshold: int = 10
+) -> Union[int, float]:
+```
+
+### rounding
+```python
+rounding(value: Union[int, float], nearest: int = 10) -> int:
+```
+
+### apply_filters
+```python
+apply_filters(value: Union[int, float], filters: list) -> Union[int, float]:
+```
+
+### apply_filters_v2
+```python
+apply_filters_v2(value: Union[int, float], filters: list) -> Union[int, float]:
+```
+
+### Relationships
+imported by [execute_query](/bunny/core_api_ref/execute_query)

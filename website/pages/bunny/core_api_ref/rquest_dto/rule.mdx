@@ -1,0 +1,28 @@
+## core.rquest_dto.rule
+[source](https://github.com/Health-Informatics-UoN/hutch-cohort-discovery/tree/main/app/bunny/core/rquest_dto/rule.py)
+### Rule
+```python
+class Rule(
+  value: Any = None,
+  type_: str = "",
+  time: Union[str, None] = None,
+  varname: str = "",
+  operator: str = "",
+)
+```
+
+#### Method
+```python
+to_dict(self) -> dict:
+```
+
+```python
+from_dict(cls, dict_: dict):
+```
+
+```python
+_parse_numeric(self, value: str) -> Tuple[Union[float, None], Union[float, None]]:
+```
+
+### Relationships
+imported by [Group](/bunny/core_api_ref/rquest_dto/group)

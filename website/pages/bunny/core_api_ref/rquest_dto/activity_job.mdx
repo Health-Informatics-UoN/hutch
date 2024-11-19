@@ -1,0 +1,28 @@
+## core.rquest_dto.activity_job
+[source](https://github.com/Health-Informatics-UoN/hutch-cohort-discovery/tree/main/app/bunny/core/rquest_dto/activity_job.py)
+### ActivityJob
+```python
+class ActivityJob(
+  type_: str,
+  job_id: str,
+  activity_source_id: int,
+  payload: dict
+)
+```
+
+inherits from [BaseDto](/bunny/core_api_ref/rquest_dto/base_dto#basedto)
+
+#### Methods
+
+```python
+to_dict() -> dict:
+```
+Returns the `ActivityJob` as a dict
+
+```python
+from_dict(dict: dict):
+```
+Builds an `ActivityJob` from a dict
+
+### Relationships
+imports [BaseDto](/bunny/core_api_ref/rquest_dto/base_dto#basedto)

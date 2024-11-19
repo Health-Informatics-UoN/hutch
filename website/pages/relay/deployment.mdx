@@ -16,10 +16,10 @@ This page will guide you through getting Relay deployed in a Virtual Machine (VM
 
 ### Get the example Compose file
 
-Download the example of Relay's Compose file by running the command:
+Download the [sample Relay Compose](https://raw.githubusercontent.com/Health-Informatics-UoN/hutch/refs/heads/main/samples/Bunny/relay.compose.yml) file by running the command:
 
 ```bash copy
-wget https://github.com/Health-Informatics-UoN/hutch/blob/main/samples/Bunny/relay.compose.yml
+wget https://raw.githubusercontent.com/Health-Informatics-UoN/hutch/refs/heads/main/samples/Bunny/relay.compose.yml
 ```
 
 ### Environment configuration
@@ -27,6 +27,50 @@ wget https://github.com/Health-Informatics-UoN/hutch/blob/main/samples/Bunny/rel
 Modify the configuration of the newly downloaded `relay.compose.yml` file as described in [Configuring Relay](/relay/config)
 
 You will need to [configure the database connection](/relay/config#database), and your [Upstream Task API host connection](/relay/config#upstream-task-api)
+
+#### Database Migrations
+
+Currently the preferred way to run migrations is to have Relay do it automatically at startup.
+
+You can opt into this behaviour with the `ApplyMigrationsOnStartup` flag in Relay's [Database Config](/relay/config#database).
+
+Alternatively you can use the `dotnet-ef` tooling to run Migrations from Relay's source.
+
+#### User and Sub Node setup
+
+Relay's job is to relay tasks from an upstream Task Api to one or more downstream "Sub Nodes".
+
+Each Sub Node requires a set of credentials (in effect a user) to communicate with Relay.
+
+You can [add a user](/relay/cli/users#add) using [Relay's CLI](/relay/cli), and when you do, Relay will create an associated Sub Node, and generate a password.
+
+The CLI will return the generated password and Sub Node Collection ID.
+
+Here's an example of adding a Relay User, when the database is running locally on the docker host machine:
+
+```bash copy
+docker run \
+--network=host \
+-e ConnectionStrings__Default="Server=localhost;Port=5432;Database=hutch-relay;User Id=postgres;Password=postgres" \
+ghcr.io/health-informatics-uon/hutch/relay:dev-latest \
+users add demo1
+```
+
+<Callout>
+We've used `docker run` to ensure we run the same version of Relay for the CLI as is running in our Compose stack.
+</Callout>
+
+#### Sub Node Bunny setup
+
+For a Sub Node's Bunny to talk to Relay, you (or someone else) will need to configure it with:
+
+- The base URL to your Relay instance (scheme, hostname and port)
+- The username and password created for them
+- The Sub Node ID (Collection ID) created for that user
+
+<Callout type="warning">
+Remember, Bunny will need network access to Relay (outbound from Bunny; inbound to Relay, on whatever ports Relay is configured to listen on).
+</Callout>
 
 ## Running Relay
 

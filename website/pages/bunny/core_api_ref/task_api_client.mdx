@@ -1,0 +1,39 @@
+## core.task_api_client
+[source](https://github.com/Health-Informatics-UoN/hutch-cohort-discovery/tree/main/app/bunny/core/task_api_client.py)
+### SupportedMethod
+```python
+SupportedMethod(Enum):
+```
+Describes the types of HTTP request made to the Task API.
+
+### TaskApiClient
+```python
+class TaskApiClient(
+  base_url: Optional[str] = None,
+  username: Optional[str] = None,
+  password: Optional[str] = None,
+)
+```
+Provides a client to the Task API defined in the environment.
+
+#### Methods
+```python
+request(
+  method: SupportedMethod,
+  url: str,
+  data: Optional[dict] = None,
+) -> Response
+```
+
+```python
+post(
+  endpoint: Optional[str] = None,
+  data: dict = dict(),
+) -> Response
+```
+
+```python
+get(
+  endpoint: Optional[str] = None,
+) -> Response
+```
