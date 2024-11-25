@@ -1,5 +1,7 @@
 import { Rabbit, Package } from "lucide-react";
 import React from "react";
+import { useRouter } from 'next/router'
+import { useConfig } from 'nextra-theme-docs'
 
 export default {
   logo: (
@@ -19,11 +21,21 @@ export default {
   project: {
     link: "https://github.com/Health-Informatics-UoN/hutch",
   },
-  head: (
-    <>
-      <link rel="icon" type="image/svg+xml" href="/hutch/images/favicon.svg" />
-    </>
-  ),
+  head() {
+    const { frontMatter } = useConfig()
+ 
+    return (
+      <>
+        <meta property="og:title" content={frontMatter.title || 'Hutch Documentation'} />
+        <meta
+          property="og:description"
+          content={frontMatter.description || 'Hutch provides tools for federated activities in secure environments.'}
+        />
+        <title>{frontMatter.title || 'Hutch Documentation'}</title>
+        <link rel="icon" type="image/svg+xml" href="/hutch/images/favicon.svg" />
+      </>
+    )
+  },
   footer: {
     content: (
       <span>
