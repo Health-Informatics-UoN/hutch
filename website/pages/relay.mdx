@@ -1,18 +1,16 @@
 # Relay
-Jobs coming from the HDR Gateway are put into a queue in Relay. [Bunny](/bunny) polls Relay for jobs, and POSTs the results when the job is completed.
 
-## Getting started
-Hutch tools are designed to be deployed together as a stack.
+Relay is an application for enabling federated networks in cohort discovery.
 
-### Prerequisites
-Docker
+- Relay is deployed in a centralised environment to create a federated network of subnodes.
+- Relay will aggregate the results from its network of subnodes.
+- Relay can request queries from any compatible upstream Task API, such as the HDR Cohort Discovery tool, or Relay itself.
+- Relay enables [obfuscation](/relay/config#results-obfuscation) of query results, to simplify data governance issues. 
+- Relay container images are available for ease of [deployment](/relay/deployment) in your environment.
 
-### Deployment
-To build the stack, run
+The code for Relay is open source, and can be found on [Github](https://github.com/Health-Informatics-UoN/hutch-cohort-discovery).
 
-```bash
-docker compose up
-```
+---
 
-This will build the component images and compose your stack.
-
+![A federated deployment of Relay and Bunny](/images/relay.png)
+_A federated deployment of Relay and multiple Bunnies_.
