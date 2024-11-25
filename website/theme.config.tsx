@@ -1,9 +1,9 @@
 import { Rabbit, Package } from "lucide-react";
 import React from "react";
-import { useRouter } from 'next/router'
 import { useConfig } from 'nextra-theme-docs'
 
 export default {
+  docsRepositoryBase: 'https://github.com/Health-Informatics-UoN/hutch/tree/main/website',
   logo: (
     <span
       style={{
