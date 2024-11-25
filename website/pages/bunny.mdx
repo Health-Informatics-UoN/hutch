@@ -8,29 +8,8 @@ Bunny is an application for requesting cohort discovery queries and executing th
 - Bunny container images are available for ease of [deployment](/bunny/deployment) in your environment.
 - Bunny can also be ran just as a query executor, through its [command line interface](/bunny/quickstart#running-bunny-cli).
 
-```mermaid
-graph RL
+---
 
-subgraph controller1 ["Data Controller (N)"];
-    direction LR
-    OMOP@{shape: cyl, label: "OMOP CDM"} -->|Result| Bunny[Bunny]
-end;
-subgraph controller2 ["Data Controller (N)"];
-    OMOP2@{shape: cyl, label: "OMOP CDM"} -->|Result| Bunny2[Bunny]
-end;
-subgraph controller3 ["Data Controller (N)"];
-    OMOP3@{shape: cyl, label: "OMOP CDM"} -->|Result| Bunny3[Bunny]
-end;
-subgraph haven ["Secure Gateway Environment"];
-    Bunny -->|Poll| Relay[Relay]
-    Bunny2 -->|Poll| Relay
-    Bunny3 -->|Poll| Relay
-end;
-Relay -->|Poll| Upstream[Task API]
+![A federated deployment of Relay and Bunny](/images/relay.png)
+_A federated deployment of Relay and multiple Bunnies_.
 
-style controller1 stroke-dasharray: 5 5,rx:10,ry:10
-style controller2 stroke-dasharray: 5 5,rx:10,ry:10
-style controller3 stroke-dasharray: 5 5,rx:10,ry:10
-style haven stroke-dasharray: 5 5,rx:10,ry:10
-
-```
