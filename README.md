@@ -5,7 +5,7 @@
 ## Hutch-Trefx 
 [Hutch-Trefx](https://github.com/Health-Informatics-UoN/hutch-trefx/tree/main) is an Executing Agent implementation that accepts jobs from a TRE Agent, executes them and records outputs and provenance, submitting the results to be approved for egress.
 
-### 🐇 [Bunny](https://github.com/Health-Informatics-UoN/hutch-bunny)
+### 🐇 [Bunny](https://github.com/Health-Informatics-UoN/hutch-bunny) ![MIT License][license-badge]
 
 | | | |
 |-|-|-|
@@ -15,7 +15,7 @@ An HDR UK Cohort Discovery Task Resolver.
 
 Fetches and resolves Availability and Distribution Queries against a PostgreSQL OMOP-CDM database.
 
-### 🔄 [Relay](https://github.com/Health-Informatics-UoN/hutch-cohort-discovery/tree/main/app/Hutch.Relay)
+### 🔄 [Relay](https://github.com/Health-Informatics-UoN/hutch-cohort-discovery/tree/main/app/Hutch.Relay) ![MIT License][license-badge]
 
 | | | |
 |-|-|-|
