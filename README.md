@@ -5,6 +5,8 @@
 ## Hutch-Trefx 
 [Hutch-Trefx](https://github.com/Health-Informatics-UoN/hutch-trefx/tree/main) is an Executing Agent implementation that accepts jobs from a TRE Agent, executes them and records outputs and provenance, submitting the results to be approved for egress.
 
+## Cohort Discovery
+
 ### 🐇 [Bunny](https://github.com/Health-Informatics-UoN/hutch-bunny) ![MIT License][license-badge]
 
 | | | |
