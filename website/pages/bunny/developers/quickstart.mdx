@@ -165,7 +165,7 @@ This needs a file with the right JSON schema to run (example below).
     -v <path/to/rquest-query.json>:./rquest-query.json \
     --entrypoint uv \
     ghcr.io/health-informatics-uon/hutch/bunny:<TAG> \
-    run bunny-cli --body ./rquest-query.json
+    run bunny --body ./rquest-query.json
     ```
 
   </Tabs.Tab>
@@ -175,7 +175,7 @@ This needs a file with the right JSON schema to run (example below).
     Then run
 
     ```bash copy
-    uv run bunny-cli --body <path/to/rquest-query.json>
+    uv run bunny --body <path/to/rquest-query.json>
     ```
 
     This should write a result for your query to `app/bunny/output.json`
