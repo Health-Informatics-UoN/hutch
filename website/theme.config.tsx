@@ -8,12 +8,9 @@ export default {
     <span
       style={{
         display: "flex",
-        color: "#0E7490",
+        color: "#10263B",
       }}
     >
-      <Rabbit style={{ marginRight: "3px" }} />
-      +
-      <Package style={{ marginRight: "5px", marginLeft: "3px" }} />=
       <strong style={{ marginRight: "5px", marginLeft: "5px" }}>Hutch</strong>
       Documentation
     </span>
