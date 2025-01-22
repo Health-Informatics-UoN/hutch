@@ -1,2 +1,91 @@
 # Quickstart
 
+The quickest way to run Bunny is to use the provided [Bunny Image](https://github.com/Health-Informatics-UoN/hutch-bunny/pkgs/container/hutch%2Fbunny) command line interface to run a query against your existing OMOP database. This way you don't need an upstream Task API to connect to yet.
+
+## Prerequisites
+
+- A OMOP CDM database server
+- Docker
+
+## Setup
+
+You'll need to set some environment variables to connect the container to the database, you can create a `.env` file with your database details:
+
+```bash copy filename=".env"
+DATASOURCE_DB_USERNAME=postgres
+DATASOURCE_DB_PASSWORD=postgres
+DATASOURCE_DB_DATABASE=postgres
+DATASOURCE_DB_DRIVERNAME=postgresql
+DATASOURCE_DB_SCHEMA=public
+DATASOURCE_DB_PORT=5432
+DATASOURCE_DB_HOST=localhost
+```
+
+See [configuration](config) for further details. 
+
+
+### Sample query file
+
+For ease, the sample query is a .json file:
+
+```json copy filename="availability.json"
+{
+  "task_id": "job-2023-01-13-14: 20: 38-project",
+  "project": "project_id",
+  "owner": "user1",
+  "cohort": {
+    "groups": [
+      {
+        "rules": [
+          {
+            "varname": "OMOP",
+            "varcat": "Person",
+            "type": "TEXT",
+            "oper": "=",
+            "value": "8507"
+          }
+        ],
+        "rules_oper": "AND"
+      }
+    ],
+    "groups_oper": "OR"
+  },
+  "collection": "collection_id",
+  "protocol_version": "v2",
+  "char_salt": "salt",
+  "uuid": "unique_id"
+}
+```
+
+## Run a query
+
+You can run the query command directly against the Container, by mounting its volume and passing the arguments.
+
+```bash copy
+docker run \
+  -v $(pwd)/availability.json:/availability.json \
+  -v $(pwd)/output.json:/output.json \
+  --env-file .env \
+  --entrypoint uv \
+  ghcr.io/health-informatics-uon/hutch/bunny:edge \
+  run bunny --body /availability.json
+```
+
+If you're running your OMOP CDM database in Docker, then you'll need to add the Bunny container to the same network to access it. You can do this by adding the `network` argument to the run command. 
+
+```bash copy
+docker run \
+  --network omop-cdm \
+  -v $(pwd)/availability.json:/availability.json \
+  -v $(pwd)/output.json:/output.json \
+  --env-file .env \
+  --entrypoint uv \
+  ghcr.io/health-informatics-uon/hutch/bunny:edge \
+  run bunny --body /availability.json
+```
+
+Your results should be available in `output.json`
+
+## Next Steps
+
+To connect your Bunny to a upstream Task API, read the [deployment](deployment) guide.
