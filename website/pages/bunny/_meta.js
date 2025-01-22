@@ -1,7 +1,7 @@
 export default {
-  quickstart: "Quickstart",
+  // quickstart: "Quickstart",
   config: "Configuration",
   deployment: "Deployment",
-  dev_setup: "Setting up a development environment",
   core_api_ref: "core API reference",
+  developers: "Developers"
 };
