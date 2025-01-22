@@ -1,82 +1,17 @@
-import { Callout, Tabs, Table, Td, Th, Tr, Code } from "nextra/components";
-import { Steps } from "nextra/components";
+# Quickstart
 
-# Getting started with Bunny
-
-This page will guide you through getting Bunny running locally.
-
-Start by cloning [the Bunny repository](https://github.com/Health-Informatics-UoN/hutch-bunny)
+The quickest way to run Bunny is to use the provided [Bunny Image](https://github.com/Health-Informatics-UoN/hutch-bunny/pkgs/container/hutch%2Fbunny) command line interface to run a query against your existing OMOP database. This way you don't need an upstream Task API to connect to yet.
 
 ## Prerequisites
 
-- Bunny runs on Python version >= 3.9 and < 3.11
-- Dependencies are managed with [poetry](https://python-poetry.org/), which needs to be installed if you run Bunny outside a container.
-- Bunny needs to query a database
-  - A remote OMOP-CDM database running
-  - Or a tarball containing a `pg_dump` of an OMOP-CDM database
+- A OMOP CDM database server
+- Docker
 
-## OMOP-CDM setup
+## Setup
 
-Before Bunny can get up and running, it needs a database to query.
-If you don't have a real OMOP-CDM, you can run a mock database.
+You'll need to set some environment variables to connect the container to the database, you can create a `.env` file with your database details:
 
-### Mock database setup
-
-<Steps>
-#### Start a containerized database
-
-The `compose.yml` in the root of the Hutch tools repository can start a database container with
-
-```bash copy
-docker compose up db
-```
-
-This will initialise a Postgres instance in the container.
-
-<Callout type="info">
-  These instructions assume you have a pre-existing OMOP CDM Postgresql database
-  and it can be called `hutch_db.tar`, for example, as below.
-</Callout>
-
-#### Copy the data
-
-Navigate to the folder containing `hutch_db.tar` and copy it into the container with:
-
-```bash copy
-docker cp hutch_db.tar hutch-bunny-dev-db-1:/
-```
-
-#### Start running bash in your container
-
-```bash copy
-docker exec -it hutch-bunny-dev-db-1 bash
-```
-
-#### Use pg_restore to load the data into the database
-
-```bash copy
-pg_restore --dbname=postgres --host=localhost --port=5432 --username=postgres --password hutch_db.tar
-```
-
-If prompted, provide "postgres" as a password
-
-You can then exit the container with `ctrl+d` or `exit`
-
-</Steps>
-
-## Environment configuration
-
-To run Bunny locally, your environment needs to have some variables configured.
-
-There are various ways to load environment variables, but a convenient way for this purpose is to use a plugin for poetry that loads environment variables from a .env file.
-
-<Steps>
-### Create a file called .env in app/bunny
-The file should contain the variables required to connect to a database and Relay.
-
-For example, if using the containerized Relay and mock database:
-
-```sh copy
+```bash copy filename=".env"
 DATASOURCE_DB_USERNAME=postgres
 DATASOURCE_DB_PASSWORD=postgres
 DATASOURCE_DB_DATABASE=postgres
@@ -84,115 +19,14 @@ DATASOURCE_DB_DRIVERNAME=postgresql
 DATASOURCE_DB_SCHEMA=public
 DATASOURCE_DB_PORT=5432
 DATASOURCE_DB_HOST=localhost
-TASK_API_BASE_URL=http://localhost:8080
-TASK_API_USERNAME=username
-TASK_API_PASSWORD=password
-LOW_NUMBER_SUPPRESSION_THRESHOLD=
-ROUNDING_TARGET=
-POLLING_INTERVAL=5
 ```
 
-If you are querying a remote database, the variables prefixed with `DATASOURCE` must be configured accordingly.
-If you use another method to set your environment variables, follow the example above.
+See [configuration](config) for further details. 
 
-### Add the plugin
 
-```bash copy
-poetry add self poetry-plugin-dotenv
-```
+### Sample query file
 
-</Steps>
-## Installing dependencies
-The first time you run Bunny outside a container, you will need to install its dependencies by running
-```bash copy
-poetry install
-```
-in `app/bunny`
-
-## Running the Docker daemon
-
-Bunny has a daemon which polls [Relay](/relay) for jobs, so needs to have a Relay instance running.
-
-<Steps>
-### Start the Relay container
-
-The compose used to start up the database also contains an implementation of Relay.
-
-```bash copy
-docker compose up relay -d
-```
-
-### Run the Bunny daemon
-
-The Bunny daemon can then be run using poetry. This will ensure the dependencies and environment variables are loaded
-
-```bash copy
-poetry run bunny-daemon
-```
-
-You should then see a message in your console like this:
-
-```bash
-INFO - 12-Nov-24 12:36:24 - Setting up database connection...
-INFO - 12-Nov-24 12:36:24 - Looking for job...
-INFO - 12-Nov-24 12:36:29 - Job received. Resolving...
-INFO - 12-Nov-24 12:36:29 - Processing query...
-INFO - 12-Nov-24 12:36:30 - Solved availability query
-INFO - 12-Nov-24 12:36:30 - Job resolved.
-INFO - 12-Nov-24 12:36:35 - Looking for job...
-INFO - 12-Nov-24 12:36:40 - Looking for job...
-INFO - 12-Nov-24 12:36:45 - Looking for job...
-```
-
-Bunny establishes a connection to your OMOP-CDM database, then polls Relay for a job.
-When it receives a job, it processes the query, queries the database, and sends the result back to Relay.
-You won't see the results here, but if you see the messages, then it's successfully contacting both the database and Relay.
-
-</Steps>
-
-<Callout emoji="🎉">Congratulations on your first Bunny query!</Callout>
-
-## Running bunny-cli
-
-To run Bunny without Relay, the command-line interface can be used.
-This needs a file with the right JSON schema to run (example below).
-
-### How to run
-
-<Tabs items={['Docker', 'From Source']}>
-  <Tabs.Tab>
-    You can use the CLI from the same image as the daemon, by overriding the `entrypoint`.
-
-    You will need to have made the input file available to the docker container, for example by mounting a volume.
-
-    It is possible to pass Docker arguments to `docker run` **before** the image, and arguments to the Bunny CLI **after** the image.
-
-    Here's an example with `docker run`:
-
-    ```bash copy
-    docker run \
-    -v <path/to/rquest-query.json>:./rquest-query.json \
-    --entrypoint poetry \
-    ghcr.io/health-informatics-uon/hutch/bunny:<TAG> \
-    run bunny-cli --body ./rquest-query.json
-    ```
-
-  </Tabs.Tab>
-  <Tabs.Tab>
-    To run the CLI, navigate to `hutch-cohort-discovery/app/bunny`
-
-    Then run
-
-    ```bash copy
-    poetry run bunny-cli --body <path/to/rquest-query.json>
-    ```
-
-    This should write a result for your query to `app/bunny/output.json`
-
-  </Tabs.Tab>
-</Tabs>
-
-### Sample input files
+For ease, the sample query is a .json file:
 
 ```json copy filename="availability.json"
 {
@@ -222,3 +56,36 @@ This needs a file with the right JSON schema to run (example below).
   "uuid": "unique_id"
 }
 ```
+
+## Run a query
+
+You can run the query command directly against the Container, by mounting its volume and passing the arguments.
+
+```bash copy
+docker run \
+  -v $(pwd)/availability.json:/availability.json \
+  -v $(pwd)/output.json:/output.json \
+  --env-file .env \
+  --entrypoint uv \
+  ghcr.io/health-informatics-uon/hutch/bunny:edge \
+  run bunny --body /availability.json
+```
+
+If you're running your OMOP CDM database in Docker, then you'll need to add the Bunny container to the same network to access it. You can do this by adding the `network` argument to the run command. 
+
+```bash copy
+docker run \
+  --network omop-cdm \
+  -v $(pwd)/availability.json:/availability.json \
+  -v $(pwd)/output.json:/output.json \
+  --env-file .env \
+  --entrypoint uv \
+  ghcr.io/health-informatics-uon/hutch/bunny:edge \
+  run bunny --body /availability.json
+```
+
+Your results should be available in `output.json`
+
+## Next Steps
+
+To connect your Bunny to a upstream Task API, read the [deployment](deployment) guide.

@@ -78,6 +78,18 @@ USE_TRINO=
 If using the supplied `compose.yml` and running the database in the same stack, unless you modify the database configuration, the defaults will connect Bunny to your database.
 If using a remote database, change accordingly.
 
+### DATASOURCE_DB_DRIVERNAME
+
+Defines the database driver to use. Currently supports PostgreSQL and SQL Server.
+
+Valid values:
+- `postgresql` -> PostgreSQL
+- `mssql` -> SQL Server
+
+```yaml
+DATASOURCE_DB_DRIVERNAME=postgres
+```
+
 ## Obfuscation
 
 Two methods of result obfuscation are provided as below. Before building your Hutch tools stack, these can be configured in `compose.yml`.

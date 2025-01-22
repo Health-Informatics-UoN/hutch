@@ -6,15 +6,10 @@ If the bunny-daemon logs messages saying that it's setting up a database connect
 To double check, you can also use the bunny-cli to generate an output JSON.
 
 ### Using the environment
-Bunny uses poetry to manage its dependencies.
+Bunny uses uv to manage its dependencies.
 To test any changes made to Bunny in development you can use either
 ```bash
-poetry run bunny-[daemon/cli]
-```
-or start a poetry shell
-```bash
-poetry shell
-bunny-[daemon/cli]
+uv run bunny-[daemon]
 ```
 
 ## Architecture
