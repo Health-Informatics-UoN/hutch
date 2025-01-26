@@ -2,7 +2,8 @@ name: hutch-bunny
 
 services:
   bunny:
-    image: ghcr.io/health-informatics-uon/hutch/bunny:dev-latest
+    # We recommend pinning to a version number for your deployment.
+    image: ghcr.io/health-informatics-uon/hutch/bunny:edge
     environment:
       - DATASOURCE_DB_USERNAME=postgres
       - DATASOURCE_DB_PASSWORD=postgres
