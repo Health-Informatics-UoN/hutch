@@ -13,17 +13,17 @@
 |-|-|-|
 | ![Python][python-badge] | [![Bunny Docker Images][docker-badge]][bunny-containers] | [![Bunny Docs][docs-badge]][bunny-docs] |
 
-An HDR UK Cohort Discovery Task Resolver.
+A Cohort Discovery Task Resolver.
 
-Fetches and resolves Availability and Distribution Queries against a PostgreSQL OMOP-CDM database.
+Fetches and resolves Availability and Distribution Queries against a PostgreSQL OMOP CDM database.
 
-### 🔄 [Relay](https://github.com/Health-Informatics-UoN/hutch-cohort-discovery/tree/main/app/Hutch.Relay) ![MIT License][license-badge]
+### 🔄 [Relay](https://github.com/Health-Informatics-UoN/hutch-relay) ![MIT License][license-badge]
 
 | | | |
 |-|-|-|
 | ![.NET][dotnet-badge] | [![Relay Docker Images][docker-badge]][relay-containers] | [![Relay Docs][docs-badge]][relay-docs] |
 
-A Federated Proxy for the HDR UK Cohort Discovery Tool's Task API.
+A Federated Proxy for a Cohort Discovery Task API.
 
 - Connects to an upstream Task API (e.g. the HDR UK Cohort Discovery Tool).
 - Fetches tasks.
@@ -38,10 +38,10 @@ Implements a subset of the Task API for the downstream nodes to interact with.
 [hutch-repo]: https://github.com/health-informatics-uon/hutch
 
 [bunny-docs]: https://health-informatics-uon.github.io/hutch/bunny
-[bunny-containers]: https://github.com/Health-Informatics-UoN/hutch-cohort-discovery/pkgs/container/hutch%2Fbunny
+[bunny-containers]: https://github.com/Health-Informatics-UoN/hutch-bunny/pkgs/container/hutch%2Fbunny
 
 [relay-docs]: https://health-informatics-uon.github.io/hutch/relay
-[relay-containers]: https://github.com/Health-Informatics-UoN/hutch-cohort-discovery/pkgs/container/hutch%2Frelay
+[relay-containers]: https://github.com/Health-Informatics-UoN/hutch-relay/pkgs/container/hutch%2Frelay
 
 [license-badge]: https://img.shields.io/github/license/health-informatics-uon/hutch-bunny.svg
 [dotnet-badge]: https://img.shields.io/badge/.NET-5C2D91?style=for-the-badge&logo=.net&logoColor=white

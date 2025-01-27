@@ -13,7 +13,8 @@ services:
       RABBITMQ_DEFAULT_PASS: password
 
   relay:
-    image: ghcr.io/health-informatics-uon/hutch/relay:dev-latest
+    # We recommend pinning to a version number for your deployment.
+    image: ghcr.io/health-informatics-uon/hutch/relay:edge
     restart: always
     ports:
       - 8080:8080
