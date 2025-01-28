@@ -62,8 +62,18 @@ Here are some examples for running the CLI via different methods:
   <Tabs.Tab>
     Running from source requires the .NET <Code><DotnetVersion /></Code> SDK.
 
+    <Callout>
+      Change Directory (`cd`) next to `Hutch.Relay.csproj`, or specify the project using `--project path/to/Hutch.Relay.csproj`.
+    </Callout>
+
     ```bash
     dotnet run [DOTNET_ARGS] -- --help
+    ```
+
+    For example, to use development appsettings and any local user secrets:
+
+    ```bash
+    dotnet run --environment Development -- --help
     ```
 
     <Callout>
