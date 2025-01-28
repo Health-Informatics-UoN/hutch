@@ -6,6 +6,7 @@ import { Callout } from "nextra/components";
 All `users` commands require a connection to a Relay database.
 
 This must be [configured](/relay/config#database) when running these commands.
+
 </Callout>
 
 ## `add`
@@ -18,3 +19,20 @@ Add a new user to the Database, generates a password, and creates a Sub Node for
 
 ### Usage Scenarios
 
+#### Add a User and Sub Node for a Bunny instance
+
+##### Command
+
+```bash copy
+users add my-bunny
+```
+
+##### Output
+
+```bash
+┌───────────┬──────────────────┬──────────────────────────────────────┐
+│ Username  │ Password         │ Collection ID                        │
+├───────────┼──────────────────┼──────────────────────────────────────┤
+│ my-bunny  │ 2WgSShhPps7plNnt │ 0194ac94-a025-7f7e-8ec1-a26f29c73bdf │
+└───────────┴──────────────────┴──────────────────────────────────────┘
+```
