@@ -57,3 +57,13 @@ When it receives a job, it processes the query, queries the database, and sends 
 You won't see the results here, but if you see the messages, then it's successfully contacting both the database and Task API Host.
 
 <Callout emoji="🎉">Congratulations on your first Bunny deployment!</Callout>
+
+## Best Practices
+
+When deploying Bunny, follow these best practices to ensure stability and consistency:
+
+- Use Tagged Versions: We tag each container image with a version number upon release. Always deploy a specific tagged version rather than latest to avoid unintended updates.
+- Check Available Versions: You can find a list of available version tags in the [container registry](https://github.com/Health-Informatics-UoN/hutch-bunny/pkgs/container/hutch%2Fbunny).
+- Environment Configuration: Ensure your deployment environment (for example database connections, API endpoints) is correctly configured via environment variables.
+- [Rolling Updates](how_to/update): If updating to a new version, consider using rolling deployments to minimise downtime.
+- Monitor and Log: Use logging and monitoring tools to track service health and quickly diagnose issues.
