@@ -1,0 +1,46 @@
+# How to Update Bunny
+
+To update Bunny to a new version, follow these steps:
+
+## 1. Check Available Versions
+Each container image is tagged with a version number upon release. You can find a list of available versions in the [container registry](https://github.com/Health-Informatics-UoN/hutch-bunny/pkgs/container/hutch%2Fbunny).
+
+## 2. Update Your `docker-compose.yml`
+Edit your `docker-compose.yml` file to use the new version tag. For example:
+
+```
+services:
+  bunny:
+    image: ghcr.io/health-informatics-uon/hutch/bunny:NEW_VERSION
+```
+Replace NEW_VERSION with the latest version tag from the registry. You can use git hashes or timestamps, but we strongly recommend version numbers as tags.
+
+For example, for version `1.0.0-alpha.2`:
+
+`image: ghcr.io/health-informatics-uon/hutch/bunny:1.0.0-alpha.2`
+
+## 3. Apply the Update
+Run the following commands to update your deployment:
+```
+docker-compose pull  # Fetch the updated image
+docker-compose up -d --remove-orphans  # Restart with the new version
+docker image prune -f  # (Optional) Remove old images to free space
+```
+
+## 4. Verify the Update
+Check that Bunny is running correctly by viewing the logs:
+
+docker-compose logs -f bunny
+If needed, restart it manually with:
+
+`docker-compose restart bunny`
+
+## 5. Roll Back If Needed
+If something goes wrong, you can roll back to a previous version:
+
+Edit `docker-compose.yml` to specify an older version tag.
+Run:
+
+`docker-compose up -d`
+
+This ensures you can revert to a stable version if necessary.
