@@ -1,0 +1,18 @@
+name: rquest-bunny
+
+services:
+  availa-bunny:
+    # We recommend pinning to a version number for your deployment.
+    image: ghcr.io/health-informatics-uon/hutch/bunny:edge
+    env_file:
+      - .env
+    environment:
+      - TASK_API_TYPE=a
+
+  distri-bunny:
+    # We recommend pinning to a version number for your deployment.
+    image: ghcr.io/health-informatics-uon/hutch/bunny:edge
+    env_file:
+      - .env
+    environment:
+      - TASK_API_TYPE=b
