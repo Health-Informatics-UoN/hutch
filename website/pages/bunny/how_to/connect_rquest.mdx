@@ -1,0 +1,111 @@
+# How to Connect Bunny to RQUEST
+
+[BC|Platforms RQUEST](https://bcRQUEST.com/) is Bunny compatible, and Bunny can retrieve, execute, and return tasks and corresponding results to it. This guide will help you connect Bunny on a virutal machine to a RQUEST instance.
+
+To support RQUEST, you'll need multiple Bunnies running to run the two different query types currently supported; availability and distribution. 
+
+As Bunny is a lightweight tool, it's simple to run multiple Bunnies in deployed environments, and using Docker Compose on a virtual machine or locally. We provide a [sample file](https://github.com/Health-Informatics-UoN/hutch/blob/main/samples/Bunny/bunny-rquest.compose.yml) for multiple Bunnies as well. 
+
+![A deployment of multiple Bunnies (a fluffle) connecting directly to RQUEST](/images/bunny.png)
+_A deployment of multiple Bunnies (a fluffle) connecting directly to RQUEST._
+
+
+## Connecting Steps
+
+### 1. Get RQUEST API Details
+
+You will need the URL for the RQUEST API, this will look something like: `https://rquest.example.com/link_connector_api` 
+
+And you will need the authentication credentials to connect with, these will be a `username`, and `password`.
+
+Both of these can be found in the supplied documentation for RQUEST. 
+
+### 2. Get a Collection ID
+
+In RQUEST you can create a new collection for Bunny, or use an existing one. 
+
+Inside the section Admin and Collections list, select the _"Info"_ of the Collection you want to connect to.
+
+Here you can see the Details of the Collection, that include the _"Collection Acronym"_, copy this as the `collection_id`.
+
+![RQUEST Collection ID](/images/RQUEST_collection.png)
+
+### 3. Run multiple Bunnies (a fluffle)
+
+As the configuration for the database and API is now shared between Bunnies, it's easiest to keep this all inside the environment variables in `.env` 
+
+[`TASK_API_TYPE`](/bunny/config#task-type)
+
+The sample Docker compose is now much simpler. 
+
+```yml copy filename="bunny-rquest.compose.yml"
+name: rquest-bunny
+
+services:
+  availa-bunny:
+    image: ghcr.io/health-informatics-uon/hutch/bunny:edge
+    env_file:
+      - .env
+    environment:
+      - TASK_API_TYPE=a
+
+  distri-bunny:
+    image: ghcr.io/health-informatics-uon/hutch/bunny:edge
+    env_file:
+      - .env
+    environment:
+      - TASK_API_TYPE=b
+```
+
+And more detailed configuration for both Bunnies is inside the `.env` file or your environment variables.
+
+```bash copy filename=".env"
+DATASOURCE_DB_USERNAME=postgres
+DATASOURCE_DB_PASSWORD=postgres
+DATASOURCE_DB_DATABASE=omop
+DATASOURCE_DB_DRIVERNAME=postgresql
+DATASOURCE_DB_SCHEMA=public
+DATASOURCE_DB_PORT=5432
+DATASOURCE_DB_HOST=localhost
+LOW_NUMBER_SUPPRESSION_THRESHOLD=5
+ROUNDING_TARGET=10
+POLLING_INTERVAL=5
+TASK_API_BASE_URL=http://rquest.example.com/link_connector_api
+TASK_API_USERNAME=changeme
+TASK_API_PASSWORD=changeme
+COLLECTION_ID=changeme
+```
+
+### 4. Update environment variables
+
+Make sure your environment variables match what you retrieved from RQUEST:
+
+```bash copy filename=".env"
+TASK_API_BASE_URL=http://rquest.example.com/link_connector_api
+TASK_API_USERNAME=#RQUEST API Username
+TASK_API_PASSWORD=#RQUEST API Password
+COLLECTION_ID=#RQUEST Collection Acronym
+```
+
+### 5. Running the Bunny Fluffle
+
+Your configuration and containers should now be correctly configured. You can now run the fluffle with:
+
+```bash copy
+docker compose -f bunny-rquest.compose.yml up -d
+````
+
+### 6. Run a Availability Query
+
+This query is handled by the `availa-bunny` service, if you create a new query against your collection, and run it. 
+
+![RQUEST Collection Query](/images/rquest_query.png)
+
+You should hopefully get a 
+
+### 7. Run a Distribution Query
+
+To populate the collection with distribution data, a Distribution query is handled by the `distri-bunny` service. 
+
+These are triggered on a scheduled basis by RQUEST, your Bunny will pick one up when it is triggered.
+
