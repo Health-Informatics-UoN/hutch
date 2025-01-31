@@ -1,4 +1,4 @@
-name: Deploy Documentation Site to GitHub Pages
+name: Check Build Documentation Site
 
 on:
   pull_request:
