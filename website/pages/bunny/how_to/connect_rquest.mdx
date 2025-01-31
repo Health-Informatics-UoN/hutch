@@ -18,7 +18,7 @@ You will need the URL for the RQUEST API, this will look something like: `https:
 
 And you will need the authentication credentials to connect with, these will be a `username`, and `password`.
 
-Both of these can be found in the supplied documentation for RQUEST. 
+How to get these can be found in your supplied documentation for RQUEST. 
 
 ### 2. Get a Collection ID
 
@@ -30,11 +30,13 @@ Here you can see the Details of the Collection, that include the _"Collection Ac
 
 ![RQUEST Collection ID](/images/RQUEST_collection.png)
 
+If you cannot access the admin section of RQUEST, contact your RQUEST administrator for these details.
+
 ### 3. Compose multiple Bunnies (a fluffle)
 
-As the configuration for the database and API is now shared between Bunnies, it's easiest to keep this all inside the environment variables in `.env` 
+As the configuration for the database and API is now shared between Bunnies, it's simplest to store this inside the environment variables in `.env` 
 
-The sample Docker compose is now much simpler, and the only difference in configuration between Bunnies is the [`TASK_API_TYPE`](/bunny/config#task-type).
+The sample Docker Compose is now much simpler, and the only difference in configuration between Bunnies is the [`TASK_API_TYPE`](/bunny/config#task-type).
 
 ```yml copy filename="bunny-rquest.compose.yml"
 name: rquest-bunny
