@@ -1,27 +1,34 @@
 import { Callout, Tabs, Table, Td, Th, Tr, Code } from "nextra/components";
 import { Steps } from "nextra/components";
 
-# Getting started with Bunny
+# Set up a developer environment
 
 This page will guide you through getting a Bunny developer environment locally.
 
 Start by cloning [the Bunny repository](https://github.com/Health-Informatics-UoN/hutch-bunny)
 
+```bash copy
+git clone https://github.com/Health-Informatics-UoN/hutch-bunny
+```
+
 ## Prerequisites
 
-- Bunny runs on Python version 3.13
-- Dependencies are managed with [uv](https://github.com/astral-sh/uv).
-- A [OMOP CDM](omop-cdm) database
+- Python 3.13
+- [uv](https://github.com/astral-sh/uv)
+- An [OMOP CDM](/omop-cdm) database
+- Upstream Task API ([Relay](/relay) or RQUEST) (optional)
 
-## Environment configuration
-
-To run Bunny locally, your environment needs to have some variables configured.
-
+## Steps
 <Steps>
-### Create a file called .env in the repository root.
+### Environment configuration
+
+To run Bunny locally, your environment needs to have variables configured.
+
+Create a `.env` file in the repository root.
+
 The file should contain the variables required to connect to a database and Task API.
 
-For example, if using the containerized Relay and local database:
+For example, if using a local Relay and local database:
 
 ```sh copy
 DATASOURCE_DB_USERNAME=postgres
@@ -39,32 +46,37 @@ ROUNDING_TARGET=
 POLLING_INTERVAL=5
 ```
 
-If you are querying a remote database, the variables prefixed with `DATASOURCE` must be configured accordingly.
-If you use another method to set your environment variables, follow the example above and [configuration](/bunny/config) documentation.
+- If you are querying a remote database, the variables prefixed with `DATASOURCE` must be configured accordingly.
+- If you are connecting to RQUEST, read the [guidance on configuration](/bunny/how-to/connect_rquest).
+- If you use another method to set your environment variables, follow the example above and [configuration](/bunny/config) documentation.
 
-</Steps>
-## Installing dependencies
-The first time you run Bunny outside a container, you will need to install its dependencies by running
+### Installing dependencies
+
+You will need to install its dependencies by running
 ```bash copy
 uv sync
 ```
 
-## Running the Docker daemon
+### Run the CLI
 
-Bunny has a daemon which polls a upstream Task API for tasks, so needs to have a Relay or RQUEST instance running.
+To run Bunny without Relay a upstream API, the command-line interface can be used.
+This needs a file with the right JSON schema to run (example below).
 
-<Steps>
-### Start the Relay container
-
-The compose used to start up the database also contains an implementation of Relay.
+To run a query from the CLI, from root run
 
 ```bash copy
-docker compose up relay -d
+uv run bunny --body tests/queries/availability.json
 ```
+
+This should write the result for your query to `output.json`
+
+<Callout emoji="🎉">Congratulations on your first Bunny query!</Callout>
+
+This workflow can be used to run queries and quickly iterate in development.
 
 ### Run the Bunny daemon
 
-The Bunny daemon can then be run using uv. This will ensure the dependencies and environment variables are loaded.
+If you are connecting to an upstream Task API, you can use the Bunny daemon to poll the tasks endpoint.
 
 ```bash copy
 uv run bunny-daemon
@@ -84,77 +96,17 @@ INFO - 12-Nov-24 12:36:40 - Looking for job...
 INFO - 12-Nov-24 12:36:45 - Looking for job...
 ```
 
-Bunny establishes a connection to your OMOP-CDM database, then polls Relay for a job.
-When it receives a job, it processes the query, queries the database, and sends the result back to Relay.
-You won't see the results here, but if you see the messages, then it's successfully contacting both the database and Relay.
+- Bunny establishes a connection to your OMOP CDM database, then polls the upstream Task API for a task.
+- When it receives a task, it processes the query, queries the database, and returns the result.
+- You won't see the results here, but if you see the messages, then it's successfully contacting both the database and API.
+
+### Running Tests
+
+To run the test suite for the repository, run:
+
+```bash copy
+uv run pytest
+```
 
 </Steps>
 
-<Callout emoji="🎉">Congratulations on your first Bunny query!</Callout>
-
-## Running bunny-cli
-
-To run Bunny without Relay, the command-line interface can be used.
-This needs a file with the right JSON schema to run (example below).
-
-### How to run
-
-<Tabs items={['Docker', 'From Source']}>
-  <Tabs.Tab>
-    You will need to have made the input file available to the docker container, for example by mounting a volume.
-
-    It is possible to pass Docker arguments to `docker run` **before** the image, and arguments to the Bunny CLI **after** the image.
-
-    Here's an example with `docker run`:
-
-    ```bash copy
-    docker run \
-    -v <path/to/rquest-query.json>:./rquest-query.json \
-    --entrypoint uv \
-    ghcr.io/health-informatics-uon/hutch/bunny:<TAG> \
-    run bunny --body ./rquest-query.json
-    ```
-
-  </Tabs.Tab>
-  <Tabs.Tab>
-    To run the CLI, from root run
-
-    ```bash copy
-    uv run bunny --body <path/to/rquest-query.json>
-    ```
-
-    This should write a result for your query to `app/bunny/output.json`
-
-  </Tabs.Tab>
-</Tabs>
-
-### Sample input files
-
-```json copy filename="availability.json"
-{
-  "task_id": "job-2023-01-13-14: 20: 38-project",
-  "project": "project_id",
-  "owner": "user1",
-  "cohort": {
-    "groups": [
-      {
-        "rules": [
-          {
-            "varname": "OMOP",
-            "varcat": "Person",
-            "type": "TEXT",
-            "oper": "=",
-            "value": "8507"
-          }
-        ],
-        "rules_oper": "AND"
-      }
-    ],
-    "groups_oper": "OR"
-  },
-  "collection": "collection_id",
-  "protocol_version": "v2",
-  "char_salt": "salt",
-  "uuid": "unique_id"
-}
-```

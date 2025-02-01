@@ -3,6 +3,6 @@ export default {
   config: "Configuration",
   deployment: "Deployment",
   how_to: "How To",
+  developers: "Developers",
   core_api_ref: "Core API reference",
-  developers: "Developers"
 };
