@@ -4,5 +4,4 @@ export default {
   deployment: "Deployment",
   how_to: "How To",
   developers: "Developers",
-  core_api_ref: "Core API reference",
 };
