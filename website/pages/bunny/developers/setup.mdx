@@ -52,23 +52,21 @@ POLLING_INTERVAL=5
 
 ### Installing dependencies
 
-You will need to install its dependencies by running
+Install the project dependencies using the following command:
 ```bash copy
 uv sync
 ```
 
 ### Run the CLI
 
-To run Bunny without Relay a upstream API, the command-line interface can be used.
-This needs a file with the right JSON schema to run (example below).
+To run Bunny without a upstream API, the command-line interface can be used. This takes a query from a file.
 
-To run a query from the CLI, from root run
-
+To execute a query using the CLI, run the following command from the project root directory:
 ```bash copy
 uv run bunny --body tests/queries/availability.json
 ```
 
-This should write the result for your query to `output.json`
+This will write the result for your query to `output.json`
 
 <Callout emoji="🎉">Congratulations on your first Bunny query!</Callout>
 
