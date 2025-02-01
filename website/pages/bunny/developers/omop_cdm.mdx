@@ -1,51 +1,95 @@
+import { Callout, Tabs, Table, Td, Th, Tr, Code } from "nextra/components";
 import { Steps } from "nextra/components";
 
-## OMOP-CDM setup
+# OMOP CDM Setup
 
-Before Bunny can get up and running, it needs a database to query.
-If you don't have a real OMOP-CDM, you can run a mock database.
+Before Bunny can run, it needs an OMOP CDM database to query.
 
-### Mock database setup
+You can find out more about the [OMOP CDM from OHDSI](https://www.ohdsi.org/data-standardization/), and [their guidance](https://github.com/OHDSI/Vocabulary-v5.0/wiki/General-Structure,-Download-and-Use) for creating one.
 
-<Steps>
-#### Start a containerized database
+We have guidance if you need to quickly build one, or have been supplied with a database backup.
 
-The `compose.yml` in the root of the Hutch tools repository can start a database container with
+<Tabs items={['Build', 'From Backup']}>
+  <Tabs.Tab>
+    ## Database Setup
+    <Steps>
 
-```bash copy
-docker compose up db
-```
+      ### Start the containers
 
-This will initialise a Postgres instance in the container.
+      The `dev.compose.yml` in the root of the Bunny repository can start a Postgres database container, and an init service `omop-lite`.
 
-<Callout type="info">
-  These instructions assume you have a pre-existing OMOP CDM Postgresql database
-  and it can be called `hutch_db.tar`, for example, as below.
-</Callout>
+      [`omop-lite`](https://github.com/Health-Informatics-UoN/omop-lite) will load a small synthetic OMOP CDM of 100 people, enough for Bunny to run queries.
 
-#### Copy the data
+      Or you can use it to load your own data files by changing the `dev.compose.yml` file.
 
-Navigate to the folder containing `hutch_db.tar` and copy it into the container with:
+      ```bash copy
+      docker compose -f dev.compose.yml up db omop-lite
+      ```
 
-```bash copy
-docker cp hutch_db.tar hutch-bunny-dev-db-1:/
-```
+      ### Configuration
 
-#### Start running bash in your container
+      You can connect to the now running OMOP CDM with the following configuration:
 
-```bash copy
-docker exec -it hutch-bunny-dev-db-1 bash
-```
+      ```bash copy filename=".env" 
+      DATASOURCE_DB_USERNAME=postgres
+      DATASOURCE_DB_PASSWORD=postgres
+      DATASOURCE_DB_DATABASE=omop
+      DATASOURCE_DB_DRIVERNAME=postgresql
+      DATASOURCE_DB_SCHEMA=cdm
+      DATASOURCE_DB_PORT=5432
+      DATASOURCE_DB_HOST=localhost
+      ```    
+    </Steps>
+    
 
-#### Use pg_restore to load the data into the database
+  </Tabs.Tab>
+  <Tabs.Tab>
+    ## Database Setup
 
-```bash copy
-pg_restore --dbname=postgres --host=localhost --port=5432 --username=postgres --password hutch_db.tar
-```
+    <Callout type="info">
+      These instructions assume you have a pre-existing OMOP CDM Postgresql database dump
+      and it can be called `hutch_db.tar`, for example, as below.
+    </Callout>
 
-If prompted, provide "postgres" as a password
+    <Steps>
+    ### Start the database container
 
-You can then exit the container with `ctrl+d` or `exit`
+    The `dev.compose.yml` in the root of the Bunny repository can start a database container with
 
-</Steps>
+    ```bash copy
+    docker compose -f dev.compose.yml up db
+    ```
+
+    This will initialise a Postgres instance in the container.
+
+    ### Copy the data
+
+    Navigate to the folder containing `hutch_db.tar` and copy it into the container with:
+
+    ```bash copy
+    docker cp hutch_db.tar hutch-bunny-dev-db-1:/
+    ```
+
+    ### Start running bash in your container
+
+    ```bash copy
+    docker exec -it hutch-bunny-dev-db-1 bash
+    ```
+
+    ### Use pg_restore to load the data into the database
+
+    ```bash copy
+    pg_restore --dbname=postgres --host=localhost --port=5432 --username=postgres --password hutch_db.tar
+    ```
+
+    If prompted, provide "postgres" as a password
+
+    You can then exit the container with `ctrl+d` or `exit`
+
+    </Steps>
+
+  </Tabs.Tab>
+</Tabs>
+
+
 
