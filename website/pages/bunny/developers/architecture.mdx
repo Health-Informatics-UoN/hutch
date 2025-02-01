@@ -1,18 +1,4 @@
-## Setting up Bunny for development
-
-To make sure you have a working version of Bunny, follow the steps in the Quickstart. {/* Add the link when the quickstart branch has been merged */}
-
-If the bunny-daemon logs messages saying that it's setting up a database connection, looking for and receiving jobs, and resolving queries, then it's working.
-To double check, you can also use the bunny-cli to generate an output JSON.
-
-### Using the environment
-Bunny uses uv to manage its dependencies.
-To test any changes made to Bunny in development you can use either
-```bash
-uv run bunny-[daemon]
-```
-
-## Architecture
+# Architecture
 
 The same core components are used by the daemon and command-line interface (CLI).
 CLI components are shown in blue, daemon components shown in green.
