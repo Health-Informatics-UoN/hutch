@@ -1,7 +1,7 @@
 import { Callout, Tabs, Table, Td, Th, Tr, Code } from "nextra/components";
 import { Steps } from "nextra/components";
 
-# Set up a developer environment
+# Set up a Developer Environment
 
 This page will guide you through getting a Bunny developer environment locally.
 
@@ -15,7 +15,7 @@ git clone https://github.com/Health-Informatics-UoN/hutch-bunny
 
 - Python 3.13
 - [uv](https://github.com/astral-sh/uv)
-- An [OMOP CDM](/omop-cdm) database
+- An [OMOP CDM](omop_cdm) database
 - Upstream Task API ([Relay](/relay) or RQUEST) (optional)
 
 ## Steps
@@ -47,7 +47,7 @@ POLLING_INTERVAL=5
 ```
 
 - If you are querying a remote database, the variables prefixed with `DATASOURCE` must be configured accordingly.
-- If you are connecting to RQUEST, read the [guidance on configuration](/bunny/how-to/connect_rquest).
+- If you are connecting to RQUEST, read the [guidance on configuration](/bunny/how_to/connect_rquest).
 - If you use another method to set your environment variables, follow the example above and [configuration](/bunny/config) documentation.
 
 ### Installing dependencies
