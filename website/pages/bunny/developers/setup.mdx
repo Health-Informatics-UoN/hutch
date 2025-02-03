@@ -1,0 +1,110 @@
+import { Callout, Tabs, Table, Td, Th, Tr, Code } from "nextra/components";
+import { Steps } from "nextra/components";
+
+# Set up a Developer Environment
+
+This page will guide you through getting a Bunny developer environment locally.
+
+Start by cloning [the Bunny repository](https://github.com/Health-Informatics-UoN/hutch-bunny)
+
+```bash copy
+git clone https://github.com/Health-Informatics-UoN/hutch-bunny
+```
+
+## Prerequisites
+
+- Python 3.13
+- [uv](https://github.com/astral-sh/uv)
+- An [OMOP CDM](omop_cdm) database
+- Upstream Task API ([Relay](/relay) or RQUEST) (optional)
+
+## Steps
+<Steps>
+### Environment configuration
+
+To run Bunny locally, your environment needs to have variables configured.
+
+Create a `.env` file in the repository root.
+
+The file should contain the variables required to connect to a database and Task API.
+
+For example, if using a local Relay and local database:
+
+```sh copy
+DATASOURCE_DB_USERNAME=postgres
+DATASOURCE_DB_PASSWORD=postgres
+DATASOURCE_DB_DATABASE=postgres
+DATASOURCE_DB_DRIVERNAME=postgresql
+DATASOURCE_DB_SCHEMA=public
+DATASOURCE_DB_PORT=5432
+DATASOURCE_DB_HOST=localhost
+TASK_API_BASE_URL=http://localhost:8080
+TASK_API_USERNAME=username
+TASK_API_PASSWORD=password
+LOW_NUMBER_SUPPRESSION_THRESHOLD=
+ROUNDING_TARGET=
+POLLING_INTERVAL=5
+```
+
+- If you are querying a remote database, the variables prefixed with `DATASOURCE` must be configured accordingly.
+- If you are connecting to RQUEST, read the [guidance on configuration](/bunny/how_to/connect_rquest).
+- If you use another method to set your environment variables, follow the example above and [configuration](/bunny/config) documentation.
+
+### Installing dependencies
+
+Install the project dependencies using the following command:
+```bash copy
+uv sync
+```
+
+### Run the CLI
+
+To run Bunny without a upstream API, the command-line interface can be used. This takes a query from a file.
+
+To execute a query using the CLI, run the following command from the project root directory:
+```bash copy
+uv run bunny --body tests/queries/availability.json
+```
+
+This will write the result for your query to `output.json`
+
+<Callout emoji="🎉">Congratulations on your first Bunny query!</Callout>
+
+This workflow can be used to run queries and quickly iterate in development.
+
+### Run the Bunny daemon
+
+If you are connecting to an upstream Task API, you can use the Bunny daemon to poll the tasks endpoint.
+
+```bash copy
+uv run bunny-daemon
+```
+
+You should then see a message in your console like this:
+
+```bash
+INFO - 12-Nov-24 12:36:24 - Setting up database connection...
+INFO - 12-Nov-24 12:36:24 - Looking for job...
+INFO - 12-Nov-24 12:36:29 - Job received. Resolving...
+INFO - 12-Nov-24 12:36:29 - Processing query...
+INFO - 12-Nov-24 12:36:30 - Solved availability query
+INFO - 12-Nov-24 12:36:30 - Job resolved.
+INFO - 12-Nov-24 12:36:35 - Looking for job...
+INFO - 12-Nov-24 12:36:40 - Looking for job...
+INFO - 12-Nov-24 12:36:45 - Looking for job...
+```
+
+- Bunny establishes a connection to your OMOP CDM database, then polls the upstream Task API for a task.
+- When it receives a task, it processes the query, queries the database, and returns the result.
+- You won't see the results here, but if you see the messages, then it's successfully contacting both the database and API.
+
+### Running Tests
+
+To run the test suite for the repository, run:
+
+```bash copy
+uv run pytest
+```
+
+</Steps>
+
