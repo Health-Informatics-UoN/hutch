@@ -1,0 +1,43 @@
+{{- if and .Values.relay.enabled .Values.relay.ingress.enabled -}}
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: {{ include "hutch.relay.fullname" . }}
+  labels:
+    {{- include "hutch.relay.labels" . | nindent 4 }}
+  {{- with .Values.relay.ingress.annotations }}
+  annotations:
+    {{- toYaml . | nindent 4 }}
+  {{- end }}
+spec:
+  {{- with .Values.relay.ingress.className }}
+  ingressClassName: {{ . }}
+  {{- end }}
+  {{- if .Values.relay.ingress.tls }}
+  tls:
+    {{- range .Values.relay.ingress.tls }}
+    - hosts:
+        {{- range .hosts }}
+        - {{ . | quote }}
+        {{- end }}
+      secretName: {{ .secretName }}
+    {{- end }}
+  {{- end }}
+  rules:
+    {{- range .Values.relay.ingress.hosts }}
+    - host: {{ .host | quote }}
+      http:
+        paths:
+          {{- range .paths }}
+          - path: {{ .path }}
+            {{- with .pathType }}
+            pathType: {{ . }}
+            {{- end }}
+            backend:
+              service:
+                name: {{ include "hutch.relay.fullname" $ }}
+                port:
+                  number: {{ $.Values.relay.service.port }}
+          {{- end }}
+    {{- end }}
+{{- end }}

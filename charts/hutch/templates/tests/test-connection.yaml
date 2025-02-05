@@ -1,0 +1,17 @@
+{{- if .Values.relay.enabled -}}
+apiVersion: v1
+kind: Pod
+metadata:
+  name: "{{ include "hutch.relay.fullname" . }}-test-connection"
+  labels:
+    {{- include "hutch.relay.labels" . | nindent 4 }}
+  annotations:
+    "helm.sh/hook": test
+spec:
+  containers:
+    - name: wget
+      image: busybox
+      command: ['wget']
+      args: ['{{ include "hutch.relay.fullname" . }}:{{ .Values.relay.service.port }}']
+  restartPolicy: Never
+{{- end -}}
