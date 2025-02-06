@@ -1,3 +1,5 @@
+import { Steps } from "nextra/components";
+
 # Quickstart
 
 The quickest way to run Bunny is to use the provided [Bunny Image](https://github.com/Health-Informatics-UoN/hutch-bunny/pkgs/container/hutch%2Fbunny) command line interface to run a query against your existing OMOP database. This way you don't need an upstream Task API to connect to yet.
@@ -9,6 +11,8 @@ The quickest way to run Bunny is to use the provided [Bunny Image](https://githu
 
 ## Setup
 
+<Steps>
+### Configuration
 You'll need to set some environment variables to connect the container to the database, you can create a `.env` file with your database details:
 
 ```bash copy filename=".env"
@@ -85,6 +89,8 @@ docker run \
 ```
 
 Your results should be available in `output.json`
+
+</Steps>
 
 ## Next Steps
 
