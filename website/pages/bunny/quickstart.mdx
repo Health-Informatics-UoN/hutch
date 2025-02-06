@@ -32,6 +32,8 @@ This will start the database, initialise it with a synthetic OMOP CDM dataset, a
 docker compose -f bunny-demo.compose.yml run --entrypoint uv bunny run bunny --body tests/queries/availability.json
 ```
 
+This will take a minute or so to download the images and start the containers.
+
 The query file is a JSON file that contains the query to run, which is a simple cohort definition, querying the `Person` table for `8507`.
 
 ```json copy filename="availability.json"
@@ -85,6 +87,20 @@ You should see output like the following:
 ```
 
 That contains the **results** of the query, which was 44. 
+
+### Clean up
+
+```bash copy
+docker compose -f bunny-demo.compose.yml down
+```
+
+This will stop the database and remove the containers.
+
+To remove the images, run:
+
+```bash copy
+docker rmi -f ghcr.io/health-informatics-uon/omop-lite:latest ghcr.io/health-informatics-uon/hutch/bunny:edge
+```
 
 </Steps>
 
