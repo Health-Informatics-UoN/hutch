@@ -5,6 +5,8 @@ import { Steps } from "nextra/components";
 
 This page will guide you through getting a Bunny developer environment locally.
 
+To make development easy as possible, we recommend using Docker to run the OMOP CDM database, and a uv Python environment to run Bunny.
+
 Start by cloning [the Bunny repository](https://github.com/Health-Informatics-UoN/hutch-bunny)
 
 ```bash copy
@@ -44,6 +46,7 @@ TASK_API_PASSWORD=password
 LOW_NUMBER_SUPPRESSION_THRESHOLD=
 ROUNDING_TARGET=
 POLLING_INTERVAL=5
+BUNNY_LOGGER_LEVEL=DEBUG
 ```
 
 - If you are querying a remote database, the variables prefixed with `DATASOURCE` must be configured accordingly.
@@ -66,11 +69,11 @@ To execute a query using the CLI, run the following command from the project roo
 uv run bunny --body tests/queries/availability.json
 ```
 
-This will write the result for your query to `output.json`
+This will write the result for your query to `output.json`, and log the result to the console.
 
 <Callout emoji="🎉">Congratulations on your first Bunny query!</Callout>
 
-This workflow can be used to run queries and quickly iterate in development.
+We recommend this workflow to run queries and quickly iterate in development.
 
 ### Run the Bunny daemon
 
@@ -80,7 +83,7 @@ If you are connecting to an upstream Task API, you can use the Bunny daemon to p
 uv run bunny-daemon
 ```
 
-You should then see a message in your console like this:
+You should then see messages in your console like this:
 
 ```bash
 INFO - 12-Nov-24 12:36:24 - Setting up database connection...
@@ -96,7 +99,11 @@ INFO - 12-Nov-24 12:36:45 - Looking for job...
 
 - Bunny establishes a connection to your OMOP CDM database, then polls the upstream Task API for a task.
 - When it receives a task, it processes the query, queries the database, and returns the result.
-- You won't see the results here, but if you see the messages, then it's successfully contacting both the database and API.
+
+<Callout emoji="🐇">
+For debugging purposes, you can run Bunny directly from the source code by executing the `bunny-daemon` script in the `src/hutch_bunny` directory. This allows you to use your IDE's debugger - we've included preconfigured debug settings for VSCode in the repository.
+</Callout>
+
 
 ### Running Tests
 
