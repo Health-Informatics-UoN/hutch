@@ -1,0 +1,71 @@
+{{- if .Values.relay.enabled -}}
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ include "hutch.relay.fullname" . }}
+  labels:
+    {{- include "hutch.relay.labels" . | nindent 4 }}
+spec:
+  {{- if not .Values.relay.autoscaling.enabled }}
+  replicas: {{ .Values.relay.replicaCount }}
+  {{- end }}
+  selector:
+    matchLabels:
+      {{- include "hutch.relay.selectorLabels" . | nindent 6 }}
+  template:
+    metadata:
+      {{- with .Values.relay.podAnnotations }}
+      annotations:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      labels:
+        {{- include "hutch.relay.labels" . | nindent 8 }}
+        {{- with .Values.relay.podLabels }}
+        {{- toYaml . | nindent 8 }}
+        {{- end }}
+    spec:
+      {{- include "hutch.relay.imagePullSecrets" . | nindent 6 }}
+      serviceAccountName: {{ include "hutch.relay.serviceAccountName" . }}
+      securityContext:
+        {{- toYaml .Values.relay.podSecurityContext | nindent 8 }}
+      containers:
+        - name: bunny
+          securityContext:
+            {{- toYaml .Values.relay.securityContext | nindent 12 }}
+          image: "{{ .Values.relay.image.repository | required "bunny.image.repository is required" }}:{{ .Values.relay.image.tag | default .Chart.AppVersion }}"
+          imagePullPolicy: {{ .Values.relay.image.pullPolicy }}
+          ports:
+            - name: http
+              containerPort: {{ .Values.relay.service.port }}
+              protocol: TCP
+            - name: other
+              containerPort: {{ .Values.relay.service.otherPort }}
+              protocol: TCP
+          livenessProbe:
+            {{- toYaml .Values.relay.livenessProbe | nindent 12 }}
+          readinessProbe:
+            {{- toYaml .Values.relay.readinessProbe | nindent 12 }}
+          resources:
+            {{- toYaml .Values.relay.resources | nindent 12 }}
+          {{- with .Values.relay.volumeMounts }}
+          volumeMounts:
+            {{- toYaml . | nindent 12 }}
+          {{- end }}
+          env: {{ include "hutch.relay.env" . | fromYamlArray | toYaml | nindent 12 }}
+      {{- with .Values.relay.volumes }}
+      volumes:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      {{- with .Values.relay.nodeSelector }}
+      nodeSelector:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      {{- with .Values.relay.affinity }}
+      affinity:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      {{- with .Values.relay.tolerations }}
+      tolerations:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+{{- end -}}

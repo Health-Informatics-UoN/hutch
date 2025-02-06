@@ -1,0 +1,64 @@
+{{- if .Values.bunny.enabled -}}
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ include "hutch.bunny.fullname" . }}
+  labels:
+    {{- include "hutch.bunny.labels" . | nindent 4 }}
+spec:
+  {{- if not .Values.bunny.autoscaling.enabled }}
+  replicas: {{ .Values.bunny.replicaCount }}
+  {{- end }}
+  selector:
+    matchLabels:
+      {{- include "hutch.bunny.selectorLabels" . | nindent 6 }}
+  template:
+    metadata:
+      {{- with .Values.bunny.podAnnotations }}
+      annotations:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      labels:
+        {{- include "hutch.bunny.labels" . | nindent 8 }}
+        {{- with .Values.bunny.podLabels }}
+        {{- toYaml . | nindent 8 }}
+        {{- end }}
+    spec:
+      {{- include "hutch.bunny.imagePullSecrets" . | nindent 6 }}
+      serviceAccountName: {{ include "hutch.bunny.serviceAccountName" . }}
+      securityContext:
+        {{- toYaml .Values.bunny.podSecurityContext | nindent 8 }}
+      containers:
+        - name: bunny
+          securityContext:
+            {{- toYaml .Values.bunny.securityContext | nindent 12 }}
+          image: "{{ .Values.bunny.image.repository | required "bunny.image.repository is required" }}:{{ .Values.bunny.image.tag | default .Chart.AppVersion }}"
+          imagePullPolicy: {{ .Values.bunny.image.pullPolicy }}
+          livenessProbe:
+            {{- toYaml .Values.bunny.livenessProbe | nindent 12 }}
+          readinessProbe:
+            {{- toYaml .Values.bunny.readinessProbe | nindent 12 }}
+          resources:
+            {{- toYaml .Values.bunny.resources | nindent 12 }}
+          {{- with .Values.bunny.volumeMounts }}
+          volumeMounts:
+            {{- toYaml . | nindent 12 }}
+          {{- end }}
+          env: {{ include "hutch.bunny.env" . | fromYamlArray | toYaml | nindent 12 }}
+      {{- with .Values.bunny.volumes }}
+      volumes:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      {{- with .Values.bunny.nodeSelector }}
+      nodeSelector:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      {{- with .Values.bunny.affinity }}
+      affinity:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      {{- with .Values.bunny.tolerations }}
+      tolerations:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+{{- end -}}

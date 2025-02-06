@@ -1,0 +1,19 @@
+apiVersion: v2
+name: hutch
+description: A Helm chart to deploy Hutch (relay and bunny) application and tooling on Kubernetes
+type: application
+version: 0.1.0
+appVersion: "0.0.1"
+
+dependencies:
+  - name: common
+    version: 2.x.x
+    repository: oci://registry-1.docker.io/bitnamicharts
+  - name: rabbitmq
+    version: 14.x.x
+    condition: rabbitmq.enabled
+    repository: oci://registry-1.docker.io/bitnamicharts
+  - name: postgresql
+    version: 15.x.x
+    condition: postgresql.enabled
+    repository: oci://registry-1.docker.io/bitnamicharts
