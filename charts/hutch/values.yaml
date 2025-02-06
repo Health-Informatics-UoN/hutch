@@ -1,0 +1,375 @@
+# Default values for hutch.
+# This is a YAML-formatted file.
+# Declare variables to be passed into your templates.
+
+global:
+  # This is for the global secretes for pulling an image from a private repository more information can be found here: https://kubernetes.io/docs/tasks/configure-pod-container/pull-image-private-registry/
+  imagePullSecrets: []
+
+bunny:
+  # Enables the bunny templates
+  enabled: true
+
+  # OMOP data source database credentials
+  db:
+    auth:
+      # The username for the OMOP database
+      username: "postgres"
+      # The password for the OMOP database
+      password: ""
+      # The key of an existing secret to load the credentials from.
+      existingSecretName: ""
+      # The key in the existing secret for the username
+      existingSecretUsernameKey: "username"
+      # The key in the existing secret for the password
+      existingSecretPasswordKey: "password"
+    # The host of the OMOP database
+    host: ""
+    # The port for the OMOP database
+    port: 5432
+    # The driver for the OMOP database
+    driverName: "postgresql"
+    # The database name for the OMOP data
+    dbName: "postgres"
+    # The schema in the database for the OMOP data
+    schema: public
+
+  taskApi:
+    basicAuth:
+      # The basic auth username to connect to the Task API
+      username: "username"
+      # The basic auth password to connect to the Task API
+      password: "password"
+      # The name of an existing secret to load the credentials from.
+      existingSecretName: ""
+      # The key in the existing secret for the username
+      existingSecretUsernameKey: "username"
+      # The key in the existing secret for the password
+      existingSecretPasswordKey: "password"
+    # The base url of the Task API
+    baseUrl: ""
+    # The local collection id in relay to use (this is the username of the relay user you have added for this bunny instance)
+    collectionId: "username"
+
+  # The additional environment variables to apply to the bunny container.
+  extraEnvVars:
+    []
+    # - name: LOW_NUMBER_SUPPRESSION_THRESHOLD
+    #   value: '0'
+    # - name: ROUNDING_TARGET
+    #   value: '0'
+    # - name: POLLING_INTERVAL
+    #   value: 5
+    # - name: TASK_API_TYPE
+    #   value: ''
+
+  # This will set the replicaset count more information can be found here: https://kubernetes.io/docs/concepts/workloads/controllers/replicaset/
+  replicaCount: 1
+
+  # This sets the container image more information can be found here: https://kubernetes.io/docs/concepts/containers/images/
+  image:
+    # The container repository.
+    repository: ghcr.io/health-informatics-uon/hutch/bunny
+    # This sets the pull policy for images.
+    pullPolicy: IfNotPresent
+    # Overrides the image tag whose default is the chart appVersion.
+    tag: sha-87598d1
+
+  # This is for the secretes for pulling an image from a private repository more information can be found here: https://kubernetes.io/docs/tasks/configure-pod-container/pull-image-private-registry/
+  imagePullSecrets: []
+  # This is to override the chart name.
+  nameOverride: ""
+  fullnameOverride: ""
+
+  # This section builds out the service account more information can be found here: https://kubernetes.io/docs/concepts/security/service-accounts/
+  serviceAccount:
+    # Specifies whether a service account should be created
+    create: true
+    # Automatically mount a ServiceAccount's API credentials?
+    automount: true
+    # Annotations to add to the service account
+    annotations: {}
+    # The name of the service account to use.
+    # If not set and create is true, a name is generated using the fullname template
+    name: ""
+
+  # This is for setting Kubernetes Annotations to a Pod.
+  # For more information checkout: https://kubernetes.io/docs/concepts/overview/working-with-objects/annotations/
+  podAnnotations: {}
+  # This is for setting Kubernetes Labels to a Pod.
+  # For more information checkout: https://kubernetes.io/docs/concepts/overview/working-with-objects/labels/
+  podLabels: {}
+
+  podSecurityContext:
+    {}
+    # fsGroup: 2000
+
+  securityContext:
+    {}
+    # capabilities:
+    #   drop:
+    #   - ALL
+    # readOnlyRootFilesystem: true
+    # runAsNonRoot: true
+    # runAsUser: 1000
+
+  resources:
+    {}
+    # We usually recommend not to specify default resources and to leave this as a conscious
+    # choice for the user. This also increases chances charts run on environments with little
+    # resources, such as Minikube. If you do want to specify resources, uncomment the following
+    # lines, adjust them as necessary, and remove the curly braces after 'resources:'.
+    # limits:
+    #   cpu: 100m
+    #   memory: 128Mi
+    # requests:
+    #   cpu: 100m
+    #   memory: 128Mi
+
+  # This is to setup the liveness and readiness probes more information can be found here: https://kubernetes.io/docs/tasks/configure-pod-container/configure-liveness-readiness-startup-probes/
+  # Currently there are no liveness probes implemented in the Bunny application
+  livenessProbe:
+    null
+    # exec:
+    #   command:
+    #   - sh
+    #   - -c
+    #   - 'echo "Implement a livesness probe"'
+  # Currently there are no readiness probes implemented in the Bunny application
+  readinessProbe:
+    null
+    # exec:
+    #   command:
+    #   - sh
+    #   - -c
+    #   - 'echo "Implement a readiness probe"'
+  # This section is for setting up autoscaling more information can be found here: https://kubernetes.io/docs/concepts/workloads/autoscaling/
+  autoscaling:
+    enabled: false
+    minReplicas: 1
+    maxReplicas: 100
+    targetCPUUtilizationPercentage: 80
+    # targetMemoryUtilizationPercentage: 80
+
+  # Additional volumes on the output Deployment definition.
+  volumes: []
+  # - name: foo
+  #   secret:
+  #     secretName: mysecret
+  #     optional: false
+
+  # Additional volumeMounts on the output Deployment definition.
+  volumeMounts: []
+  # - name: foo
+  #   mountPath: "/etc/foo"
+  #   readOnly: true
+
+  nodeSelector: {}
+
+  tolerations: []
+
+  affinity: {}
+
+# The configuration for the relay resources
+relay:
+  # Enables the relay templates
+  enabled: true
+
+  # The PostgreSQL database connection parameters
+  db:
+    auth:
+      # The username for the PostgreSQL database connection
+      username: ""
+      # The password for the PostgreSQL database connection
+      password: ""
+      # An existing secret in kubernetes containing the postgresql db connection string Relay dotnet application
+      existingSecretName: ""
+      # The key in the existing kubernetes secret to get the connection string from
+      existingSecretDbConnectionStringKey: "db_connection_string"
+    # The host for the PostgreSQL database connection
+    host: ""
+    # The port for the PostgreSQL database connection
+    port: 5432
+    # The database name for the PostgreSQL connection
+    dbName: postgres
+
+  # The rabbitmq connection parameters
+  queue:
+    auth:
+      # The username for the rabbitmq connection
+      username: ""
+      # The password for the rabbitmq connection
+      password: ""
+      # The key in the existing kubernetes secret to get the connection string from
+      existingSecretName: ""
+      # The key in the existing kubernetes secret to get the connection string from
+      existingSecretRabbitMqConnectionStringKey: "rabbitmq_connection_string"
+    # The host for the rabbitmq connection
+    host: ""
+    # The port for the rabbitmq connection
+    port: 5672
+
+  # The upstream task API connection parameters
+  upstreamTaskApi:
+    basicAuth:
+      # The basic auth username for the upstream Task API
+      username: ""
+      # The basic auth password for the upstream Task API
+      password: ""
+      # The key of an existing secret to load the basic auth credentials from.
+      existingSecretName: ""
+      # The key in the existing secret for the basic auth username
+      existingSecretUsernameKey: "username"
+      # The key in the existing secret for the basic auth password
+      existingSecretPasswordKey: "password"
+    # The base URL for the upstream task api
+    baseUrl: ""
+    # The collection ID to connect with
+    connectionId: ""
+
+  # The additional environment variables to apply to the relay container.
+  extraEnvVars: []
+
+  # This will set the replicaset count more information can be found here: https://kubernetes.io/docs/concepts/workloads/controllers/replicaset/
+  replicaCount: 1
+
+  # This sets the container image more information can be found here: https://kubernetes.io/docs/concepts/containers/images/
+  image:
+    # The container repository. You will need to build and deploy the container to your own registry for now, and update this value
+    repository: ghcr.io/health-informatics-uon/hutch/relay
+    # This sets the pull policy for images.
+    pullPolicy: IfNotPresent
+    # Overrides the image tag whose default is the chart appVersion.
+    tag: sha-40caf3b
+
+  # This is for the secretes for pulling an image from a private repository more information can be found here: https://kubernetes.io/docs/tasks/configure-pod-container/pull-image-private-registry/
+  imagePullSecrets: []
+  # This is to override the chart name.
+  nameOverride: ""
+  fullnameOverride: ""
+
+  # This section builds out the service account more information can be found here: https://kubernetes.io/docs/concepts/security/service-accounts/
+  serviceAccount:
+    # Specifies whether a service account should be created
+    create: true
+    # Automatically mount a ServiceAccount's API credentials?
+    automount: true
+    # Annotations to add to the service account
+    annotations: {}
+    # The name of the service account to use.
+    # If not set and create is true, a name is generated using the fullname template
+    name: ""
+
+  # This is for setting Kubernetes Annotations to a Pod.
+  # For more information checkout: https://kubernetes.io/docs/concepts/overview/working-with-objects/annotations/
+  podAnnotations: {}
+  # This is for setting Kubernetes Labels to a Pod.
+  # For more information checkout: https://kubernetes.io/docs/concepts/overview/working-with-objects/labels/
+  podLabels: {}
+
+  podSecurityContext:
+    {}
+    # fsGroup: 2000
+
+  securityContext:
+    {}
+    # capabilities:
+    #   drop:
+    #   - ALL
+    # readOnlyRootFilesystem: true
+    # runAsNonRoot: true
+    # runAsUser: 1000
+
+  # This is for setting up a service more information can be found here: https://kubernetes.io/docs/concepts/services-networking/service/
+  service:
+    # This sets the service type more information can be found here: https://kubernetes.io/docs/concepts/services-networking/service/#publishing-services-service-types
+    type: ClusterIP
+    # This sets the ports more information can be found here: https://kubernetes.io/docs/concepts/services-networking/service/#field-spec-ports
+    port: 8080
+    otherPort: 8081
+
+  # This block is for setting up the ingress for more information can be found here: https://kubernetes.io/docs/concepts/services-networking/ingress/
+  ingress:
+    enabled: false
+    className: ""
+    annotations:
+      {}
+      # kubernetes.io/ingress.class: nginx
+      # kubernetes.io/tls-acme: "true"
+    hosts:
+      []
+      # - host: chart-example.local
+      #   paths:
+      #     - path: /
+      #       pathType: ImplementationSpecific
+    tls: []
+    #  - secretName: chart-example-tls
+    #    hosts:
+    #      - chart-example.local
+
+  resources:
+    {}
+    # We usually recommend not to specify default resources and to leave this as a conscious
+    # choice for the user. This also increases chances charts run on environments with little
+    # resources, such as Minikube. If you do want to specify resources, uncomment the following
+    # lines, adjust them as necessary, and remove the curly braces after 'resources:'.
+    # limits:
+    #   cpu: 100m
+    #   memory: 128Mi
+    # requests:
+    #   cpu: 100m
+    #   memory: 128Mi
+
+  # This is to setup the liveness and readiness probes more information can be found here: https://kubernetes.io/docs/tasks/configure-pod-container/configure-liveness-readiness-startup-probes/
+  # Currently there are no livesness probes implemented in the Relay application
+  livenessProbe:
+    null
+    # httpGet:
+    #   path: /
+    #   port: http
+  # Currently there are no readiness probes implemented in the Relay application
+  readinessProbe:
+    null
+    # httpGet:
+    #   path: /
+    #   port: http
+
+  # This section is for setting up autoscaling more information can be found here: https://kubernetes.io/docs/concepts/workloads/autoscaling/
+  autoscaling:
+    enabled: false
+    minReplicas: 1
+    maxReplicas: 100
+    targetCPUUtilizationPercentage: 80
+    # targetMemoryUtilizationPercentage: 80
+
+  # Additional volumes on the output Deployment definition.
+  volumes: []
+  # - name: foo
+  #   secret:
+  #     secretName: mysecret
+  #     optional: false
+
+  # Additional volumeMounts on the output Deployment definition.
+  volumeMounts: []
+  # - name: foo
+  #   mountPath: "/etc/foo"
+  #   readOnly: true
+
+  nodeSelector: {}
+
+  tolerations: []
+
+  affinity: {}
+
+# Values to supply to the Bitnami RabbitMQ dependency chart. See there documentation for what values can be applied
+rabbitmq:
+  # Enables the rabbitmq templates if you are not bringing your own rabbitmq instance
+  enabled: true
+
+# Values to supply to the Bitnami PostgreSQL dependency chart. See there documentation for what values can be applied
+postgresql:
+  # Enables the rabbitmq templates if you are not bringing your own rabbitmq instance
+  enabled: true
+
+# Any additional resources can be deployed
+extraDeploy: {}

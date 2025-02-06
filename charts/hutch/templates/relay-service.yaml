@@ -1,0 +1,21 @@
+{{- if .Values.relay.enabled -}}
+apiVersion: v1
+kind: Service
+metadata:
+  name: {{ include "hutch.relay.fullname" . }}
+  labels:
+    {{- include "hutch.relay.labels" . | nindent 4 }}
+spec:
+  type: {{ .Values.relay.service.type }}
+  ports:
+    - port: {{ .Values.relay.service.port }}
+      targetPort: http
+      protocol: TCP
+      name: http
+    - port: {{ .Values.relay.service.otherPort }}
+      targetPort: other
+      protocol: TCP
+      name: other
+  selector:
+    {{- include "hutch.relay.selectorLabels" . | nindent 4 }}
+{{- end -}}

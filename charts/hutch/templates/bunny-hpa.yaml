@@ -1,0 +1,32 @@
+{{- if and .Values.bunny.enabled .Values.bunny.autoscaling.enabled }}
+apiVersion: autoscaling/v2
+kind: HorizontalPodAutoscaler
+metadata:
+  name: {{ include "hutch.bunny.fullname" . }}
+  labels:
+    {{- include "hutch.bunny.labels" . | nindent 4 }}
+spec:
+  scaleTargetRef:
+    apiVersion: apps/v1
+    kind: Deployment
+    name: {{ include "hutch.bunny.fullname" . }}
+  minReplicas: {{ .Values.bunny.autoscaling.minReplicas }}
+  maxReplicas: {{ .Values.bunny.autoscaling.maxReplicas }}
+  metrics:
+    {{- if .Values.bunny.autoscaling.targetCPUUtilizationPercentage }}
+    - type: Resource
+      resource:
+        name: cpu
+        target:
+          type: Utilization
+          averageUtilization: {{ .Values.bunny.autoscaling.targetCPUUtilizationPercentage }}
+    {{- end }}
+    {{- if .Values.bunny.autoscaling.targetMemoryUtilizationPercentage }}
+    - type: Resource
+      resource:
+        name: memory
+        target:
+          type: Utilization
+          averageUtilization: {{ .Values.bunny.autoscaling.targetMemoryUtilizationPercentage }}
+    {{- end }}
+{{- end }}

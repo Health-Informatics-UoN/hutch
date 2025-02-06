@@ -1,0 +1,32 @@
+{{- if and .Values.relay.enabled .Values.relay.autoscaling.enabled }}
+apiVersion: autoscaling/v2
+kind: HorizontalPodAutoscaler
+metadata:
+  name: {{ include "hutch.relay.fullname" . }}
+  labels:
+    {{- include "hutch.relay.labels" . | nindent 4 }}
+spec:
+  scaleTargetRef:
+    apiVersion: apps/v1
+    kind: Deployment
+    name: {{ include "hutch.relay.fullname" . }}
+  minReplicas: {{ .Values.relay.autoscaling.minReplicas }}
+  maxReplicas: {{ .Values.relay.autoscaling.maxReplicas }}
+  metrics:
+    {{- if .Values.relay.autoscaling.targetCPUUtilizationPercentage }}
+    - type: Resource
+      resource:
+        name: cpu
+        target:
+          type: Utilization
+          averageUtilization: {{ .Values.relay.autoscaling.targetCPUUtilizationPercentage }}
+    {{- end }}
+    {{- if .Values.relay.autoscaling.targetMemoryUtilizationPercentage }}
+    - type: Resource
+      resource:
+        name: memory
+        target:
+          type: Utilization
+          averageUtilization: {{ .Values.relay.autoscaling.targetMemoryUtilizationPercentage }}
+    {{- end }}
+{{- end }}
