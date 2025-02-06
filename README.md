@@ -1,6 +1,13 @@
-![Hutch][hutch-logo]
-
-**Hutch** is part of an application stack for **Federated Activities**, such as Analytics, Data Discovery or Machine Learning.
+<p align="center">
+  <picture>
+    <img alt="Hutch Logo" src="https://raw.githubusercontent.com/Health-Informatics-UoN/hutch/refs/heads/main/website/public/images/hutch-logo-colour.svg" width="280"/>
+  </picture>
+</p>
+<div align="center">
+  <strong>
+  Hutch is a toolset for Federated Activities, such as Analytics, Data Discovery, or Machine Learning.
+  </strong>
+</div>
 
 ## Hutch-TREFX
 
@@ -35,8 +42,7 @@ A Federated Proxy for a Cohort Discovery Task API.
 - Queues them for one or more downstream sub nodes (e.g. Bunny instances).
 - Accepts task results from the downstream nodes.
 - Submits aggregate results to the upstream Task API.
-
-Implements a subset of the Task API for the downstream nodes to interact with.
+- Implements a subset of the Task API for the downstream nodes to interact with.
 
 [hutch-logo]: https://raw.githubusercontent.com/HDRUK/hutch/main/assets/Hutch%20splash%20bg.svg
 [roadmap]: https://github.com/orgs/Health-Informatics-UoN/projects/22/views/1
