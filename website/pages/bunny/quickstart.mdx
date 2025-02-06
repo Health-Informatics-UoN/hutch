@@ -1,36 +1,40 @@
 import { Steps } from "nextra/components";
+import { Callout } from "nextra/components";
 
 # Quickstart
 
-The quickest way to run Bunny is to use the provided [Bunny Image](https://github.com/Health-Informatics-UoN/hutch-bunny/pkgs/container/hutch%2Fbunny) command line interface to run a query against your existing OMOP database. This way you don't need an upstream Task API to connect to yet.
+The easiest way to run Bunny is by using the provided [Bunny Image](https://github.com/Health-Informatics-UoN/hutch-bunny/pkgs/container/hutch%2Fbunny) command line interface to query an OMOP CDM database, without needing an upstream Task API.
+
+This guide will help you quickly set up a local OMOP CDM database and run a query against it.
 
 ## Prerequisites
 
-- A [OMOP CDM](developers/omop_cdm) database
 - Docker
 
-## Setup
+## Run a query
 
 <Steps>
-### Configuration
-You'll need to set some environment variables to connect the container to the database, you can create a `.env` file with your database details:
+### Get the Demo Compose file
 
-```bash copy filename=".env"
-DATASOURCE_DB_USERNAME=postgres
-DATASOURCE_DB_PASSWORD=postgres
-DATASOURCE_DB_DATABASE=postgres
-DATASOURCE_DB_DRIVERNAME=postgresql
-DATASOURCE_DB_SCHEMA=public
-DATASOURCE_DB_PORT=5432
-DATASOURCE_DB_HOST=localhost
+Download the [sample Bunny Demo Compose](https://raw.githubusercontent.com/Health-Informatics-UoN/hutch/refs/heads/main/samples/Bunny/bunny-demo.compose.yml) file by running the command:
+
+```bash copy
+curl -O https://raw.githubusercontent.com/Health-Informatics-UoN/hutch/refs/heads/main/samples/Bunny/bunny-demo.compose.yml
 ```
 
-See [configuration](config) for further details. 
+Or manually saving it to a file `bunny-demo.compose.yml`
 
+### Run the Compose file
 
-### Sample query file
+This will start the database, initialise it with a synthetic OMOP CDM dataset, and run a query against it.
 
-For ease, the sample query is a .json file:
+```bash copy
+docker compose -f bunny-demo.compose.yml run --entrypoint uv bunny run bunny --body tests/queries/availability.json
+```
+
+This will take a minute or so to download the images and start the containers.
+
+The query file is a JSON file that contains the query to run, which is a simple cohort definition, querying the `Person` table for `8507`.
 
 ```json copy filename="availability.json"
 {
@@ -61,34 +65,42 @@ For ease, the sample query is a .json file:
 }
 ```
 
-## Run a query
+<Callout emoji="🎉">Congratulations on your first Bunny query!</Callout>
 
-You can run the query command directly against the Container, by mounting its volume and passing the arguments.
+### View the results
 
-```bash copy
-docker run \
-  -v $(pwd)/availability.json:/availability.json \
-  -v $(pwd)/output.json:/output.json \
-  --env-file .env \
-  --entrypoint uv \
-  ghcr.io/health-informatics-uon/hutch/bunny:edge \
-  run bunny --body /availability.json
+You should see output like the following:
+
+```json
+{
+  "status": "ok",
+  "protocolVersion": "v2",
+  "uuid": "unique_id",
+  "queryResult": {
+    "count": 44,
+    "datasetCount": 0,
+    "files": []
+  },
+  "message": "",
+  "collection_id": "collection_id"
+}
 ```
 
-If you're running your OMOP CDM database in Docker, then you'll need to add the Bunny container to the same network to access it. You can do this by adding the `network` argument to the run command. 
+That contains the **results** of the query, which was 44. 
+
+### Clean up
 
 ```bash copy
-docker run \
-  --network omop-cdm \
-  -v $(pwd)/availability.json:/availability.json \
-  -v $(pwd)/output.json:/output.json \
-  --env-file .env \
-  --entrypoint uv \
-  ghcr.io/health-informatics-uon/hutch/bunny:edge \
-  run bunny --body /availability.json
+docker compose -f bunny-demo.compose.yml down
 ```
 
-Your results should be available in `output.json`
+This will stop the database and remove the containers.
+
+To remove the images, run:
+
+```bash copy
+docker rmi -f ghcr.io/health-informatics-uon/omop-lite:latest ghcr.io/health-informatics-uon/hutch/bunny:edge
+```
 
 </Steps>
 
