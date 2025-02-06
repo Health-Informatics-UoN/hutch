@@ -6,7 +6,7 @@ This Helm chart deploys the [Hutch Relay](https://github.com/Health-Informatics-
 
 ### Local development
 
-You can deploy all the components in the same cluster. You will need the connection details of the upstream Task API to are connecting the Relay instance to.
+You can deploy all the components in the same cluster. You will need the connection details of the upstream Task API that Relay will connect to.
 
 First you need to deploy relay and the dependencies, so set the `bunny.enabled` to `false`. You can use this yaml file, changing the necessary credentials:
 
@@ -113,9 +113,9 @@ bunny:
     - name: COLLECTION_ID
       value: CHANGEME
     - name: LOW_NUMBER_SUPPRESSION_THRESHOLD
-      value: 'CHANGEME'
+      value: "CHANGEME"
     - name: ROUNDING_TARGET
-      value: 'CHANGEME'
+      value: "CHANGEME"
   taskApi:
     basicAuth:
       # Username is created in the Relay instance when creating a user.
@@ -229,4 +229,3 @@ relay:
           - path: /
             pathType: Prefix
 ```
-
