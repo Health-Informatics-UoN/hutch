@@ -1,4 +1,6 @@
 export default {
-  quickstart: "Quickstart",
-  dev_setup: "Setting up a development environment",
+  setup: "Development environment",
+  omop_cdm: "OMOP CDM",
+  architecture: "Architecture",
+  core_api_ref: "Core API reference",
 };
