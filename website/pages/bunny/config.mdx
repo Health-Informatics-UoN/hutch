@@ -100,15 +100,21 @@ applied first, then Rounding.
 
 ### Low Number Suppression
 
-There's a data disclosure risk if low numbers are reported for a given query, so if the `LOW_NUMBER_SUPPRESSION_THRESHOLD` is provided, low number suppression will be applied to results, such that any result with a count below a given threshold will not be revealed.
+There's a data disclosure risk if low numbers are reported for a given query.
 
+Therefore, low number suppression defaults to ON with a value of 10 such that any result with a count below 10 will return 0.
+
+You can override this default by setting the `LOW_NUMBER_SUPPRESSION_THRESHOLD` value. To switch OFF set to 0.
 ```yaml
 LOW_NUMBER_SUPPRESSION_THRESHOLD=#Add your threshold here
 ```
 
 ### Rounding
+There's a data disclosure risk if raw results are returned.
 
-If the `ROUNDING_TARGET` is provided, results can be rounded to the nearest _n_
+Therefore, rounding defaults to ON with a value of 10 such that results are returned to the nearest 10.
+
+You can override the default by setting `ROUNDING_TARGET` and can switch OFF by setting it to 0.
 
 ```yaml
 ROUNDING_TARGET=#Add your rounding target
