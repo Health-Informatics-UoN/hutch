@@ -35,7 +35,7 @@ export default {
           }
         />
         <title>{frontMatter.title || "Hutch Documentation"}</title>
-        <link rel="icon" type="image/svg+xml" href="/images/favicon.svg" />
+        <link rel="icon" type="image/svg+xml" href="/icons/favicon.ico" />
       </>
     );
   },
