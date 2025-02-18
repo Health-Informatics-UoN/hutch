@@ -29,7 +29,7 @@ Or manually saving it to a file `bunny-demo.compose.yml`
 This will start the database, initialise it with a synthetic OMOP CDM dataset, and run a query against it.
 
 ```bash copy
-docker compose -f bunny-demo.compose.yml run bunny bunny --body tests/queries/availability.json
+docker compose -f bunny-demo.compose.yml run bunny bunny --body tests/queries/availability/availability.json
 ```
 
 This will take a minute or so to download the images and start the containers.
