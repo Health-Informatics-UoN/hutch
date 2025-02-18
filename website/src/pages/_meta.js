@@ -1,6 +1,6 @@
 export default {
-  index: "Hutch Tools",
+  documentation: "Hutch Tools",
   contributing: "Contributing",
   relay: "Relay",
-  bunny: "Bunny"
-}
+  bunny: "Bunny",
+};
