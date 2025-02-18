@@ -71,9 +71,9 @@ A Federated Proxy for a Cohort Discovery Task API.
 [trefx-tests-badge]: https://github.com/Health-Informatics-UoN/hutch-trefx/actions/workflows/build.HutchAgent.yml/badge.svg
 
 [license-badge]: https://img.shields.io/github/license/health-informatics-uon/hutch-bunny.svg
-[dotnet-badge]: https://img.shields.io/badge/.NET-5C2D91?style=flat&logo=.net&logoColor=white
-[python-badge]: https://img.shields.io/badge/Python-3776AB?style=flat&logo=python&logoColor=white
-[docker-badge]: https://img.shields.io/badge/docker-%230db7ed.svg?style=flat&logo=docker&logoColor=white
-[docs-badge]: https://img.shields.io/badge/docs-black?style=flat&labelColor=%23222
-[roadmap-badge]: https://img.shields.io/badge/roadmap-blue?style=flat&labelColor=%230066cc
-[github-badge]: https://img.shields.io/badge/github-black?style=flat&logo=github&logoColor=white
+[dotnet-badge]: https://img.shields.io/badge/.NET-5C2D91?style=flat-square&logo=.net&logoColor=white
+[python-badge]: https://img.shields.io/badge/Python-3776AB?style=flat-square&logo=python&logoColor=white
+[docker-badge]: https://img.shields.io/badge/docker-%230db7ed.svg?style=flat-square&logo=docker&logoColor=white
+[docs-badge]: https://img.shields.io/badge/docs-black?style=flat-square&labelColor=%23222
+[roadmap-badge]: https://img.shields.io/badge/roadmap-blue?style=flat-square&labelColor=%230066cc
+[github-badge]: https://img.shields.io/badge/github-black?style=flat-square&logo=github&logoColor=white
