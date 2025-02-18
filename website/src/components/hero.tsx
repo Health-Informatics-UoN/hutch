@@ -1,7 +1,9 @@
 import { ArrowRight } from "lucide-react";
 import { Roboto } from "next/font/google";
+
+import { cn } from "../lib/utils";
 import { ShimmerButton } from "./shimmer-button";
-import { cn } from "@/lib/utils";
+import Link from "next/link";
 
 const font = Roboto({ weight: "400", subsets: ["latin"] });
 export const Hero = () => {
@@ -21,10 +23,7 @@ export const Hero = () => {
             Your secure gateway to OMOP cohort discovery
           </h1>
           <div className="mt-16 flex items-center justify-center gap-x-6">
-            <a
-              href="https://health-informatics-uon.github.io/hutch/bunny"
-              target="_blank"
-            >
+            <Link href="/bunny">
               <ShimmerButton className="shadow-2xl flex">
                 <span
                   className={cn(
@@ -35,7 +34,7 @@ export const Hero = () => {
                   Explore Docs Today! <ArrowRight className="opacity-85" />
                 </span>
               </ShimmerButton>
-            </a>
+            </Link>
           </div>
         </div>
       </div>

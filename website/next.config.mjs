@@ -1,21 +1,20 @@
-import nextra from 'nextra'
- 
-/**
- * @type {import('next').NextConfig}
- */
+/** @type {import('next').NextConfig} */
+import nextra from "nextra";
+
 const nextConfig = {
-  basePath: "/hutch",
-  assetPrefix: "/hutch",
-  output: 'export',
+  reactStrictMode: true,
   images: {
-    unoptimized: true // mandatory, otherwise won't export
-  }
-  // Optional: Change the output directory `out` -> `dist`
-  // distDir: "build"
-}
+    unoptimized: true,
+  },
+  distDir: "out",
+  output: "export",
+  basePath: "",
+  assetPrefix: "",
+};
+
 const withNextra = nextra({
-  theme: 'nextra-theme-docs',
-  themeConfig: './theme.config.tsx'
-})
- 
-export default withNextra(nextConfig)
+  theme: "nextra-theme-docs",
+  themeConfig: "./theme.config.tsx",
+});
+
+export default withNextra(nextConfig);
