@@ -36,3 +36,216 @@ users add my-bunny
 │ my-bunny  │ 2WgSShhPps7plNnt │ 0194ac94-a025-7f7e-8ec1-a26f29c73bdf │
 └───────────┴──────────────────┴──────────────────────────────────────┘
 ```
+
+
+## `reset-password`
+
+Generate a new password for an existing user.
+
+### Command
+
+- `reset-password <USERNAME>` : Generate a new password for the User with the specified username
+
+### Usage Scenarios
+
+#### Add a User and Sub Node for a Bunny instance
+
+##### Command
+
+```bash copy
+users reset-password my-bunny
+```
+
+##### Output
+
+```bash
+┌───────────┬──────────────────┐
+│ Username  │ Password         │
+├───────────┼──────────────────┤
+│ my-bunny  │ 2WgSShhPps7plNnt │
+└───────────┴──────────────────┘
+```
+
+
+## `list`
+
+List all usernames in the Database.
+
+### Command
+
+- `list` : List all usernames in the database
+
+### Usage Scenarios
+
+#### List all usernames in the database
+
+##### Command
+
+```bash copy
+users list
+```
+
+##### Output
+
+```bash
+╭─Users─────────╮
+│ my-bunny      │
+│ my-sub-relay  │
+│ another-bunny │
+╰───────────────╯
+```
+
+
+## `list-subnodes`
+
+List all subnodes associated with a username in the Database.
+
+### Command
+
+- `list-subnodes <USERNAME>` : List all subnodes associated with a username in the Database
+
+### Usage Scenarios
+
+#### List all subnodes associated with a username in the Database
+
+##### Command
+
+```bash copy
+users list-subnodes my-bunny
+```
+
+##### Output
+
+```bash
+╭─SubNodes for User: my-bunny──────────╮
+│ 01954c60-8d3f-7816-b81a-f270f44bc79b │
+╰──────────────────────────────────────╯
+```
+
+
+## `add-subnode`
+
+Create a new subnode associated with an existing user.
+
+### Command
+
+- `add-subnode <USERNAME> [OPTIONS...]` : Create a new subnode associated with an existing user
+
+#### Options
+
+- `--yes`, `-y`: Automatically skip the final confirmation, responding with `y`.
+
+### Usage Scenarios
+
+#### Create a new subnode associated with an existing user
+
+##### Command
+
+```bash copy
+users add-subnode my-bunny
+```
+
+##### Output
+
+```bash
+── Summary ──────────────────────────────────────────
+Selected user: my-bunny
+A new subnode will be created for this user.
+Do you want to proceed? [y/n] (n): y
+── Results ──────────────────────────────────────────
+╭──────────┬──────────────────────────────────────╮
+│ Username │ New Collection ID                    │
+├──────────┼──────────────────────────────────────┤
+│ my-bunny │ 01954d72-4e35-7ade-a727-63d5e113e901 │
+╰──────────┴──────────────────────────────────────╯
+```
+
+## `remove-subnodes`
+
+Remove one or more subnodes associated with an existing user.
+
+### Command
+
+- `remove-subnode <USERNAME> [<SUBNODE IDS>...] [OPTIONS...]` : Remove one or more subnodes associated with an existing user
+
+#### Options
+
+- `--yes`, `-y`: Automatically skip the final confirmation, responding with `y`.
+- `--all`: Remove ALL subnodes associated with the user, instead of specifying IDs.
+- `--empty-user <keep|remove>`: explicitly specify whether to `keep` or `remove` a User who has had all their subnodes removed. If omitted, the cli will prompt interactively in the case of an empty user.
+
+### Usage Scenarios
+
+#### Remove a single subnode from a User with more than one subnode.
+
+##### Command
+
+```bash copy
+users remove-subnodes my-bunny 01954d72-4e35-7ade-a727-63d5e113e901
+```
+
+##### Output
+
+```bash
+── Summary ───────────────────────────────
+Selected user: my-bunny
+╭─SubNodes to remove───────────────────╮
+│ 01954d72-4e35-7ade-a727-63d5e113e901 │
+╰──────────────────────────────────────╯
+Do you want to proceed? [y/n] (n): y
+── Results ───────────────────────────────
+╭─Removed SubNodes for User: my-bunny──╮
+│ 01954d72-4e35-7ade-a727-63d5e113e901 │
+╰──────────────────────────────────────╯
+```
+
+#### Remove two subnodes from a User with only two subnodes, but keep the user afterwards
+
+##### Command
+
+```bash copy
+users remove-subnodes my-bunny -y --empty-user keep 01954c60-8d3f-7816-b81a-f270f44bc79b 01954d7b-dadf-77a3-9e78-0d83dd3f4c6e
+```
+
+Note that the options need to go before the list of subnode IDs, otherwise the CLI can't differentiate between what is a cli argument and what is intended to be a subnode ID.
+
+##### Output
+
+```bash
+── Summary ──────────────────────────────
+Selected user: my-bunny
+╭─SubNodes to remove───────────────────╮
+│ 01954d7b-dadf-77a3-9e78-0d83dd3f4c6e │
+│ 01954c60-8d3f-7816-b81a-f270f44bc79b │
+╰──────────────────────────────────────╯
+The Empty User will not be removed
+── Results ──────────────────────────────
+╭─Removed SubNodes for User: my-bunny──╮
+│ 01954d7b-dadf-77a3-9e78-0d83dd3f4c6e │
+│ 01954c60-8d3f-7816-b81a-f270f44bc79b │
+╰──────────────────────────────────────╯
+ℹ The Empty User was not removed.
+```
+
+#### Delete all subnodes and the associated user
+
+<Callout type="info">
+Note that this can also be used to delete an empty user with no sub nodes.
+</Callout>
+
+##### Command
+
+```bash copy
+users remove-subnodes my-bunny --all --empty-user remove -y
+```
+
+##### Output
+
+```bash
+── Summary ──────────────────────────────
+Selected user: my-bunny
+ALL SubNodes will be removed
+The Empty User will be removed
+── Results ──────────────────────────────
+ℹ The Empty User was removed.
+```
