@@ -1,0 +1,86 @@
+import {
+  Cards,
+  Callout,
+  Tabs,
+  Table,
+  Td,
+  Th,
+  Tr,
+  Code,
+} from "nextra/components";
+
+# Global Options
+
+There are some options which can always be passed to the CLI, because they apply to all (or almost all) commands.
+
+Commands will use them as relevant.
+
+## `--environment`
+ 
+Overrides the **Application Environment**.
+
+### Aliases
+
+- `--environment`
+- `-e`
+
+### Effects
+
+The **Application Environment** can affect various things about how the app behaves.
+
+The app will attempt to load configuration values from `appsettings.<Environment>.json` if it exists.
+
+<Callout emoji="🧑🏾‍💻">
+The `Development` environment opts the app into certain additional behaviours:
+
+- .NET User Secrets will be loaded if present
+- Sometimes additional logging or exception behaviours are enabled in Development environments.
+</Callout>
+
+### Default value
+
+The default value may be affected by how the app is run.
+
+It is read by default from the environment variable `DOTNET__Environment`.
+
+If no value is provided by Environment Variables, then the following defaults apply:
+
+<Tabs items={["Binary (.NET, Native)", "From Source (IDE, `dotnet run`)" ]}>
+  <Tabs.Tab>
+    
+Running from a binary (native executable or the `dotnet` runtime, e.g. `dotnet Hutch.Relay.dll`) will use the value `Production`.
+  </Tabs.Tab>
+  
+  <Tabs.Tab>
+    - Running from source with `dotnet run` will use the value `Development` unless overridden in `launchsettings.json`.
+    - Running from an IDE will use the value `Development` unless overridden in `launchsettings.json`
+  </Tabs.Tab>
+
+</Tabs>
+
+### Usage examples
+
+`--environment <VALUE>`
+
+- `--environment Testing`
+  - will set the Environment Name to `Testing`.
+  - Development behaviours will not be used
+  - User Secrets will not be loaded.
+  - If an `appsettings.Testing.json` file is present, configuration will be loaded from it
+
+## `--connection-string`
+ 
+Overrides the Connection String for the Relay Database.
+
+This takes precedence over any value read from any other configuration source.
+
+### Usage examples
+
+`--connection-string <VALUE>`
+
+- `dotnet run -- <COMMAND> --connection-string Server=Testing`
+    - Ordinarily `dotnet run` uses the `Development Environment` and therefore will read the default Connection String from:
+        - `appsettings.Development.json` first
+        - Environment Variables (including the launch profile in `launchsettings.json`)
+        - .NET User Secrets, if set
+    - but the `--connection-string` option instead overrides the Connection String value with the one specified on the command line.
