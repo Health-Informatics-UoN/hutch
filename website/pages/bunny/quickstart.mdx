@@ -24,15 +24,17 @@ curl -O https://raw.githubusercontent.com/Health-Informatics-UoN/hutch/refs/head
 
 Or manually saving it to a file `bunny-demo.compose.yml`
 
-### Run the Compose file
+### Get the Demo Availability Query
 
-This will start the database, initialise it with a synthetic OMOP CDM dataset, and run a query against it.
+Download the [sample Availability Query](https://raw.githubusercontent.com/Health-Informatics-UoN/hutch-bunny/refs/heads/main/tests/queries/availability/availability.json)
+
+For simplicity, ensure the file is next to the Compose file from Step 1.
 
 ```bash copy
-docker compose -f bunny-demo.compose.yml run bunny bunny --body tests/queries/availability/availability.json
+curl -O https://raw.githubusercontent.com/Health-Informatics-UoN/hutch-bunny/refs/heads/main/tests/queries/availability/availability.json
 ```
 
-This will take a minute or so to download the images and start the containers.
+Or manually saving it to a file `availability.json`
 
 The query file is a JSON file that contains the query to run, which is a simple cohort definition, querying the `Person` table for `8507`.
 
@@ -64,6 +66,26 @@ The query file is a JSON file that contains the query to run, which is a simple 
   "uuid": "unique_id"
 }
 ```
+
+<Callout emoji="👍">
+You can also provide your own Availability Query to run via the Bunny CLI.
+</Callout>
+
+### Run the Compose file
+
+This will start the database, initialise it with a synthetic OMOP CDM dataset, and run a query against it.
+
+Note that we also need to bind mount a docker volume so the Bunny container can access the input query.
+
+```bash copy
+docker compose -f bunny-demo.compose.yml \
+run \
+-v "$(pwd)"/availability.json:/var/queries/availability.json:ro \
+bunny bunny \
+--body /var/queries/availability.json
+```
+
+This will take a minute or so to download the images and start the containers.
 
 <Callout emoji="🎉">Congratulations on your first Bunny query!</Callout>
 
