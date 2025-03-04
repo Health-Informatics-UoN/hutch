@@ -1,4 +1,14 @@
-import { Callout, Tabs, Table, Td, Th, Tr, Code } from "nextra/components";
+import {
+  Cards,
+  Callout,
+  Tabs,
+  Table,
+  Td,
+  Th,
+  Tr,
+  Code,
+} from "nextra/components";
+import { Globe } from "lucide-react";
 import { DotnetVersion } from "../../components/magic-numbers";
 
 # Overview
@@ -42,22 +52,21 @@ Here are some examples for running the CLI via different methods:
     ```
   </Tabs.Tab>
 
-  <Tabs.Tab>
-    <Tabs items={["Windows", "Linux / macOS"]}>
-      <Tabs.Tab>
-      ```bash
-      Hutch.Relay.exe --help
-      ```
-      
-      </Tabs.Tab>
-      <Tabs.Tab>
-      ```bash
-      ./Hutch.Relay --help
-      ```
-      
-      </Tabs.Tab>
-    </Tabs>
-  </Tabs.Tab>
+{" "}
+<Tabs.Tab>
+  <Tabs items={["Windows", "Linux / macOS"]}>
+    <Tabs.Tab>
+    ```bash
+    Hutch.Relay.exe --help
+    ```
+    </Tabs.Tab>
+    <Tabs.Tab>
+    ```bash
+    ./Hutch.Relay --help
+    ```
+    </Tabs.Tab>
+  </Tabs>
+</Tabs.Tab>
 
   <Tabs.Tab>
     Running from source requires the .NET <Code><DotnetVersion /></Code> SDK.
@@ -91,4 +100,10 @@ The CLI outlines grouped areas of commands, as noted below. They have their own 
 
 ## Global Options
 
-`//TODO: When implemented // -c | --connection-string <CONNECTION-STRING>`
+<Cards>
+  <Cards.Card
+    title="Global Options"
+    icon={<Globe />}
+    href="cli/global-options"
+  />
+</Cards>
