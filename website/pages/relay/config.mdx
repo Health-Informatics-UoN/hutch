@@ -202,7 +202,7 @@ Examples:
 
 Examples:
 
-<Tabs items={['Environment', 'Compose', 'JSON']}>
+<Tabs items={['Environment', 'Compose', 'JSON', 'Command Line']}>
   <Tabs.Tab>
     ```bash filename=".env" copy
     ConnectionStrings__Default="Server=localhost;Port=5432;Database=hutch-relay;User Id=postgres;Password=postgres"
@@ -230,6 +230,13 @@ Examples:
     }
     ```
 
+  </Tabs.Tab>
+  <Tabs.Tab>
+    Any Relay CLI command that connects to the database can have its connection string specified with the [`--connection-string` option](/relay/cli/global-options#--connection-string)
+
+    ```bash copy
+    --connection-string "Server=localhost;Port=5432;Database=hutch-relay;User Id=postgres;Password=postgres"
+    ```
   </Tabs.Tab>
 </Tabs>
 
