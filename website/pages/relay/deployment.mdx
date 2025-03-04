@@ -1,11 +1,15 @@
-import { Callout } from "nextra/components";
+import { Callout, Tabs } from "nextra/components";
 import { Steps } from "nextra/components";
 
 # Relay Deployment
 
 This page will guide you through getting Relay deployed in a Virtual Machine (VM).
 
-<Callout emoji="🐇">We provide a [container registry](https://github.com/Health-Informatics-UoN/hutch-bunny/pkgs/container/hutch%2Frelay) for ease of deployment.</Callout>
+<Callout emoji="🐇">
+  We provide a [container
+  registry](https://github.com/Health-Informatics-UoN/hutch-bunny/pkgs/container/hutch%2Frelay)
+  for ease of deployment.
+</Callout>
 
 ## Prerequisites
 
@@ -32,11 +36,39 @@ You will need to [configure the database connection](/relay/config#database), an
 
 #### Database Migrations
 
-Currently the preferred way to run migrations is to have Relay do it automatically at startup.
+You can choose to run migrations for Relay's Database either on demand (via the CLI, e.g. in a CI/CD process) or automatically (on startup of the Web App).
 
-You can opt into this behaviour with the `ApplyMigrationsOnStartup` flag in Relay's [Database Config](/relay/config#database).
+If you are working from source, you may wish to use the developer tooling.
 
-Alternatively you can use the `dotnet-ef` tooling to run Migrations from Relay's source.
+<Tabs items={["Automatically", "Relay CLI", "Developer tooling"]}>
+  <Tabs.Tab>
+  You can opt into this behaviour with the `ApplyMigrationsOnStartup` flag in Relay's [Database Config](/relay/config#database).
+  </Tabs.Tab>
+  <Tabs.Tab>
+  You can run migrations on demand from the Relay CLI, using the [`database update` command](/relay/cli/database#update).
+
+  Here's an example of running migrations, when the database is running locally on the docker host machine:
+
+  ```bash copy
+  docker run \
+  --network=host \
+  -e ConnectionStrings__Default="Server=localhost;Port=5432;Database=hutch-relay;User Id=postgres;Password=postgres" \
+  ghcr.io/health-informatics-uon/hutch/relay:dev-latest \
+  database update
+  ```
+
+  <Callout>
+  We've used `docker run` to ensure we run the same version of Relay for the CLI as is running in our Compose stack.
+  </Callout>
+  </Tabs.Tab>
+
+  <Tabs.Tab>
+  When working from source, you should use the Entity Framework Core tooling to run migrations (and otherwise manage them) as normal.
+
+  1. `dotnet tool restore` in the root of the Relay repository to restore the correct version of the tooling locally
+  2. `dotnet ef database update` (or any other `dotnet-ef` commands as desired)
+  </Tabs.Tab>
+</Tabs>
 
 #### User and Sub Node setup
 
@@ -59,7 +91,8 @@ users add demo1
 ```
 
 <Callout>
-We've used `docker run` to ensure we run the same version of Relay for the CLI as is running in our Compose stack.
+  We've used `docker run` to ensure we run the same version of Relay for the CLI
+  as is running in our Compose stack.
 </Callout>
 
 #### Sub Node Bunny setup
@@ -71,7 +104,8 @@ For a Sub Node's Bunny to talk to Relay, you (or someone else) will need to conf
 - The Sub Node ID (Collection ID) created for that user
 
 <Callout type="warning">
-Remember, Bunny will need network access to Relay (outbound from Bunny; inbound to Relay, on whatever ports Relay is configured to listen on).
+  Remember, Bunny will need network access to Relay (outbound from Bunny;
+  inbound to Relay, on whatever ports Relay is configured to listen on).
 </Callout>
 
 ## Running Relay

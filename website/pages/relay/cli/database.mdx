@@ -11,4 +11,35 @@ This must be [configured](/relay/config#database) when running these commands.
 
 ## `update`
 
-`// TODO: Documentation to come`
+Update the Relay Database to the latest migration.
+
+This command uses the Relay binary to run database migrations on the configured Relay Database.
+
+<Callout type="warning">
+This command will only update the database structure to the latest migration for this release.
+
+More complicated migration scenarios (such as rollbacks to specific versions) should be performed with the Entity Framework Core tooling.
+
+It is expected the Production need for this will be extremely rare.
+</Callout>
+
+### Command
+
+- `update` : Update the Relay Database to the latest migration
+
+### Usage Scenarios
+
+#### Update the Relay Database to the latest migration
+
+##### Command
+
+```bash copy
+database update
+```
+
+##### Output
+
+```bash
+── Update Database ──────────────
+The Relay Database is up to date!
+```
