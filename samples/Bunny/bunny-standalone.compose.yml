@@ -12,7 +12,7 @@ services:
       - DATASOURCE_DB_SCHEMA=public
       - DATASOURCE_DB_PORT=5432
       - DATASOURCE_DB_HOST=db_host
-      - TASK_API_BASE_URL=task_api_host
+      - TASK_API_BASE_URL=<task_api_host>/link_connector_api
       - TASK_API_USERNAME=username
       - TASK_API_PASSWORD=password
       - LOW_NUMBER_SUPPRESSION_THRESHOLD=5
