@@ -68,10 +68,11 @@ DATASOURCE_DB_USERNAME=<username>
 DATASOURCE_DB_PASSWORD=<password>
 DATASOURCE_DB_DATABASE=<database name - ignored if using Trino>
 DATASOURCE_DB_DRIVERNAME=<driver name - ignored if using Trino>
+DATASOURCE_DB_CATALOG=<Trino catalog name - ignored if not using Trino>
 DATASOURCE_DB_SCHEMA=<database schema name>
 DATASOURCE_DB_PORT=<port served by database>
 DATASOURCE_DB_HOST=<database host>
-USE_TRINO=
+DATASOURCE_USE_TRINO=
 ```
 
 If using the supplied `compose.yml` and running the database in the same stack, unless you modify the database configuration, the defaults will connect Bunny to your database.
@@ -86,7 +87,7 @@ Valid values:
 - `mssql` -> SQL Server
 
 ```yaml
-DATASOURCE_DB_DRIVERNAME=postgres
+DATASOURCE_DB_DRIVERNAME=postgresql
 ```
 
 ## Obfuscation
