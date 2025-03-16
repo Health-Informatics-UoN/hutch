@@ -4,40 +4,41 @@
 This document outlines the security considerations, infrastructure requirements, and trust model for deploying and running Bunny within an network. 
 It provides clarity on the container images used, connectivity concerns, and best practices for deployment.
 
-Bunny is deployed in your environment and requires infrastructure access to your OMOP CDM database, using username/password authentication.
-Bunny runs as a containerised service and can be deployed within a private subnet for isolation.
-To connect to RQUEST, two Bunny containers are required.
-
-Outbound-only traffic:
-Bunny makes only outgoing requests over HTTPS (port 443).
-Outbound access is restricted to the RQUEST API (it does not require open internet access).
-No incoming requests are required into your environment.
-
-Data security: Bunny executes only pre-validated queries, meaning no arbitrary SQL can be run.
-Obfuscation support: Configurable low-number suppression and rounding help safeguard sensitive data.
-Authentication: Requests to RQUEST are secured using Basic Auth, as per RQUEST API requirements.
-Secrets management: All credentials (database, RQUEST auth) are managed through environment variables and can be stored in a secrets service (for example Azure Key Vault).
-	
 ## 2.	Container Security
-- Bunny container image trust and provenance
+Container images are built using GitHub Actions, ensuring a repeatable and transparent build process. 
+Each image is deployed to the Github container registry and pinned to specific workflow commit hashes, 
+preventing unauthorised modifications and ensuring that only verified builds are used. 
+The base image and dependencies are reviewed for security updates,
+and images can be rebuilt from source to increase trust if required.
+We recommend pinning your Bunny container to a specific tagged version for stability.
 
+Whilst we appreciate contributions from our community, all code contributions must pass a comprehensive set of unit, integration, and end to end tests. 
+Contributions are then reviewed by the University of Nottingham Health Informatics developer team, before they are approved and merged into the codebase.
 
-- Image verification and reproducibility
+For vulnerability reporting, Bunny has a [security policy](https://github.com/Health-Informatics-UoN/hutch-bunny/security) in place
 
 ## 3.	Infrastructure Security
-- Deployment environments (Test vs. Production)
+Bunny is deployed in your environment and requires infrastructure access to your OMOP CDM database.
+Bunny runs as a containerised service and can be deployed within a private subnet for isolation.
+No incoming requests are required into your environment.
+Bunny makes only outgoing requests over HTTPS (port 443).
 - Network configuration and firewall rules
 - Encryption and secure storage
 
 ## 4.	Authentication & Access Control
-- Credential management and secrets handling
-- Database authentication methods
+Secrets management: All credentials and secrets (database, RQUEST auth) are managed through environment variables and can be stored in a secrets service (for example Azure Key Vault).
+Db auth
+Upstream / RQUEST is basic auth
+Authentication: Requests to RQUEST are secured using Basic Auth, as per RQUEST API requirements.
 
 ## 5.	Connectivity & Data Flow
+Outbound access is restricted to the RQUEST API (it does not require open internet access).
 - Outbound connections to HDR UK
 - Firewall configuration and network trust model
 
 ## 6.	Data Security & Compliance
+Data security: Bunny executes only pre-validated queries, meaning no arbitrary SQL can be run.
+Obfuscation support: Configurable low-number suppression and rounding help safeguard sensitive data.
 - Handling of synthetic vs. real data
 - Data classification and retention policies
 
