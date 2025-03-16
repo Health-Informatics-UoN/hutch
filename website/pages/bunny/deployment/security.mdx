@@ -1,0 +1,50 @@
+# Security Documentation
+
+## 1. Introduction
+This document outlines the security considerations, infrastructure requirements, and trust model for deploying and running Bunny within an network. 
+It provides clarity on the container images used, connectivity concerns, and best practices for deployment.
+
+Bunny is deployed in your environment and requires infrastructure access to your OMOP CDM database, using username/password authentication.
+Bunny runs as a containerised service and can be deployed within a private subnet for isolation.
+To connect to RQUEST, two Bunny containers are required.
+
+Outbound-only traffic:
+Bunny makes only outgoing requests over HTTPS (port 443).
+Outbound access is restricted to the RQUEST API (it does not require open internet access).
+No incoming requests are required into your environment.
+
+Data security: Bunny executes only pre-validated queries, meaning no arbitrary SQL can be run.
+Obfuscation support: Configurable low-number suppression and rounding help safeguard sensitive data.
+Authentication: Requests to RQUEST are secured using Basic Auth, as per RQUEST API requirements.
+Secrets management: All credentials (database, RQUEST auth) are managed through environment variables and can be stored in a secrets service (for example Azure Key Vault).
+	
+## 2.	Container Security
+- Bunny container image trust and provenance
+
+
+- Image verification and reproducibility
+
+## 3.	Infrastructure Security
+- Deployment environments (Test vs. Production)
+- Network configuration and firewall rules
+- Encryption and secure storage
+
+## 4.	Authentication & Access Control
+- Credential management and secrets handling
+- Database authentication methods
+
+## 5.	Connectivity & Data Flow
+- Outbound connections to HDR UK
+- Firewall configuration and network trust model
+
+## 6.	Data Security & Compliance
+- Handling of synthetic vs. real data
+- Data classification and retention policies
+
+## 7.	Penetration Testing & Risk Assessment
+- Security testing requirements
+- Risk mitigation strategies
+
+## 8.	Approval & Governance
+- Steps for production approval
+- Trust-building measures (e.g., self-built images, audits)
