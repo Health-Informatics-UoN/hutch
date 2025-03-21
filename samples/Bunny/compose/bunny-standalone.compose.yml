@@ -7,7 +7,7 @@ services:
     environment:
       - DATASOURCE_DB_USERNAME=postgres
       - DATASOURCE_DB_PASSWORD=postgres
-      - DATASOURCE_DB_DATABASE=postgres
+      - DATASOURCE_DB_DATABASE=omop
       - DATASOURCE_DB_DRIVERNAME=postgresql
       - DATASOURCE_DB_SCHEMA=public
       - DATASOURCE_DB_PORT=5432

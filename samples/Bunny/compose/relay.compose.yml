@@ -23,7 +23,7 @@ services:
       - rabbitmq
     environment:
       # Configuration Docs: https://health-informatics-uon.github.io/hutch/relay/config
-      ConnectionStrings__Default: Server=db_host;Port=5432;Database=hutch-relay;User Id=postgres;Password=postgres
+      ConnectionStrings__Default: Server=db_host;Port=5432;Database=hutch_relay;User Id=postgres;Password=postgres
       RelayTaskQueue__ConnectionString: amqp://user:password@rabbitmq:5672
 
       # Connection settings for the Task API to relay tasks from (e.g. BC|RQuest, Hutch Relay...)
