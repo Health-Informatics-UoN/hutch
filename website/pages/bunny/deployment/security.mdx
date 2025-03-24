@@ -2,63 +2,47 @@
 
 ## 1. Introduction
 This document outlines the security considerations, infrastructure requirements, and trust model for deploying and running Bunny within an network. 
-It provides clarity on the container images used, connectivity concerns, and best practices for deployment.
+It provides clarity on the container images, connectivity, and best practices for deployment.
 
 ## 2.	Container Security
-Bunny should be deployed using container images to ensure consistency and security. 
+- Bunny should be deployed using container images to ensure consistency and security. 
 
 ### Container Image Build Process
-Container images are built using GitHub Actions, which provides a repeatable and transparent build process. 
-Each dependency from the build process is pinned to a git hash for security.
-This automation ensures that each build is consistent and can be traced back to its source code and build instructions.
+- Container images are built using GitHub Actions, using a repeatable and transparent build process. 
+- Each dependency from the build process is pinned to a git hash for security.
+- This automation ensures that each build is consistent and can be traced back to its source code and build instructions.
 
 ### Deployment to GitHub Container Registry
-Each image is deployed to the GitHub container registry. The images are pinned to specific workflow commit hashes, which prevents unauthorized modifications and ensures that only verified builds are used. 
-This pinning mechanism adds an extra layer of security by ensuring that the exact version of the code that was reviewed and tested is the one being deployed.
+- Each image is deployed to the GitHub container registry. 
+- The images are pinned to specific workflow commit hashes, which prevents unauthorized modifications and ensures that only verified builds are used. 
+- This pinning mechanism adds security by ensuring that the exact version of the code that was reviewed and tested is the one being deployed.
 
 ### Security Reviews and Updates
-The base image and all dependencies are reviewed for security updates. This proactive approach helps in identifying and mitigating potential vulnerabilities.
+- The base image and all dependencies are reviewed for security updates.
+- All code contributions must pass a comprehensive set of unit, integration, and end to end tests. 
+- Contributions are reviewed by the University of Nottingham Health Informatics developer team, before they are approved and merged into the codebase.
+- Code scanning using GitHub's CodeQL analysis is enabled on the repository and contributions to automatically identify potential security vulnerabilities and coding issues.
+- For vulnerability reporting, Bunny has a [security policy](https://github.com/Health-Informatics-UoN/hutch-bunny/security) in place.
 
 ### Version Pinning for Stability
-We recommend pinning your Bunny container to a specific tagged version for stability. 
-Using tagged versions ensures that you are deploying a known, tested version of the software, which helps in maintaining a stable and predictable environment. 
-You can find a list of available version tags in the [container registry](https://github.com/Health-Informatics-UoN/hutch-bunny/pkgs/container/hutch%2Fbunny).
-
-
-# not sure where to put this
-Whilst we appreciate contributions from our community, all code contributions must pass a comprehensive set of unit, integration, and end to end tests. 
-Contributions are then reviewed by the University of Nottingham Health Informatics developer team, before they are approved and merged into the codebase.
-Code scanning / ql
-For vulnerability reporting, Bunny has a [security policy](https://github.com/Health-Informatics-UoN/hutch-bunny/security) in place
+- We recommend pinning deployed Bunny containers to a specific tagged version for stability. 
+- Using tagged versions ensures that you are deploying a known, tested version of the software, which helps in maintaining a stable and predictable environment. 
+- You can find a list of available version tags in the [container registry](https://github.com/Health-Informatics-UoN/hutch-bunny/pkgs/container/hutch%2Fbunny).
 
 ## 3.	Infrastructure Security
-Bunny is deployed in your environment and requires access to your OMOP CDM database.
-Bunny runs as a containerised service and can be deployed within a private subnet for isolation.
-No incoming requests are required into your environment.
-Bunny makes only outgoing requests over HTTPS (port 443).
-Bunny does not require any 
+- Bunny is deployed in your secure environment and requires access to your OMOP CDM database.
+- Bunny runs as a containerised service and can be deployed within a private subnet for isolation from other services.
+- Bunny makes only outgoing requests over HTTPS (port 443), and not incoming requests are made into your environment.
 
 ## 4.	Authentication & Access Control
-Secrets management: All credentials (database, RQUEST authentication) are managed through environment variables and can be stored in a secrets service (for example Azure Key Vault).
-Upstream / RQUEST is basic auth
-The connection to RQUEST 
-Authentication: Requests to RQUEST are secured using Basic Auth, as per RQUEST API requirements.
+- All credentials (database, RQUEST authentication) are managed through environment variables and can be stored in a secrets service (for example Azure Key Vault).
+- Requests to upstream RQUEST are secured using Basic Auth, as per RQUEST API requirements.
 
 ## 5.	Connectivity & Data Flow
-Outbound access is restricted to the RQUEST API (it does not require open internet access).
-- Outbound connections to HDR UK
-- Firewall configuration and network trust model
+- Outbound access is restricted to the upstream RQUEST API, and no other access is required.
+B- unny requires port 443 outbound to be open. 
 
 ## 6.	Data Security & Compliance
-Data security: Bunny executes only pre-validated queries, meaning no arbitrary SQL can be run.
-Obfuscation support: Configurable low-number suppression and rounding help safeguard sensitive data.
-- Handling of synthetic vs. real data
-- Data classification and retention policies
-
-## 7.	Penetration Testing & Risk Assessment
-- Security testing requirements
-- Risk mitigation strategies
-
-## 8.	Approval & Governance
-- Steps for production approval
-- Trust-building measures (e.g., self-built images, audits)
+- Bunny executes only pre-validated queries that comply with the RQUEST specification, Bunny cannot run arbitrary SQL.
+- Low-number suppression and rounding can be configured to custom values to help safeguard sensitive data.
+- Bunny does not store any data.
