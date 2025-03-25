@@ -1,0 +1,114 @@
+# This Kubernetes configuration declares a Bunny Deployment per queue type,
+# configured to talk to an upstream Task API that separates queue types.
+#
+# This is the default behaviour of the Task API, and is useful for scaling differently
+# for different workload handlers e.g. availability queries vs distribution and phewas analysis,
+# but it requires at least 1 Bunny per queue type
+#
+# Since the multiple Deployments together make up a complete Bunny stack, and share some configuration, we keep them in the same file.
+#
+# Since Bunny does not need to be accessed externally, we do not define k8s Services for any of its Deployments.
+
+# Sample Shared Bunny Config
+# apiVersion: v1
+# kind: ConfigMap
+# metadata:
+#   name: bunny-config
+# data:
+#   DATASOURCE_DB_USERNAME: postgres
+#   DATASOURCE_DB_PASSWORD: postgres
+#   DATASOURCE_DB_DATABASE: omop
+#   DATASOURCE_DB_DRIVERNAME: postgresql
+#   DATASOURCE_DB_SCHEMA: public
+#   DATASOURCE_DB_PORT: "5432"
+#   DATASOURCE_DB_HOST: postgres.default.svc.cluster.local # e.g. a `postgres` Service running in namespace `default`
+#   TASK_API_BASE_URL: https://my-task-api.com/link_connector_api
+#   TASK_API_USERNAME: username
+#   TASK_API_PASSWORD: password
+#   COLLECTION_ID: collection_id
+# ---
+# Availability Bunny
+apiVersion: apps/v1
+kind: Deployment
+
+metadata:
+  name: availabunny
+  labels:
+    app: bunny
+    type: a
+    app.kubernetes.io/name: bunny
+    app.kubernetes.io/instance: bunny-availability
+    app.kubernetes.io/version: edges
+    app.kubernetes.io/component: worker
+    app.kubernetes.io/part-of: hutch-bunny
+
+spec:
+  selector:
+    matchLabels:
+      app: bunny
+      type: a
+
+  template:
+    metadata:
+      labels:
+        app: bunny
+        type: a
+
+    spec:
+      containers:
+        - name: bunny
+          # We recommend pinning to a version number for your deployment.
+          image: ghcr.io/health-informatics-uon/hutch/bunny:edge
+          envFrom:
+            - configMapRef:
+                name: bunny-config
+          env:
+            - name: TASK_API_TYPE
+              value: a
+            - name: LOW_NUMBER_SUPPRESSION_THRESHOLD
+              value: "5"
+            - name: ROUNDING_TARGET
+              value: "10"
+            - name: POLLING_INTERVAL
+              value: "5" # Availability queries should be frequent, for prompt response
+---
+# Distribution Bunny
+apiVersion: apps/v1
+kind: Deployment
+
+metadata:
+  name: distribunny
+  labels:
+    app: bunny
+    type: b
+    app.kubernetes.io/name: bunny
+    app.kubernetes.io/instance: bunny-distribution
+    app.kubernetes.io/version: edge
+    app.kubernetes.io/component: worker
+    app.kubernetes.io/part-of: hutch-bunny
+
+spec:
+  selector:
+    matchLabels:
+      app: bunny
+      type: b
+
+  template:
+    metadata:
+      labels:
+        app: bunny
+        type: b
+
+    spec:
+      containers:
+        - name: bunny
+          # We recommend pinning to a version number for your deployment.
+          image: ghcr.io/health-informatics-uon/hutch/bunny:edge
+          envFrom:
+            - configMapRef:
+                name: bunny-config
+          env:
+            - name: TASK_API_TYPE
+              value: b
+            - name: POLLING_INTERVAL
+              value: "60" # Distribution can be less frequent, since we don't currently support PHEWAS

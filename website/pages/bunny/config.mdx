@@ -23,7 +23,7 @@ services:
       - DATASOURCE_DB_SCHEMA=public
       - DATASOURCE_DB_PORT=5432
       - DATASOURCE_DB_HOST=db
-      - TASK_API_BASE_URL=http://relay:8080
+      - TASK_API_BASE_URL=http://relay:8080/link_connector_api
       - TASK_API_USERNAME=username
       - TASK_API_PASSWORD=password
       - LOW_NUMBER_SUPPRESSION_THRESHOLD=
@@ -37,28 +37,27 @@ In development, if you're running Bunny outside a container, you can instead set
 ## Task API [#task]
 
 ```yaml
-TASK_API_BASE_URL=<host>:<port>
+TASK_API_BASE_URL=<host>:<port>/link_connector_api
 TASK_API_USERNAME=<Task API username>
 TASK_API_PASSWORD=<Task API password>
 ```
 
-### Relay as Task API host
+To configure Bunny to communicate with a Task API, such as [Relay](/relay) or RQuest, the `TASK_API` variables must be set.
 
-To configure the bunny-daemon communicating with Relay, the `TASK_API` variables must be set.
-When configuring [Relay](/relay) {/* when there's a relay configuration page, link there */}, you will set a port to poll for jobs, a username and a password.
-
-- If Bunny and Relay are running in the same stack, the host should be `http://relay`.
-- If you have Relay running locally, and Bunny running locally, the host should be `http://localhost`
-- If you are not using Relay as Task API host, see below
-
-### Other Task API hosts
-
-- You need to change the `TASK_API_BASE_URL` value according to your actual Task API host where Bunny connected to `GET` the job and `POST` the results back.
-- The I/O requests from Bunny are authenticated by the `TASK_API_USERNAME` and `TASK_API_PASSWORD`, please put your Task API credentials here
+- Host examples
+  - If Bunny and Relay are running in the same Docker Compose stack, the host should be the Relay service name in the stack, e.g. `http://relay`.
+  - If you have Relay running locally, and Bunny running locally, the host should be `http://localhost`
+  - If you have any Task API running elsewhere, the host should be e.g. `https://my-task-api.com` with the correct hostname
+- The Base URL should include `/link_connector_api` at the end of the path
+- HTTP Requests from Bunny are authenticated by the `TASK_API_USERNAME` and `TASK_API_PASSWORD`, please put your Task API credentials here
 
 ### Task Type
 
-- If you would like Bunny to connect directly with Rquest, you have to add one more configuration which is `TASK_API_TYPE`. This can only be either `a` (Availability), `b` (Distribution and PHEWAS) or `c` (AnalyticsGwas, AnalyticsGwasQuantitiveTrait, AnalyticsBurdenTest).
+If you would like Bunny to connect directly with Rquest, you have to add one more configuration which is `TASK_API_TYPE`.
+
+This can only be either `a` (Availability), `b` (Distribution and PHEWAS) or `c` (AnalyticsGwas, AnalyticsGwasQuantitiveTrait, AnalyticsBurdenTest).
+
+More guidance is available in the [Connect to RQuest](/bunny/how_to/connect_rquest) How To Guide.
 
 ## Database [#database]
 
@@ -69,10 +68,11 @@ DATASOURCE_DB_USERNAME=<username>
 DATASOURCE_DB_PASSWORD=<password>
 DATASOURCE_DB_DATABASE=<database name - ignored if using Trino>
 DATASOURCE_DB_DRIVERNAME=<driver name - ignored if using Trino>
+DATASOURCE_DB_CATALOG=<Trino catalog name - ignored if not using Trino>
 DATASOURCE_DB_SCHEMA=<database schema name>
 DATASOURCE_DB_PORT=<port served by database>
 DATASOURCE_DB_HOST=<database host>
-USE_TRINO=
+DATASOURCE_USE_TRINO=
 ```
 
 If using the supplied `compose.yml` and running the database in the same stack, unless you modify the database configuration, the defaults will connect Bunny to your database.
@@ -87,7 +87,7 @@ Valid values:
 - `mssql` -> SQL Server
 
 ```yaml
-DATASOURCE_DB_DRIVERNAME=postgres
+DATASOURCE_DB_DRIVERNAME=postgresql
 ```
 
 ## Obfuscation

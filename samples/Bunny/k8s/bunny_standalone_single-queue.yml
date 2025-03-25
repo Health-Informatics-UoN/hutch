@@ -1,0 +1,63 @@
+# This Kubernetes configuration declares a single Bunny Deployment,
+# configured to talk to an upstream Task API that supports a single queue for all task types,
+# such as Hutch Relay.
+#
+# Since Bunny does not need to be accessed externally, we do not define a k8s Service for the Deployment.
+
+apiVersion: apps/v1
+kind: Deployment
+
+metadata:
+  name: hutch-bunny
+  labels:
+    app: hutch-bunny
+    app.kubernetes.io/name: hutch-bunny
+    app.kubernetes.io/instance: hutch-bunny
+    app.kubernetes.io/version: edge
+    app.kubernetes.io/component: worker
+    app.kubernetes.io/part-of: hutch-bunny
+
+spec:
+  selector:
+    matchLabels:
+      app: hutch-bunny
+
+  template:
+    metadata:
+      labels:
+        app: hutch-bunny
+
+    spec:
+      containers:
+        - name: bunny
+          # We recommend pinning to a version number for your deployment.
+          image: ghcr.io/health-informatics-uon/hutch/bunny:edge
+          env:
+            - name: DATASOURCE_DB_USERNAME
+              value: postgres
+            - name: DATASOURCE_DB_PASSWORD
+              value: postgres
+            - name: DATASOURCE_DB_DATABASE
+              value: omop
+            - name: DATASOURCE_DB_DRIVERNAME
+              value: postgresql
+            - name: DATASOURCE_DB_SCHEMA
+              value: public
+            - name: DATASOURCE_DB_PORT
+              value: "5432"
+            - name: DATASOURCE_DB_HOST
+              value: postgres.default.svc.cluster.local # e.g. a `postgres` Service running in namespace `default`
+            - name: TASK_API_BASE_URL
+              value: https://my-task-api.com/link_connector_api
+            - name: TASK_API_USERNAME
+              value: username
+            - name: TASK_API_PASSWORD
+              value: password
+            - name: COLLECTION_ID
+              value: collection_id
+            - name: LOW_NUMBER_SUPPRESSION_THRESHOLD
+              value: "5"
+            - name: ROUNDING_TARGET
+              value: "10"
+            - name: POLLING_INTERVAL
+              value: "5"
