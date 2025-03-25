@@ -49,18 +49,15 @@ _An example Bunny deployment_.
 - Bunny makes only outgoing connections to RQUEST / Relay API over HTTPS (port 443).
 - Bunny requires access to the data partner's OMOP CDM database.
 - No incoming requests are made into the data partner's secure environment.
+- Outbound access is restricted to the RQUEST / Relay API, and no other access is required.
 
 ## Authentication & Access Control
 - All credentials (database access, RQUEST / Relay authentication) are managed through secure environment variables.
 - All credentials can be stored in a secrets service (for example Azure Key Vault).
-- Bunny connections to RQUEST / Relay are secured using HTTP Basic Auth, consistent with the API specification.
-
-## Connectivity & Data Flow
-- Outbound access is restricted to the RQUEST / Relay API, and no other access is required.
-- Bunny requires port 443 outbound to be open. 
+- Bunny connections to RQUEST / Relay are secured using the 'Basic' HTTP Authentication Scheme, consistent with the API specification.
 
 ## Data Security & Compliance
-- Bunny executes only pre-validated queries that comply with the RQUEST / Relay specification.
+- Bunny executes only validated queries that comply with the RQUEST / Relay specification.
 - Bunny cannot execute arbitrary SQL or code.
 - Low-number suppression and rounding can be configured to custom values to help safeguard sensitive data.
 - Bunny can be configured to log externally the API requests, payloads, queries, SQL executed, results, and errors for audit purposes.
