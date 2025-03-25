@@ -1,7 +1,8 @@
 export default {
   quickstart: "Quickstart",
-  config: "Configuration",
   deployment: "Deployment",
+  security: "Security",
+  config: "Configuration",
   how_to: "How To",
   developers: "Developers",
 };

@@ -1,20 +1,26 @@
-# Security Documentation
+import { Steps } from "nextra/components";
 
-## 1. Introduction
+# Security
+
 This document outlines the security considerations, infrastructure requirements, and trust model for deploying and running Bunny within an network. 
 It provides clarity on the container images, connectivity, and best practices for deployment.
 
-## 2.	Container Security
-- Bunny should be deployed using container images to ensure consistency and security. 
+Information about Cohort Discovery can be found on the [HDR Gateway](https://healthdatagateway.org/en/about/cohort-discovery).
+
+Bunny is compliant with the governance and security model outlined in the [Cohort Discovery Implementation Guide](https://healthdatagateway.org/en/data-custodian/support/cohort-discovery). 
+
+## Container Security
+
+Bunny should be deployed using container images to ensure consistency and security. 
 
 ### Container Image Build Process
-- Container images are built using GitHub Actions, using a repeatable and transparent build process. 
+- Bunny images are built using GitHub Actions, using a repeatable and transparent build process. 
 - Each dependency from the build process is pinned to a git hash.
 - This automation ensures that each build is consistent and can be traced back to its source code and build instructions.
 - Organisations can build their own image from source if required.
 
-### Deployment to GitHub Container Registry
-- Each image is published to the GitHub container registry. 
+### Container Registry
+- Every Bunny image is published to the GitHub container registry. 
 - Images are pinned to specific workflow commit hashes, which prevents unauthorized modifications and ensures that only verified builds are used. 
 - This pinning mechanism adds security by ensuring that the exact version of the code that was reviewed and tested is the one being deployed.
 
@@ -25,12 +31,16 @@ It provides clarity on the container images, connectivity, and best practices fo
 - Code scanning using GitHub's CodeQL analysis is enabled on the repository and contributions to automatically identify potential security vulnerabilities and coding issues.
 - For vulnerability reporting, Bunny has a [security policy](https://github.com/Health-Informatics-UoN/hutch-bunny/security) in place.
 
-### Version Pinning for Stability
+### Version Pinning
 - We recommend pinning deployed Bunny containers to a specific tagged version for stability. 
 - Using tagged versions ensures that you are deploying a known, tested version of the software, which helps in maintaining a stable and predictable environment. 
 - You can find a list of available version tags in the [container registry](https://github.com/Health-Informatics-UoN/hutch-bunny/pkgs/container/hutch%2Fbunny).
 
-## 3.	Infrastructure Security
+## Infrastructure Security
+
+![Bunny infrastructure](/images/infrastructure.png)
+_An example Bunny deployment_.
+
 - Bunny is deployed in a secure environment by a data partner. 
 - Bunny runs as a containerised service and should be deployed within a private subnet for isolation from other services.
 - Bunny should be secured with network policies to restrict outbound requests to RQUEST/Relay API.
@@ -38,16 +48,16 @@ It provides clarity on the container images, connectivity, and best practices fo
 - Bunny requires access to the data partner's OMOP CDM database.
 - No incoming requests are made into the data partner's secure environment.
 
-## 4.	Authentication & Access Control
+## Authentication & Access Control
 - All credentials (database access, RQUEST/Relay authentication) are managed through secure environment variables.
 - All credentials can be stored in a secrets service (for example Azure Key Vault).
 - Bunny requests to RQUEST/Relay are secured using Basic Auth, consistent with the API specification.
 
-## 5.	Connectivity & Data Flow
+## Connectivity & Data Flow
 - Outbound access is restricted to the RQUEST/Relay API, and no other access is required.
 - Bunny requires port 443 outbound to be open. 
 
-## 6.	Data Security & Compliance
+## Data Security & Compliance
 - Bunny executes only pre-validated queries that comply with the RQUEST/Relay specification.
 - Bunny cannot execute arbitrary SQL or code.
 - Low-number suppression and rounding can be configured to custom values to help safeguard sensitive data.
