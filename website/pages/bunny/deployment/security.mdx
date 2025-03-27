@@ -20,13 +20,16 @@ Bunny is compliant with the governance and security model outlined in the [Cohor
 - Images are pinned to specific workflow commit hashes, which prevents unauthorized modifications and ensures that only verified builds are used. 
 - This pinning mechanism helps maintain security by ensuring that the exact version of the code that was reviewed and tested is the one being deployed.
 
-### Security Reviews and Updates
-- The base image and all dependencies are reviewed for security updates.
+### Code Security & Review
 - All code contributions must pass a set of unit, integration, and end to end tests. 
 - Contributions are reviewed by the University of Nottingham Centre for Health Informatics developer team, before they are approved and merged into the codebase.
 - Code scanning using GitHub's CodeQL analysis is enabled on the repository and contributions to automatically identify potential security vulnerabilities and coding issues.
-- Bunny uses Dependabot to automatically scan and update dependencies, ensuring security vulnerabilities are identified and patched promptly.
 - Bunny has a [security policy](https://github.com/Health-Informatics-UoN/hutch-bunny/security) for vulnerability reporting.
+
+### Dependency & Supply Chain Security
+- The base image and all dependencies are reviewed for security updates.
+- GitHub’s [dependency-review-action](https://github.com/actions/dependency-review-action) is used to detect vulnerable dependencies before they are introduced into the codebase.
+- Bunny uses Dependabot to automatically scan and update dependencies, ensuring security vulnerabilities are identified and patched promptly.
 - Updates are published with release notes on the [Bunny releases page](https://github.com/Health-Informatics-UoN/hutch-bunny/releases). 
 - A Software Bill of Materials (SBOM) for Bunny [is published](https://github.com/Health-Informatics-UoN/hutch-bunny/network/dependencies) providing visibility into dependencies and supply chain security.
 
