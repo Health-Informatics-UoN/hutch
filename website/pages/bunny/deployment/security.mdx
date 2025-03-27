@@ -1,6 +1,6 @@
 import { Steps } from "nextra/components";
 
-# Bunny Security Model
+# Security Model
 
 This document outlines the security considerations, infrastructure requirements, and trust model for deploying and running Bunny within a network. 
 
@@ -10,7 +10,7 @@ Bunny is compliant with the governance and security model outlined in the [Cohor
 
 ## Container Security
 
-### Container Image Build Process
+### Image Build Process
 - Bunny images are built using GitHub Actions, using a repeatable and transparent build process. 
 - Each dependency from the build process is pinned to a git hash.
 - This automation helps ensure that each build is consistent and can be traced back to its source code and build instructions.
