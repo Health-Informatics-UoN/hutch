@@ -1,9 +1,8 @@
 import { Steps } from "nextra/components";
 
-# Security
+# Bunny Security Model
 
 This document outlines the security considerations, infrastructure requirements, and trust model for deploying and running Bunny within a network. 
-It provides clarity on the container images, connectivity, and best practices for deployment.
 
 Information about Cohort Discovery can be found on the [HDR Gateway](https://healthdatagateway.org/en/about/cohort-discovery).
 
@@ -11,55 +10,41 @@ Bunny is compliant with the governance and security model outlined in the [Cohor
 
 ## Container Security
 
-Bunny should be deployed using container images to ensure consistency and security. 
-
 ### Container Image Build Process
 - Bunny images are built using GitHub Actions, using a repeatable and transparent build process. 
 - Each dependency from the build process is pinned to a git hash.
-- This automation ensures that each build is consistent and can be traced back to its source code and build instructions.
-- Organisations can build their own image from source if required.
+- This automation helps ensure that each build is consistent and can be traced back to its source code and build instructions.
 
 ### Container Registry
 - Every Bunny image is published to the GitHub container registry. 
 - Images are pinned to specific workflow commit hashes, which prevents unauthorized modifications and ensures that only verified builds are used. 
-- This pinning mechanism adds security by ensuring that the exact version of the code that was reviewed and tested is the one being deployed.
+- This pinning mechanism helps maintain security by ensuring that the exact version of the code that was reviewed and tested is the one being deployed.
 
 ### Security Reviews and Updates
 - The base image and all dependencies are reviewed for security updates.
-- All code contributions must pass a comprehensive set of unit, integration, and end to end tests. 
+- All code contributions must pass a set of unit, integration, and end to end tests. 
 - Contributions are reviewed by the University of Nottingham Centre for Health Informatics developer team, before they are approved and merged into the codebase.
 - Code scanning using GitHub's CodeQL analysis is enabled on the repository and contributions to automatically identify potential security vulnerabilities and coding issues.
 - Bunny uses Dependabot to automatically scan and update dependencies, ensuring security vulnerabilities are identified and patched promptly.
-- For vulnerability reporting, Bunny has a [security policy](https://github.com/Health-Informatics-UoN/hutch-bunny/security) in place.
+- Bunny has a [security policy](https://github.com/Health-Informatics-UoN/hutch-bunny/security) for vulnerability reporting.
 - Updates are published with release notes on the [Bunny releases page](https://github.com/Health-Informatics-UoN/hutch-bunny/releases). 
-- A SBOM for Bunny [is published](https://github.com/Health-Informatics-UoN/hutch-bunny/network/dependencies) providing visibility into dependencies and supply chain security.
-
-### Version Pinning
-- We recommend pinning deployed Bunny containers to a specific tagged version for stability. 
-- Using tagged versions ensures that you are deploying a known, tested version of the software, which helps in maintaining a stable and predictable environment. 
-- You can find a list of available version tags in the [container registry](https://github.com/Health-Informatics-UoN/hutch-bunny/pkgs/container/hutch%2Fbunny).
+- A Software Bill of Materials (SBOM) for Bunny [is published](https://github.com/Health-Informatics-UoN/hutch-bunny/network/dependencies) providing visibility into dependencies and supply chain security.
 
 ## Infrastructure Security
 
-![Bunny infrastructure](/images/infrastructure.png)
-_An example Bunny deployment_.
-
 - Bunny is deployed in a secure environment by a data partner. 
-- Bunny runs as a containerised service and should be deployed within a private subnet for isolation from other services.
-- Bunny should be secured with network policies to restrict outbound connections to the RQUEST / Relay API.
-- Bunny makes only outgoing connections to RQUEST / Relay API over HTTPS.
 - Bunny requires access to the data partner's OMOP CDM database.
+- Bunny makes only outgoing connections to RQUEST / Relay API over HTTPS.
 - No incoming requests are made into the data partner's secure environment.
-- Outbound access is restricted to the RQUEST / Relay API, and no other access is required.
+- Outbound access is restricted to the RQUEST / Relay API, no other access is required.
 
 ## Authentication & Access Control
-- All credentials (database access, RQUEST / Relay authentication) are managed through secure environment variables.
-- All credentials can be stored in a secrets service (for example Azure Key Vault).
+- Credentials (database access, RQUEST / Relay authentication) are managed through environment variables.
 - Bunny connections to RQUEST / Relay are secured using the 'Basic' HTTP Authentication Scheme, consistent with the API specification.
 
 ## Data Security & Compliance
 - Bunny executes only validated queries that comply with the RQUEST / Relay specification.
 - Bunny cannot execute arbitrary SQL or code.
-- Low-number suppression and rounding can be configured to custom values to help safeguard sensitive data.
+- Low-number suppression and rounding can be configured to custom values to comply with data protection policies.
 - Bunny can be configured to log externally the API requests, payloads, queries, SQL executed, results, and errors for audit purposes.
-- Bunny does not store any data.
+- Bunny does not persist data to a database.
