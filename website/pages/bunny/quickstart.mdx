@@ -82,7 +82,7 @@ docker compose -f bunny-demo.compose.yml \
 run \
 -v "$(pwd)"/availability.json:/var/queries/availability.json:ro \
 bunny bunny \
---body /var/queries/availability.json
+--body /var/queries/availability.json --output /tmp/output.json
 ```
 
 This will take a minute or so to download the images and start the containers.
