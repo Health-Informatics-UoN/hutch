@@ -154,6 +154,24 @@ Examples:
   </Tabs.Tab>
 </Tabs>
 
+## Headless Mode
+
+Relay can be configured to switch on a headless mode, where the upstream polling is
+disabled. This means that when headless, Relay is the top of the chain.
+
+This is useful when testing, idle deployment and to call the POST Task API (coming soon).
+
+To enable the headless mode, in the HeadlessMode section, set the IsHeadlessModeEnabled environment variable to True.
+If it is set to false, or has not been set, then headless mode will not be enabled.
+
+    ```json filename="appsettings.json"
+    {
+      "HeadlessMode": {
+        "IsHeadlessModeEnabled": True
+      }
+    }
+    ```
+
 ## Database Connections [#database]
 
 **Configuration Section: `ConnectionStrings`**
