@@ -1,0 +1,36 @@
+# Security Guidelines
+
+This document outlines security and infrastructure recommendations for deploying and running Bunny within a network. 
+
+![Bunny infrastructure](/images/infrastructure.png)
+_An example Bunny deployment_.
+
+## Container Images 
+
+- Bunny should be deployed using container images to ensure consistency and security. 
+- Bunny should be regularly updated to the latest stable release.
+- Organisations can build their own image from source if required.
+
+## Version Pinning
+
+- Bunny containers should be pinned to a specific tagged version for stability. 
+- Using tagged versions ensures that you are deploying a known, tested version of the software, which helps in maintaining a stable and predictable environment. 
+- You can find a list of available version tags in the [container registry](https://github.com/Health-Informatics-UoN/hutch-bunny/pkgs/container/hutch%2Fbunny).
+
+## Networking
+
+- Bunny should be deployed within a private subnet for isolation from other services.
+- Bunny should be secured with network policies to restrict outbound connections to the RQUEST / Relay API.
+
+## Configuration
+
+- Bunny credentials for databases and APIs should be stored in a secrets service.
+
+## Monitoring
+- Bunny logs should be forwarded to a centralised logging system.
+- Alerts should be set up for failed queries and excessive errors.
+- Container health checks and external monitoring should be used to ensure Bunny is running as expected.
+
+## Data Access
+- Database credentials used by Bunny should be limited to the minimum required permissions, only read-only (select) access to the OMOP CDM database schema is required.
+
