@@ -306,17 +306,24 @@ Examples:
       <Td>
         A positive number will set the threshold below which Relay will suppress
         and return `0`.
+
+        Set to `0` to disable suppression.
         
-        Defaults to `0` (effectively off).
+        Defaults to `10`, so turning it off is an explicit action.
       </Td>
     </Tr>
     <Tr>
       <Td>`RoundingTarget`</Td>
       <Td>
-        The target nearest number to round up to, e.g. `10` will round both
-        `171` and `179` to `180`.
+        The target nearest number to round to.
         
-        Defaults to `0` (effectively off).
+        e.g. `10` will round
+        - `170` - `174` down to `170`
+        - `175` - `179` up to `180`
+
+        Set to `0` to disable rounding.
+        
+        Defaults to `10`, so turning it off is an explicit action.
       </Td>
     </Tr>
   </tbody>
