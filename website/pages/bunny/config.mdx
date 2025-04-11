@@ -40,6 +40,7 @@ In development, if you're running Bunny outside a container, you can instead set
 TASK_API_BASE_URL=<host>:<port>/link_connector_api
 TASK_API_USERNAME=<Task API username>
 TASK_API_PASSWORD=<Task API password>
+TASK_API_ENFORCE_HTTPS=true
 ```
 
 To configure Bunny to communicate with a Task API, such as [Relay](/relay) or RQuest, the `TASK_API` variables must be set.
@@ -50,6 +51,22 @@ To configure Bunny to communicate with a Task API, such as [Relay](/relay) or RQ
   - If you have any Task API running elsewhere, the host should be e.g. `https://my-task-api.com` with the correct hostname
 - The Base URL should include `/link_connector_api` at the end of the path
 - HTTP Requests from Bunny are authenticated by the `TASK_API_USERNAME` and `TASK_API_PASSWORD`, please put your Task API credentials here
+
+
+### TASK_API_ENFORCE_HTTPS
+
+Default: `true`
+
+If a non-HTTPS URL is provided in `TASK_API_BASE_URL`, Bunny will throw an error. 
+To explicitly allow HTTP URLs, set `TASK_API_ENFORCE_HTTPS` to `false` - in this case, Bunny will only display a warning.
+
+Valid values:
+- `true`
+- `false`
+
+```yaml
+TASK_API_ENFORCE_HTTPS=true
+```
 
 ### Task Type
 
@@ -88,6 +105,20 @@ Valid values:
 
 ```yaml
 DATASOURCE_DB_DRIVERNAME=postgresql
+```
+
+### DATASOURCE_WAKE_DB
+
+Default: `false`
+
+Flag to enable waking of Azure Serverless MSSQL Databases. This will enable a soft retry to wait for the database to wake.
+
+Valid values:
+- `true`
+- `false`
+
+```yaml
+DATASOURCE_WAKE_DB=true
 ```
 
 ## Obfuscation
