@@ -19,19 +19,18 @@ Notes:
 
 Bunny requires an [OMOP CDM](https://ohdsi.github.io/CommonDataModel/background.html) database to query for data.
 
-Ideally the database should comply with the common data model, and the minimum data model that Bunny needs is slightly different [than outlined](https://healthdatagateway.org/en/data-custodian/support/cohort-discovery) on the HDR Gateway. 
+Ideally the database should comply with the common data model, and the minimum data model that Bunny requires is slightly different than the [HDR Gateway](https://healthdatagateway.org/en/data-custodian/support/cohort-discovery). 
 
 Recommended tables and field names:
 
-| OMOP Table            | OMOP Field Names                                                                        |
-|------------------------|----------------------------------------------------------------------------------------|
+| OMOP Table            | OMOP Field Names                                                                         |
+|------------------------|-----------------------------------------------------------------------------------------|
 | Person                 | person_id, gender_concept_id, year_of_birth, race_concept_id, **ethnicity_concept_id*** |
-| Condition Occurrence   | condition_occurrence_id, person_id, condition_concept_id, condition_start_date         |
-| Procedure Occurrence   | procedure_occurrence_id, person_id, procedure_concept_id, procedure_date               |
-| Drug Exposure          | drug_exposure_id, person_id, drug_concept_id, drug_exposure_start_date                 |
-| Observation            | observation_id, person_id, observation_concept_id, observation_date                    |
-| Measurement            | measurement_id, person_id, measurement_concept_id, measurement_date                    |
-| **Concept***            | **concept_id***, **domain_id***                                                          |
+| **Concept***           | **concept_id***, **domain_id***                                                         |
+| Condition Occurrence   | condition_occurrence_id, person_id, condition_concept_id, condition_start_date          |
+| Drug Exposure          | drug_exposure_id, person_id, drug_concept_id, drug_exposure_start_date                  |
+| Observation            | observation_id, person_id, observation_concept_id, observation_date                     |
+| Measurement            | measurement_id, person_id, measurement_concept_id, measurement_date                     |
 
 *Different from the HDR Gateway minimum data model.
 
