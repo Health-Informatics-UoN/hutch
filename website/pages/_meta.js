@@ -1,5 +1,5 @@
 export default {
-  index: "Hutch Tools",
+  index: "Hutch",
   contributing: "Contributing",
   relay: "Relay",
   bunny: "Bunny"
