@@ -1,0 +1,75 @@
+import {
+  Cards,
+  Callout,
+  Tabs,
+  Table,
+  Td,
+  Th,
+  Tr,
+  Code,
+} from "nextra/components";
+
+# Availability Task
+
+## Purpose
+
+An Availability Task will , in response Bunny will query the database for the count, with disclosure controls implemented.
+
+## Example Input Schema
+
+
+<Tabs items={["JSON", "SQL" ]}>
+  <Tabs.Tab>
+    ```json
+    {
+      "task_id" : "job-2025-02-14-09:03:27-RQ-87808b58-b878-4b59-839f-3537727c64a6",
+      "project" : "project_id",
+      "owner" : "user1",
+      "cohort" : {
+        "groups": [
+          {
+            "rules": [
+              {
+                "varname": "OMOP",
+                "varcat": "Condition",
+                "type": "TEXT",
+                "oper": "=",
+                "value": "4323688",
+                "time": "1|:TIME:M"
+              },
+            ],
+            "rules_oper": "OR"
+          },
+        ],
+        "groups_oper": "AND"
+      },
+      "collection": "collection_id",
+      "protocol_version" : "v2",
+      "char_salt" : "salt",
+      "uuid" : "9541374b-8b97-41a4-9717-4a2a25f437ae"
+    }
+    ```
+  </Tabs.Tab>
+  <Tabs.Tab>
+    ```sql
+    SELECT *
+    ```
+  </Tabs.Tab>
+</Tabs>
+
+## Response Schema
+
+```
+{
+  "status": "ok",
+  "protocolVersion": "v2",
+  "uuid": "9541374b-8b97-41a4-9717-4a2a25f437ae",
+  "queryResult": {
+    "count": 1,
+    "datasetCount": 0,
+    "files": []
+  },
+  "message": "",
+  "collection_id": "collection_id"
+}
+```
