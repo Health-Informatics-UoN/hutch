@@ -67,7 +67,7 @@ No raw or identifiable data leaves the system; only the count is returned.
   <Tabs.Tab>
     This is the SQL executed by Bunny in response to the task.
 
-    It calculates an anonymised count of individuals who have a record matching a specific concept ID (`4323688`) in any of the four core OMOP tables: measurement, observation, condition_occurrence, or drug_exposure, with the relevant event date occurring on or before '2025-04-08 21:05:24.471729'.
+    It calculates an anonymised count of individuals who have a record matching a specific concept ID (`4323688`) in any of the four core OMOP tables: measurement, observation, condition_occurrence, or drug_exposure, with the relevant event date occurring on or before `2025-04-08 21:05:24.471729`.
 	  - Subqueries: Each EXISTS clause checks whether a person has at least one matching record in the respective table.
 	  - Time Filter: Ensures only records older than the specified date are considered.
 	  - OR Logic: A person is included if they match any one of the four conditions.
@@ -118,7 +118,7 @@ Bunny returns a structured JSON response upon completing an Availability Query.
 
 The key field is the `queryResult.count`, the number of individuals in the dataset who met the specified criteria. 
 
-```
+```json
 {
   "status": "ok",
   "protocolVersion": "v2",
