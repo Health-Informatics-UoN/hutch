@@ -65,6 +65,18 @@ No raw or identifiable data leaves the system; only the count is returned.
     ```
   </Tabs.Tab>
   <Tabs.Tab>
+    This is the SQL executed by Bunny in response to the task.
+
+    It calculates an anonymised count of individuals who have a record matching a specific concept ID (`4323688`) in any of the four core OMOP tables: measurement, observation, condition_occurrence, or drug_exposure, with the relevant event date occurring on or before '2025-04-08 21:05:24.471729'.
+	  - Subqueries: Each EXISTS clause checks whether a person has at least one matching record in the respective table.
+	  - Time Filter: Ensures only records older than the specified date are considered.
+	  - OR Logic: A person is included if they match any one of the four conditions.
+	  - Outer Query: Counts the number of distinct matching person_ids from the person table.
+	  
+    Rounding and Threshold:
+	  - The count is rounded to the nearest 10 for disclosure control `(ROUND(count / 10) * 10)`.
+	  - The result is only returned if at least 10 people meet the criteria `(HAVING Count(*) >= 10)`.
+
     ```sql
     SELECT Round(Count(*) / Cast(10 AS NUMERIC), 0) * 10 AS anon_1
     FROM person
