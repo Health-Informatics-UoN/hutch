@@ -1,0 +1,7 @@
+
+server:
+  extraScrapeConfigs:
+    # TODO: add scrape configs as desired
+    - job_name: bunny1-postgres
+      static_configs:
+        - targets: ['postgres-postgresql-metrics.bunny1.svc.cluster.local:9187']

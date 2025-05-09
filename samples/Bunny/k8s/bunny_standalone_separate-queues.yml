@@ -8,25 +8,25 @@
 # Since the multiple Deployments together make up a complete Bunny stack, and share some configuration, we keep them in the same file.
 #
 # Since Bunny does not need to be accessed externally, we do not define k8s Services for any of its Deployments.
+#
 
 # Sample Shared Bunny Config
-# apiVersion: v1
-# kind: ConfigMap
-# metadata:
-#   name: bunny-config
-# data:
-#   DATASOURCE_DB_USERNAME: postgres
-#   DATASOURCE_DB_PASSWORD: postgres
-#   DATASOURCE_DB_DATABASE: omop
-#   DATASOURCE_DB_DRIVERNAME: postgresql
-#   DATASOURCE_DB_SCHEMA: public
-#   DATASOURCE_DB_PORT: "5432"
-#   DATASOURCE_DB_HOST: postgres.default.svc.cluster.local # e.g. a `postgres` Service running in namespace `default`
-#   TASK_API_BASE_URL: https://my-task-api.com/link_connector_api
-#   TASK_API_USERNAME: username
-#   TASK_API_PASSWORD: password
-#   COLLECTION_ID: collection_id
-# ---
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: bunny-config
+data:
+  DATASOURCE_DB_USERNAME: postgres
+  # DATASOURCE_DB_PASSWORD: postgres # Deployments reference existing `postgres-secret`
+  DATASOURCE_DB_DATABASE: omop
+  DATASOURCE_DB_DRIVERNAME: postgresql
+  DATASOURCE_DB_SCHEMA: public
+  DATASOURCE_DB_PORT: "5432"
+  DATASOURCE_DB_HOST: postgres-postgresql # `postgres.<namespace>.svc.cluster.local` to connect to a db server in a different namespace
+
+  # Task API Config should be specified in a secret, e.g. `bunny-task-api`
+---
+
 # Availability Bunny
 apiVersion: apps/v1
 kind: Deployment
@@ -62,7 +62,14 @@ spec:
           envFrom:
             - configMapRef:
                 name: bunny-config
+            - secretRef:
+                name: bunny-task-api
           env:
+            - name: DATASOURCE_DB_PASSWORD # Remove if using ConfigMap instead
+              valueFrom:
+                secretKeyRef:
+                  name: postgres-secret
+                  key: postgres-password
             - name: TASK_API_TYPE
               value: a
             - name: LOW_NUMBER_SUPPRESSION_THRESHOLD
@@ -71,7 +78,9 @@ spec:
               value: "10"
             - name: POLLING_INTERVAL
               value: "5" # Availability queries should be frequent, for prompt response
+
 ---
+
 # Distribution Bunny
 apiVersion: apps/v1
 kind: Deployment
@@ -107,7 +116,14 @@ spec:
           envFrom:
             - configMapRef:
                 name: bunny-config
+            - secretRef:
+                name: bunny-task-api
           env:
+            - name: DATASOURCE_DB_PASSWORD # Remove if using ConfigMap instead
+              valueFrom:
+                secretKeyRef:
+                  name: postgres-secret
+                  key: postgres-password
             - name: TASK_API_TYPE
               value: b
             - name: POLLING_INTERVAL

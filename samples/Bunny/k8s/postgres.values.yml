@@ -1,0 +1,12 @@
+# TODO: Prometheus metrics
+
+auth:
+  # hookup the postgres user
+  enablePostgresUser: true
+  existingSecret: postgres-secret
+
+  # create our omop database on init
+  database: omop
+
+metrics:
+  enabled: true

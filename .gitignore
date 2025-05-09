@@ -4,3 +4,5 @@ out
 */.DS_Store
 .DS_Store
 *.tgz
+*.env
+!sample.*.env

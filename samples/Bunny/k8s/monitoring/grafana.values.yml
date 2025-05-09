@@ -1,0 +1,31 @@
+datasources:
+  secretDefinition:
+    apiVersion: 1
+    datasources:
+      - name: Prometheus
+        type: prometheus
+        access: proxy
+        orgId: 1
+        url: http://prometheus-server.monitoring.svc.cluster.local
+        version: 1
+        editable: true
+        isDefault: true
+      - name: Alertmanager
+        uid: alertmanager
+        type: alertmanager
+        access: proxy
+        orgId: 1
+        url: http://prometheus-alertmanager.monitoring.svc.cluster.local:9093
+        version: 1
+        editable: true
+      - name: Loki
+        uid: loki
+        type: loki
+        access: proxy
+        orgId: 1
+        url: http://loki-gateway.monitoring.svc.cluster.local
+        version: 1
+        editable: true
+        jsonData:
+          timeout: 60
+          maxLines: 1000

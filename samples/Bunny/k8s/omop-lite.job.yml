@@ -1,0 +1,23 @@
+apiVersion: batch/v1
+kind: Job
+metadata:
+  name: omop-lite
+spec:
+  template:
+    spec:
+      containers:
+      - name: omop-lite
+        image: ghcr.io/health-informatics-uon/omop-lite
+        env:
+          - name: DB_HOST
+            value: postgres-postgresql
+          - name: DB_PASSWORD
+            valueFrom:
+              secretKeyRef:
+                name: postgres-secret
+                key: postgres-password
+          - name: DB_NAME
+            value: omop
+          - name: SYNTHETIC
+            value: "true"
+      restartPolicy: Never
