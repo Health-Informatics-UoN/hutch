@@ -5,3 +5,9 @@ server:
     - job_name: bunny1-postgres
       static_configs:
         - targets: ['postgres-postgresql-metrics.bunny1.svc.cluster.local:9187']
+    - job_name: hutch-relay-postgres
+      static_configs:
+        - targets: ['postgres-postgresql-metrics.hutch-relay.svc.cluster.local:9187']
+    - job_name: hutch-relay-rabbitmq
+      static_configs:
+        - targets: ['rabbitmq.hutch-relay.svc.cluster.local:9419']

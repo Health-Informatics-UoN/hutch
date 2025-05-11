@@ -1,0 +1,15 @@
+apiVersion: batch/v1
+kind: Job
+metadata:
+  name: hutch-relay-migrations
+spec:
+  template:
+    spec:
+      containers:
+      - name: hutch-relay-cli
+        image: ghcr.io/health-informatics-uon/hutch/relay:edge
+        args: ["database", "update"]
+        envFrom:
+          - secretRef:
+              name: relay-connection-string
+      restartPolicy: Never

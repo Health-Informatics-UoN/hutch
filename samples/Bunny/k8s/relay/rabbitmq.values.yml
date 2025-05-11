@@ -1,0 +1,6 @@
+auth:
+  username: user
+  password: password
+
+metrics:
+  enabled: true

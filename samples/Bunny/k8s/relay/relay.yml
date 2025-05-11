@@ -1,0 +1,59 @@
+# This Kubernetes configuration declares a Relay Deployment,
+# configured to talk to an upstream Task API that supports separate queues for each task type,
+# such as BC|RQuest.
+#
+# Since Relay needs to be accessed externally, we also define a k8s Service for the Deployment.
+
+apiVersion: apps/v1
+kind: Deployment
+
+metadata:
+  name: hutch-relay
+  labels:
+    app: hutch-relay
+    app.kubernetes.io/name: hutch-relay
+    app.kubernetes.io/instance: hutch-relay
+    app.kubernetes.io/version: edge
+    app.kubernetes.io/component: worker
+    app.kubernetes.io/part-of: hutch-relay
+
+spec:
+  selector:
+    matchLabels:
+      app: hutch-relay
+
+  template:
+    metadata:
+      labels:
+        app: hutch-relay
+
+    spec:
+      containers:
+        - name: relay
+          # We recommend pinning to a version number for your deployment.
+          image: ghcr.io/health-informatics-uon/hutch/relay:edge
+          
+          # Configuration Docs: https://health-informatics-uon.github.io/hutch/relay/config
+          envFrom:
+            - secretRef:
+                name: relay-connection-string # Relay's postgres datastore
+            # Connection settings for the Task API to relay tasks from (e.g. BC|RQuest, Hutch Relay...)
+            - secretRef:
+                name: relay-task-api
+          env:
+            - name: RelayTaskQueue__ConnectionString
+              value: amqp://user:password@rabbitmq:5672
+            - name: Logging__LogLevel__Hutch
+              value: Information
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: hutch-relay
+spec:
+  ports:
+    - port: 5080
+      targetPort: hutch-relay
+  selector:
+    app: hutch-relay
+  type: ClusterIP
