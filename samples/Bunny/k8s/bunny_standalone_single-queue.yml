@@ -32,11 +32,17 @@ spec:
         - name: bunny
           # We recommend pinning to a version number for your deployment.
           image: ghcr.io/health-informatics-uon/hutch/bunny:edge
+          envFrom:
+            - secretRef:
+                name: bunny-task-api
           env:
             - name: DATASOURCE_DB_USERNAME
               value: postgres
-            - name: DATASOURCE_DB_PASSWORD
-              value: postgres
+            - name: DATASOURCE_DB_PASSWORD # Remove if using ConfigMap instead
+              valueFrom:
+                secretKeyRef:
+                  name: postgres-secret
+                  key: postgres-password
             - name: DATASOURCE_DB_DATABASE
               value: omop
             - name: DATASOURCE_DB_DRIVERNAME
@@ -46,15 +52,7 @@ spec:
             - name: DATASOURCE_DB_PORT
               value: "5432"
             - name: DATASOURCE_DB_HOST
-              value: postgres.default.svc.cluster.local # e.g. a `postgres` Service running in namespace `default`
-            - name: TASK_API_BASE_URL
-              value: https://my-task-api.com/link_connector_api
-            - name: TASK_API_USERNAME
-              value: username
-            - name: TASK_API_PASSWORD
-              value: password
-            - name: COLLECTION_ID
-              value: collection_id
+              value: postgres-postgresql.bunny1.svc.cluster.local # e.g. a `postgres` Service running in namespace `default`
             - name: LOW_NUMBER_SUPPRESSION_THRESHOLD
               value: "5"
             - name: ROUNDING_TARGET

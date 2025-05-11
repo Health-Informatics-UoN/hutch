@@ -32,7 +32,9 @@ spec:
         - name: relay
           # We recommend pinning to a version number for your deployment.
           image: ghcr.io/health-informatics-uon/hutch/relay:edge
-          
+          ports:
+            - containerPort: 8080
+              name: relay
           # Configuration Docs: https://health-informatics-uon.github.io/hutch/relay/config
           envFrom:
             - secretRef:
@@ -52,8 +54,8 @@ metadata:
   name: hutch-relay
 spec:
   ports:
-    - port: 5080
-      targetPort: hutch-relay
+    - port: 8080
+      targetPort: relay
   selector:
     app: hutch-relay
   type: ClusterIP

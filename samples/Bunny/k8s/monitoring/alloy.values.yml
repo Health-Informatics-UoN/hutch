@@ -15,7 +15,7 @@ alloy:
         role = "pod"
 
         namespaces {
-          names = ["bunny1", "hutch-relay", "bunny2"]
+          names = ["bunny1", "hutch-relay", "bunny2", "bunny3"]
         } 
 
         selectors {
