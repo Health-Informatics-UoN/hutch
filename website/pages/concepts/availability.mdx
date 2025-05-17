@@ -31,7 +31,7 @@ The result is a numerical count of matching records, subject to [disclosure cont
 
   This task uses one `Rule`, to instruct Bunny to query the OMOP `condition_occurrence` table for individuals who have a recorded condition concept ID equal to `4323688`, which represents a specific clinical condition (_"Cough at rest"_). 
   
-  The "time" field specifies a time constraint:
+  The `time` field specifies a time constraint:
   
   `1|:TIME:M` indicates the condition must have occurred at least one month ago (_i.e. the record’s start date is at least one month before the time of query execution_).
 
@@ -127,7 +127,7 @@ The key field is the `queryResult.count`, the number of individuals in the datas
   "protocolVersion": "v2",
   "uuid": "9541374b-8b97-41a4-9717-4a2a25f437ae",
   "queryResult": {
-    "count": 1,
+    "count": 10,
     "datasetCount": 0,
     "files": []
   },
