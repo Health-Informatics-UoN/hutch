@@ -1,7 +1,12 @@
 export default {
   index: "Hutch",
-  concepts: "Concepts",
-  contributing: "Contributing",
+  concepts: {
+    title: "Concepts",
+    theme: {
+      collapsed: true,
+    }
+  },
+  bunny: "Bunny",
   relay: "Relay",
-  bunny: "Bunny"
+  contributing: "Contributing",
 }

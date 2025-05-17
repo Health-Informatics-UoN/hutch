@@ -16,7 +16,7 @@ import {
 An Availability Task is a standardised request asking for a count of individuals matching a defined cohort specification. 
 The task includes metadata such as the collection ID, and task ID, along with the cohort definition expressed as structured rules.
 
-Upon retrieving the task, Bunny securely queries the pseudonymised OMOP dataset within the Data Custodian’s environment. 
+Upon retrieving the task, Bunny securely queries the OMOP dataset within the Data Custodian’s environment. 
 The result is a numerical count of matching records, subject to [disclosure controls](/concepts/disclosure_controls). 
 
 No raw or identifiable data leaves the system; only the count is returned.
@@ -27,10 +27,11 @@ No raw or identifiable data leaves the system; only the count is returned.
   <Tabs.Tab>
   An example Availability task:
 
-  This task instructs Bunny to query the OMOP `condition_occurrence` table for individuals who have a recorded condition concept ID equal to `4323688`, which represents a specific clinical condition ("Cough at rest"). 
-  The "time" field specifies a temporal constraint:
+  This task uses one `Rule`, to instruct Bunny to query the OMOP `condition_occurrence` table for individuals who have a recorded condition concept ID equal to `4323688`, which represents a specific clinical condition (_"Cough at rest"_). 
   
-  `1|:TIME:M` indicates the condition must have occurred at least one month ago (i.e. the record’s start date is at least one month before the time of query execution).
+  The "time" field specifies a time constraint:
+  
+  `1|:TIME:M` indicates the condition must have occurred at least one month ago (_i.e. the record’s start date is at least one month before the time of query execution_).
 
   Only individuals with at least one such condition occurrence meeting this time constraint will match this rule.
 
