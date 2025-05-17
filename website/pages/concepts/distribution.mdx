@@ -13,16 +13,16 @@ import {
 
 ## Purpose
 
-A Distribution Task is a standardised request asking for summary statistics of the OMOP dataset, they run nightly on a dataset.
+A Distribution Task is a standardised request asking for summary statistics of the OMOP dataset, they run nightly on a dataset. The task includes metadata such as the collection ID, and task ID, along with the type (`analysis`) to be run. 
 
-The task includes metadata such as the collection ID, and task ID, along with the type (`analysis`) to be run. 
-
-It helps populate the user interface of RQUEST, enabling a researcher to build their query on the data that exists.
+The result will help populate the user interface of RQUEST, enabling a researcher to build their query on the data that exists.
 
 Upon retrieving the task, Bunny securely queries the OMOP dataset within the Data Custodian's environment. 
 The result is a list summary statistics of the dataset, subject to [disclosure controls](/concepts/disclosure_controls). 
 
-No raw or identifiable data leaves the system; only summary statistics are returned.
+<Callout>
+  No raw or identifiable data leaves the system; only summary statistics are returned.
+</Callout>
 
 ## Example Input Schema
 
