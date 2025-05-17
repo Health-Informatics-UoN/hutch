@@ -18,6 +18,9 @@ export default {
   project: {
     link: "https://github.com/Health-Informatics-UoN/hutch",
   },
+  sidebar: {
+    defaultMenuCollapseLevel: 1,
+  },
   head() {
     const { frontMatter } = useConfig();
 
