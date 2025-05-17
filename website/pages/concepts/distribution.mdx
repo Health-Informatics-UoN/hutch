@@ -1,0 +1,179 @@
+import {
+  Cards,
+  Callout,
+  Tabs,
+  Table,
+  Td,
+  Th,
+  Tr,
+  Code,
+} from "nextra/components";
+
+# Distribution Task
+
+## Purpose
+
+A Distribution Task is a standardised request asking for summary statistics of the OMOP dataset, they will run nightly on a dataset.
+The task includes metadata such as the collection ID, and task ID, along with the type (`analysis`) to be run. 
+
+It helps populate the user interface of RQUEST, enabling a researcher to build their query on the data that exists.
+
+Upon retrieving the task, Bunny securely queries the OMOP dataset within the Data Custodian’s environment. 
+The result is a list summary statistics of the dataset, subject to [disclosure controls](/concepts/disclosure_controls). 
+
+No raw or identifiable data leaves the system; only summary statistics are returned.
+
+## Example Input Schema
+
+<Tabs items={["JSON", "SQL" ]}>
+  <Tabs.Tab>
+  An example Distribution task:
+
+  Explained
+
+
+    ```json
+    {
+      "code": "DEMOGRAPHICS",
+      "analysis": "DISTRIBUTION",
+      "uuid": "unique_id",
+      "collection": "collection_id",
+      "owner": "user_id"
+    }
+    ```
+  </Tabs.Tab>
+  <Tabs.Tab>
+    This is the SQL executed by Bunny in response to the task.
+
+    - Counts the number of distinct persons associated with each OMOP concept across several domains: conditions, drugs, measurements, observations, procedures, gender, race, and ethnicity.
+	  - Joins each domain table with the OMOP concept table to retrieve the human-readable concept name (concept_name) alongside the concept ID.
+	  - Groups results by concept to produce per-concept summaries of how many unique individuals have data for that concept.
+	  
+    Disclosure control:
+	  - The count is rounded to the nearest 10 for disclosure control `(ROUND(count / 10) * 10)`.
+	  - The result is only returned if at least 10 people meet the criteria `(HAVING Count(*) >= 10)`.
+
+    ```sql
+    SELECT round(count(DISTINCT condition_occurrence.person_id) / CAST(10 AS NUMERIC), 0) * 10 AS anon_1,
+       concept.concept_id,
+       concept.concept_name
+    FROM condition_occurrence
+    JOIN concept ON condition_occurrence.condition_concept_id = concept.concept_id
+    GROUP BY concept.concept_id,
+            concept.concept_name
+    HAVING count(DISTINCT condition_occurrence.person_id) > 10
+    
+    SELECT round(count(DISTINCT person.person_id) / CAST(10 AS NUMERIC), 0) * 10 AS anon_1,
+          concept.concept_id,
+          concept.concept_name
+    FROM person
+    JOIN concept ON person.ethnicity_concept_id = concept.concept_id
+    GROUP BY concept.concept_id,
+            concept.concept_name
+    HAVING count(DISTINCT person.person_id) > 10
+    
+    SELECT round(count(DISTINCT drug_exposure.person_id) / CAST(10 AS NUMERIC), 0) * 10 AS anon_1,
+          concept.concept_id,
+          concept.concept_name
+    FROM drug_exposure
+    JOIN concept ON drug_exposure.drug_concept_id = concept.concept_id
+    GROUP BY concept.concept_id,
+            concept.concept_name
+    HAVING count(DISTINCT drug_exposure.person_id) > 10
+    
+    SELECT round(count(DISTINCT person.person_id) / CAST(10 AS NUMERIC), 0) * 10 AS anon_1,
+          concept.concept_id,
+          concept.concept_name
+    FROM person
+    JOIN concept ON person.gender_concept_id = concept.concept_id
+    GROUP BY concept.concept_id,
+            concept.concept_name
+    HAVING count(DISTINCT person.person_id) > 10
+    
+    SELECT round(count(DISTINCT person.person_id) / CAST(10 AS NUMERIC), 0) * 10 AS anon_1,
+          concept.concept_id,
+          concept.concept_name
+    FROM person
+    JOIN concept ON person.race_concept_id = concept.concept_id
+    GROUP BY concept.concept_id,
+            concept.concept_name
+    HAVING count(DISTINCT person.person_id) > 10
+    
+    SELECT round(count(DISTINCT measurement.person_id) / CAST(10 AS NUMERIC), 0) * 10 AS anon_1,
+          concept.concept_id,
+          concept.concept_name
+    FROM measurement
+    JOIN concept ON measurement.measurement_concept_id = concept.concept_id
+    GROUP BY concept.concept_id,
+            concept.concept_name
+    HAVING count(DISTINCT measurement.person_id) > 10
+    
+    SELECT round(count(DISTINCT observation.person_id) / CAST(10 AS NUMERIC), 0) * 10 AS anon_1,
+          concept.concept_id,
+          concept.concept_name
+    FROM observation
+    JOIN concept ON observation.observation_concept_id = concept.concept_id
+    GROUP BY concept.concept_id,
+            concept.concept_name
+    HAVING count(DISTINCT observation.person_id) > 10
+    
+    SELECT round(count(DISTINCT procedure_occurrence.person_id) / CAST(10 AS NUMERIC), 0) * 10 AS anon_1,
+          concept.concept_id,
+          concept.concept_name
+    FROM procedure_occurrence
+    JOIN concept ON procedure_occurrence.procedure_concept_id = concept.concept_id
+    GROUP BY concept.concept_id,
+            concept.concept_name
+    HAVING count(DISTINCT procedure_occurrence.person_id) > 10
+    ```
+  </Tabs.Tab>
+</Tabs>
+
+## Response Schema
+
+Bunny returns a structured JSON response upon completing a Distribution task. 
+
+The key field is the `queryResult.files.file_data`, a base64 encoded summary statistics file. 
+
+```json
+{
+  "status": "ok",
+  "protocolVersion": "v2",
+  "uuid": "unique_id",
+  "queryResult": {
+    "count": 8,
+    "datasetCount": 1,
+    "files": [
+      {
+        "file_name": "code.distribution",
+        "file_data": "QklPQkFOSwlDT0RFCUNPVU5UCURFU0NSSVBUSU9OCU1JTglRMQlNRURJQU4JTUVBTglRMwlNQVgJQUxURVJOQVRJVkVTCURBVEFTRVQJT01PUAlPTU9QX0RFU0NSCUNBVEVHT1JZCmNvbGxlY3Rpb25faWQJT01PUDo0MzIzNjg4CTIwCQkJCQkJCQkJCTQzMjM2ODgJQ291Z2ggYXQgcmVzdAlDb25kaXRpb24KY29sbGVjdGlvbl9pZAlPTU9QOjM1NjI2MDYxCTEwCQkJCQkJCQkJCTM1NjI2MDYxCU5vIGNvdWdoIHN0cmVuZ3RoCUNvbmRpdGlvbgpjb2xsZWN0aW9uX2lkCU9NT1A6MzgwMDM1NjMJNjAJCQkJCQkJCQkJMzgwMDM1NjMJSGlzcGFuaWMgb3IgTGF0aW5vCUV0aG5pY2l0eQpjb2xsZWN0aW9uX2lkCU9NT1A6MzgwMDM1NjQJNDAJCQkJCQkJCQkJMzgwMDM1NjQJTm90IEhpc3BhbmljIG9yIExhdGlubwlFdGhuaWNpdHkKY29sbGVjdGlvbl9pZAlPTU9QOjg1MDcJNDAJCQkJCQkJCQkJODUwNwlNQUxFCUdlbmRlcgpjb2xsZWN0aW9uX2lkCU9NT1A6ODUzMgk2MAkJCQkJCQkJCQk4NTMyCUZFTUFMRQlHZW5kZXIKY29sbGVjdGlvbl9pZAlPTU9QOjIxNDkwNzQyCTEwCQkJCQkJCQkJCTIxNDkwNzQyCUFpcndheSByZXNpc3RhbmNlIC0tZHVyaW5nIGluc3BpcmF0aW9uCU1lYXN1cmVtZW50CmNvbGxlY3Rpb25faWQJT01PUDo0MjY2MDA5CTEwCQkJCQkJCQkJCTQyNjYwMDkJQWJpbGl0eSB0byBzbWVsbAlPYnNlcnZhdGlvbg==",
+        "file_description": "Result of code.distribution analysis",
+        "file_size": 0.928,
+        "file_type": "BCOS",
+        "file_sensitive": true,
+        "file_reference": ""
+      }
+    ]
+  },
+  "message": "",
+  "collection_id": "collection_id"
+}
+```
+
+The decoded `file_data` will contain summary statistics:
+
+```tsv
+BIOBANK	CODE	COUNT	DESCRIPTION	MIN	Q1	MEDIAN	MEAN	Q3	MAX	ALTERNATIVES	DATASET	OMOP	OMOP_DESCR	CATEGORY
+collection_id	OMOP:4323688	20										4323688	Cough at rest	Condition
+collection_id	OMOP:35626061	10										35626061	No cough strength	Condition
+collection_id	OMOP:38003563	60										38003563	Hispanic or Latino	Ethnicity
+collection_id	OMOP:38003564	40										38003564	Not Hispanic or Latino	Ethnicity
+collection_id	OMOP:8507	40										8507	MALE	Gender
+collection_id	OMOP:8532	60										8532	FEMALE	Gender
+collection_id	OMOP:21490742	10										21490742	Airway resistance --during inspiration	Measurement
+collection_id	OMOP:4266009	10										4266009	Ability to smell	Observation
+```
+
+Each row summarises the frequency and distribution of a particular OMOP concept (e.g., a condition, gender, ethnicity, observation, or measurement).
+
+For example, FEMALE (concept ID: 8532) appears 60 times, and the Observation Ability to smell (concept ID: 4266009) appears 10 times. 

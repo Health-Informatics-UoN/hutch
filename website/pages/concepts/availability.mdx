@@ -74,7 +74,7 @@ No raw or identifiable data leaves the system; only the count is returned.
 	  - OR Logic: A person is included if they match any one of the four conditions.
 	  - Outer Query: Counts the number of distinct matching person_ids from the person table.
 	  
-    Rounding and Threshold:
+    Disclosure control:
 	  - The count is rounded to the nearest 10 for disclosure control `(ROUND(count / 10) * 10)`.
 	  - The result is only returned if at least 10 people meet the criteria `(HAVING Count(*) >= 10)`.
 
