@@ -1,0 +1,15 @@
+# Disclosure Controls
+
+[Bunny](/bunny) and [Relay](/relay) support Cohort Discovery with built-in, automated disclosure controls, ensuring that sensitive data remains protected at all times.
+
+Data Custodians retain full control over their data - Cohort Discovery never exposes individual-level information. Instead, it allows researchers to pose queries that return only aggregate counts of people matching specific criteria within a dataset.
+
+To protect privacy and reduce the risk of re-identification:
+- You can configure a minimum threshold (commonly 10) below which no result is returned.
+- You can enable automatic rounding of results to prevent precise counts from being used to infer sensitive details. For example, returning “110” instead of “102”.
+
+These controls are applied automatically, activated by default, and are configurable, allowing a Data Custodian to safely participate in Cohort Discovery while meeting their data governance and privacy obligations.
+
+Both [Bunny](/bunny/config#obfuscation) and [Relay](/relay/config#results-obfuscation) can configure levels of disclosure control, to enable information governance policy. 
+
+Before new versions of Bunny and Relay are released, our test framework ensures that the disclosure controls are correctly applied and cannot be bypassed. 
