@@ -13,13 +13,13 @@ import {
 
 ## Purpose
 
-A Distribution Task is a standardised request asking for summary statistics of the OMOP dataset, they will run nightly on a dataset.
+A Distribution Task is a standardised request asking for summary statistics of the OMOP dataset, they run nightly on a dataset.
 
 The task includes metadata such as the collection ID, and task ID, along with the type (`analysis`) to be run. 
 
 It helps populate the user interface of RQUEST, enabling a researcher to build their query on the data that exists.
 
-Upon retrieving the task, Bunny securely queries the OMOP dataset within the Data Custodian’s environment. 
+Upon retrieving the task, Bunny securely queries the OMOP dataset within the Data Custodian's environment. 
 The result is a list summary statistics of the dataset, subject to [disclosure controls](/concepts/disclosure_controls). 
 
 No raw or identifiable data leaves the system; only summary statistics are returned.
@@ -43,7 +43,7 @@ No raw or identifiable data leaves the system; only summary statistics are retur
   <Tabs.Tab>
     This is the SQL executed by Bunny in response to the task.
 
-    - Counts the number of distinct persons associated with each OMOP concept across several domains: conditions, drugs, measurements, observations, procedures, gender, race, and ethnicity.
+    - Counts the number of distinct persons associated with each OMOP concept across several domains; conditions, drugs, measurements, observations, procedures, gender, race, and ethnicity.
 	  - Joins each domain table with the OMOP concept table to retrieve the human-readable concept name (concept_name) alongside the concept ID.
 	  - Groups results by concept to produce per-concept summaries of how many unique individuals have data for that concept.
 	  
@@ -52,6 +52,10 @@ No raw or identifiable data leaves the system; only summary statistics are retur
 	  - The result is only returned if at least 10 people meet the criteria `(HAVING Count(*) >= 10)`.
 
     ```sql
+    -- Query for Conditions Domain
+    -- Counts unique patients per condition concept
+    -- Applies disclosure control by rounding to nearest 10
+    -- Only returns concepts with at least 10 patients
     SELECT round(count(DISTINCT condition_occurrence.person_id) / CAST(10 AS NUMERIC), 0) * 10 AS anon_1,
        concept.concept_id,
        concept.concept_name
@@ -61,6 +65,9 @@ No raw or identifiable data leaves the system; only summary statistics are retur
             concept.concept_name
     HAVING count(DISTINCT condition_occurrence.person_id) > 10
     
+    -- Query for Ethnicity Domain
+    -- Counts unique patients per ethnicity concept
+    -- Similar disclosure controls applied
     SELECT round(count(DISTINCT person.person_id) / CAST(10 AS NUMERIC), 0) * 10 AS anon_1,
           concept.concept_id,
           concept.concept_name
@@ -70,6 +77,9 @@ No raw or identifiable data leaves the system; only summary statistics are retur
             concept.concept_name
     HAVING count(DISTINCT person.person_id) > 10
     
+    -- Query for Drug Exposures Domain
+    -- Counts unique patients per drug concept
+    -- Applies same disclosure controls
     SELECT round(count(DISTINCT drug_exposure.person_id) / CAST(10 AS NUMERIC), 0) * 10 AS anon_1,
           concept.concept_id,
           concept.concept_name
@@ -79,6 +89,9 @@ No raw or identifiable data leaves the system; only summary statistics are retur
             concept.concept_name
     HAVING count(DISTINCT drug_exposure.person_id) > 10
     
+    -- Query for Gender Domain
+    -- Counts unique patients per gender concept
+    -- Uses person table for demographic data
     SELECT round(count(DISTINCT person.person_id) / CAST(10 AS NUMERIC), 0) * 10 AS anon_1,
           concept.concept_id,
           concept.concept_name
@@ -88,6 +101,9 @@ No raw or identifiable data leaves the system; only summary statistics are retur
             concept.concept_name
     HAVING count(DISTINCT person.person_id) > 10
     
+    -- Query for Race Domain
+    -- Counts unique patients per race concept
+    -- Similar structure to other demographic queries
     SELECT round(count(DISTINCT person.person_id) / CAST(10 AS NUMERIC), 0) * 10 AS anon_1,
           concept.concept_id,
           concept.concept_name
@@ -97,6 +113,9 @@ No raw or identifiable data leaves the system; only summary statistics are retur
             concept.concept_name
     HAVING count(DISTINCT person.person_id) > 10
     
+    -- Query for Measurements Domain
+    -- Counts unique patients per measurement concept
+    -- Includes lab results and vital signs
     SELECT round(count(DISTINCT measurement.person_id) / CAST(10 AS NUMERIC), 0) * 10 AS anon_1,
           concept.concept_id,
           concept.concept_name
@@ -106,6 +125,9 @@ No raw or identifiable data leaves the system; only summary statistics are retur
             concept.concept_name
     HAVING count(DISTINCT measurement.person_id) > 10
     
+    -- Query for Observations Domain
+    -- Counts unique patients per observation concept
+    -- Includes non-measurement clinical findings
     SELECT round(count(DISTINCT observation.person_id) / CAST(10 AS NUMERIC), 0) * 10 AS anon_1,
           concept.concept_id,
           concept.concept_name
@@ -115,6 +137,9 @@ No raw or identifiable data leaves the system; only summary statistics are retur
             concept.concept_name
     HAVING count(DISTINCT observation.person_id) > 10
     
+    -- Query for Procedures Domain
+    -- Counts unique patients per procedure concept
+    -- Includes surgeries and other interventions
     SELECT round(count(DISTINCT procedure_occurrence.person_id) / CAST(10 AS NUMERIC), 0) * 10 AS anon_1,
           concept.concept_id,
           concept.concept_name
