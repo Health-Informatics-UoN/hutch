@@ -1,6 +1,6 @@
 import React from "react";
 import { useConfig } from "nextra-theme-docs";
-import Footer from "./components/footer";
+import Footer from "./components/Footer";
 
 export default {
   docsRepositoryBase:
