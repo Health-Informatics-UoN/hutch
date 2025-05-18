@@ -9,8 +9,17 @@ import { Rabbit, Repeat, Lock } from "lucide-react";
 </div>
 
 <Cards>
-  <Cards.Card title="Bunny" icon={<Rabbit />} href="/bunny" />
-  <Cards.Card title="Relay" icon={<Repeat />} href="/relay"/>
-  <Cards.Card title="TRE-FX" icon={<Lock />} href="https://health-informatics-uon.github.io/hutch-trefx/"/>
+  <Cards.Card 
+    href="/bunny" 
+    icon={<img src="/images/bunny.svg" alt="Bunny logo" />}
+  />
+  <Cards.Card 
+    icon={<img src="/images/relay.svg" alt="Relay logo" />}
+    href="/relay"
+  />
+  <Cards.Card 
+    icon={<img src="/images/trefx.svg" alt="TRE-FX logo" />}
+    href="https://health-informatics-uon.github.io/hutch-trefx/"
+  />
 
 </Cards>
