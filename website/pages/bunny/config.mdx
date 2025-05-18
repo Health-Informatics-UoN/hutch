@@ -1,3 +1,5 @@
+import { Mandatory } from "../../components/Mandatory";
+
 # Configuration
 
 Bunny can be configured using environment variables.
@@ -26,14 +28,14 @@ services:
 
 ## Task API [#task]
 
-| Name                    | Type    | Description                                                        | Default |
-|-------------------------|---------|--------------------------------------------------------------------|---------|
-|`TASK_API_BASE_URL`*     |`string` |RQUEST API URL                                                      |         |
-|`TASK_API_USERNAME`*     |`string` |API username                                                        |         |
-|`TASK_API_PASSWORD`*     |`string` |API Password                                                        |         |
-|`COLLECTION_ID`*         |`string` |API collection_id                                                   |         |
-|`TASK_API_TYPE`          |`"a,b,c"`|Specifies the task type to query for, needed if connecting to RQUEST|         |
-|`TASK_API_ENFORCE_HTTPS` |`boolean`|Specifies whether to enforce a HTTPS `TASK_API_BASE_URL`            | `true`  |
+| Name                                     | Type    | Description                                                        | Default |
+|------------------------------------------|---------|--------------------------------------------------------------------|---------|
+|<Mandatory>`TASK_API_BASE_URL`</Mandatory>|`string` |RQUEST API URL                                                      |         |
+|<Mandatory>`TASK_API_USERNAME`</Mandatory>|`string` |API username                                                        |         |
+|<Mandatory>`TASK_API_PASSWORD`</Mandatory>|`string` |API Password                                                        |         |
+|<Mandatory>`COLLECTION_ID`</Mandatory>    |`string` |API collection_id                                                   |         |
+|`TASK_API_TYPE`                           |`"a,b,c"`|Specifies the task type to query for, needed if connecting to RQUEST|         |
+|`TASK_API_ENFORCE_HTTPS`                  |`boolean`|Specifies whether to enforce a HTTPS `TASK_API_BASE_URL`            | `true`  |
 
 To configure Bunny to communicate with a Task API, such as [Relay](/relay) or RQuest, the `TASK_API` variables must be set.
 
@@ -56,17 +58,17 @@ Further guidance is available in the [Connect to RQuest](/bunny/deployment/conne
 
 The database connection is configured by the variables prefixed with `DATASOURCE_`
 
-| Name                      | Type               | Description        | Default    |
-|---------------------------|--------------------|--------------------|------------|
-|`DATASOURCE_DB_USERNAME`*  |`string`            |Database username   |`trino-user`|
-|`DATASOURCE_DB_PASSWORD`*  |`string`            |Database password   |            |
-|`DATASOURCE_DB_DATABASE`*  |`string`            |Database name       |            |
-|`DATASOURCE_DB_SCHEMA`*    |`string`            |Database schema     |            |
-|`DATASOURCE_DB_PORT`*      |`string`            |Database port       |            |
-|`DATASOURCE_DB_HOST`*      |`string`            |Database host       |            |
-|`DATASOURCE_DB_DRIVERNAME` |`"postgresql,mssql"`|Database dialect    |`postgresql`|
-|`DATASOURCE_DB_CATALOG`    |`string`            |Trino catalog name  |            |
-|`DATASOURCE_USE_TRINO`     |`boolean`           |Use Trino to connect|`False`     |
+| Name                                            | Type               | Description        | Default    |
+|-------------------------------------------------|--------------------|--------------------|------------|
+|<Mandatory>`DATASOURCE_DB_USERNAME`</Mandatory>  |`string`            |Database username   |`trino-user`|
+|<Mandatory>`DATASOURCE_DB_PASSWORD`</Mandatory>  |`string`            |Database password   |            |
+|<Mandatory>`DATASOURCE_DB_DATABASE`</Mandatory>  |`string`            |Database name       |            |
+|<Mandatory>`DATASOURCE_DB_SCHEMA`</Mandatory>    |`string`            |Database schema     |            |
+|<Mandatory>`DATASOURCE_DB_PORT`</Mandatory>      |`string`            |Database port       |            |
+|<Mandatory>`DATASOURCE_DB_HOST`</Mandatory>      |`string`            |Database host       |            |
+|`DATASOURCE_DB_DRIVERNAME`                       |`"postgresql,mssql"`|Database dialect    |`postgresql`|
+|`DATASOURCE_DB_CATALOG`                          |`string`            |Trino catalog name  |            |
+|`DATASOURCE_USE_TRINO`                           |`boolean`           |Use Trino to connect|`False`     |
 
 ## Disclosure Control
 
