@@ -1,13 +1,25 @@
 import { Cards } from 'nextra/components'
 import { Rabbit, Repeat, Lock } from "lucide-react";
 
-![](/images/hutch-logo-colour.svg)
+<div style={{ display: "flex", flexDirection: "column", alignItems: "center", paddingTop: "2rem", paddingBottom: "2rem" }}>
 
-### Hutch provides tools for federated activities in secure environments.
+  <img src="/images/hutch-logo-colour.svg" alt="Hutch logo" style={{ width: "50%" }} />
+
+  ### Hutch provides tools for federated activities in secure environments.
+</div>
 
 <Cards>
-  <Cards.Card title="Bunny" icon={<Rabbit />} href="/bunny" />
-  <Cards.Card title="Relay" icon={<Repeat />} href="/relay"/>
-  <Cards.Card title="TRE-FX" icon={<Lock />} href="https://health-informatics-uon.github.io/hutch-trefx/"/>
+  <Cards.Card 
+    href="/bunny" 
+    icon={<img src="/images/bunny.svg" alt="Bunny logo" />}
+  />
+  <Cards.Card 
+    icon={<img src="/images/relay.svg" alt="Relay logo" />}
+    href="/relay"
+  />
+  <Cards.Card 
+    icon={<img src="/images/trefx.svg" alt="TRE-FX logo" />}
+    href="https://health-informatics-uon.github.io/hutch-trefx/"
+  />
 
 </Cards>

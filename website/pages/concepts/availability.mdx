@@ -1,0 +1,137 @@
+import {
+  Cards,
+  Callout,
+  Tabs,
+  Table,
+  Td,
+  Th,
+  Tr,
+  Code,
+} from "nextra/components";
+
+# Availability Task
+
+## Purpose
+
+An Availability Task is a standardised request triggered by a researcher asking for a count of individuals matching a defined cohort specification. 
+The task includes metadata such as the collection ID, and task ID, along with the cohort definition expressed as structured rules.
+
+Upon retrieving the task, Bunny securely queries the OMOP dataset within the Data Custodian’s environment. 
+The result is a numerical count of matching records, subject to [disclosure controls](/concepts/disclosure_controls). 
+
+<Callout>
+  No raw or identifiable data leaves the system; only the count is returned.
+</Callout>
+
+## Example Input Schema
+
+<Tabs items={["JSON", "SQL" ]}>
+  <Tabs.Tab>
+  An example Availability task:
+
+  This task uses one `Rule`, to instruct Bunny to query the OMOP `condition_occurrence` table for individuals who have a recorded condition concept ID equal to `4323688`, which represents a specific clinical condition (_"Cough at rest"_). 
+  
+  The `time` field specifies a time constraint:
+  
+  `1|:TIME:M` indicates the condition must have occurred at least one month ago (_i.e. the record’s start date is at least one month before the time of query execution_).
+
+  Only individuals with at least one such condition occurrence meeting this time constraint will match this rule.
+
+    ```json
+    {
+      "task_id" : "job-2025-02-14-09:03:27-RQ-87808b58-b878-4b59-839f-3537727c64a6",
+      "project" : "project_id",
+      "owner" : "user1",
+      "cohort" : {
+        "groups": [
+          {
+            "rules": [
+              {
+                "varname": "OMOP",
+                "varcat": "Condition",
+                "type": "TEXT",
+                "oper": "=",
+                "value": "4323688",
+                "time": "1|:TIME:M"
+              }
+            ],
+            "rules_oper": "OR"
+          }
+        ],
+        "groups_oper": "AND"
+      },
+      "collection": "collection_id",
+      "protocol_version" : "v2",
+      "char_salt" : "salt",
+      "uuid" : "9541374b-8b97-41a4-9717-4a2a25f437ae"
+    }
+    ```
+  </Tabs.Tab>
+  <Tabs.Tab>
+    This is the SQL executed by Bunny in response to the task.
+
+    It calculates an anonymised count of individuals who have a record matching a specific concept ID (`4323688`) in any of the four core OMOP tables: measurement, observation, condition_occurrence, or drug_exposure, with the relevant event date occurring on or before `2025-04-08 21:05:24.471729`.
+	  - Subqueries: Each EXISTS clause checks whether a person has at least one matching record in the respective table.
+	  - Time Filter: Ensures only records older than the specified date are considered.
+	  - OR Logic: A person is included if they match any one of the four conditions.
+	  - Outer Query: Counts the number of distinct matching person_ids from the person table.
+	  
+    Disclosure control:
+	  - The count is rounded to the nearest 10 for disclosure control `(ROUND(count / 10) * 10)`.
+	  - The result is only returned if at least 10 people meet the criteria `(HAVING Count(*) >= 10)`.
+
+    ```sql
+    SELECT Round(Count(*) / Cast(10 AS NUMERIC), 0) * 10 AS anon_1
+    FROM person
+    WHERE person.person_id IN
+        (SELECT person.person_id
+        FROM person
+        WHERE (EXISTS
+                  (SELECT measurement.person_id
+                  FROM measurement
+                  WHERE measurement.measurement_concept_id = 4323688
+                    AND measurement.measurement_date <= '2025-04-08 21:05:24.471729'
+                    AND measurement.person_id = person.person_id))
+          OR (EXISTS
+                (SELECT observation.person_id
+                  FROM observation
+                  WHERE observation.observation_concept_id = 4323688
+                    AND observation.observation_date <= '2025-04-08 21:05:24.471729'
+                    AND observation.person_id = person.person_id))
+          OR (EXISTS
+                (SELECT condition_occurrence.person_id
+                  FROM condition_occurrence
+                  WHERE condition_occurrence.condition_concept_id = 4323688
+                    AND condition_occurrence.condition_start_date <= '2025-04-08 21:05:24.471729'
+                    AND condition_occurrence.person_id = person.person_id))
+          OR (EXISTS
+                (SELECT drug_exposure.person_id
+                  FROM drug_exposure
+                  WHERE drug_exposure.drug_concept_id = 4323688
+                    AND drug_exposure.drug_exposure_start_date <= '2025-04-08 21:05:24.471729'
+                    AND drug_exposure.person_id = person.person_id)))
+    HAVING Count(*) >= 10
+    ```
+  </Tabs.Tab>
+</Tabs>
+
+## Response Schema
+
+Bunny returns a structured JSON response upon completing an Availability Query. 
+
+The key field is the `queryResult.count`, the number of individuals in the dataset who met the specified criteria. 
+
+```json
+{
+  "status": "ok",
+  "protocolVersion": "v2",
+  "uuid": "9541374b-8b97-41a4-9717-4a2a25f437ae",
+  "queryResult": {
+    "count": 10,
+    "datasetCount": 0,
+    "files": []
+  },
+  "message": "",
+  "collection_id": "collection_id"
+}
+```

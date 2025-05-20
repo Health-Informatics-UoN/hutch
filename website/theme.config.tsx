@@ -1,5 +1,6 @@
 import React from "react";
 import { useConfig } from "nextra-theme-docs";
+import Footer from "./components/Footer";
 
 export default {
   docsRepositoryBase:
@@ -17,6 +18,9 @@ export default {
   ),
   project: {
     link: "https://github.com/Health-Informatics-UoN/hutch",
+  },
+  sidebar: {
+    defaultMenuCollapseLevel: 1,
   },
   head() {
     const { frontMatter } = useConfig();
@@ -41,19 +45,7 @@ export default {
   },
   footer: {
     content: (
-      <span>
-        © {new Date().getFullYear()}{" "}
-        <a href="https://nottingham.ac.uk" target="_blank">
-          <img
-            src="/images/uon_white_text_web.png"
-            alt="University of Nottingham"
-            width={243}
-            height={90}
-          />
-        </a>
-        <br />
-        MIT licence
-      </span>
+      <Footer />
     ),
   },
 };
