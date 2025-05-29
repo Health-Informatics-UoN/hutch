@@ -9,14 +9,6 @@
   </strong>
 </div>
 
-## Hutch-TREFX
-
-![MIT License][license-badge] [![Trefx Repo][github-badge]][trefx-repo] [![Trefx Releases][trefx-releases-badge]][trefx-releases] [![Trefx Tests][trefx-tests-badge]][trefx-tests]
-
-![.NET][dotnet-badge] [![Trefx Docs][docs-badge]][trefx-docs]
-
-[Hutch-TREFX][trefx-repo] is an Executing Agent implementation that accepts jobs from a TRE Agent, executes them and records outputs and provenance, submitting the results to be approved for egress.
-
 ## Cohort Discovery
 
 ### 🐇 [Bunny][bunny-repo]
@@ -60,12 +52,6 @@ A Federated Proxy for a Cohort Discovery Task API.
 [relay-tests]: https://github.com/Health-Informatics-UoN/hutch-relay/actions/workflows/check.relay.build-test.yml
 [relay-releases-badge]: https://img.shields.io/github/v/tag/Health-Informatics-UoN/hutch-relay
 [relay-tests-badge]: https://github.com/Health-Informatics-UoN/hutch-relay/actions/workflows/check.relay.build-test.yml/badge.svg
-[trefx-repo]: https://github.com/Health-Informatics-UoN/hutch-trefx
-[trefx-docs]: https://health-informatics-uon.github.io/hutch-trefx/
-[trefx-releases]: https://github.com/Health-Informatics-UoN/hutch-trefx/releases
-[trefx-releases-badge]: https://img.shields.io/github/v/tag/Health-Informatics-UoN/hutch-trefx
-[trefx-tests]: https://github.com/Health-Informatics-UoN/hutch-trefx/actions/workflows/build.HutchAgent.yml
-[trefx-tests-badge]: https://github.com/Health-Informatics-UoN/hutch-trefx/actions/workflows/build.HutchAgent.yml/badge.svg
 [license-badge]: https://img.shields.io/github/license/health-informatics-uon/hutch-bunny.svg
 [dotnet-badge]: https://img.shields.io/badge/.NET-5C2D91?style=flat-square&logo=.net&logoColor=white
 [python-badge]: https://img.shields.io/badge/Python-3776AB?style=flat-square&logo=python&logoColor=white
