@@ -1,6 +1,20 @@
 export default {
-  index: "Hutch",
-  contributing: "Contributing",
+  index: {
+    title: "Hutch",
+    theme: {
+      breadcrumb: false,
+      layout: 'full',
+      timestamp: false,
+      pagination: false,
+    }
+  },
+  concepts: {
+    title: "Concepts",
+    theme: {
+      collapsed: true,
+    }
+  },
+  bunny: "Bunny",
   relay: "Relay",
-  bunny: "Bunny"
+  contributing: "Contributing",
 }

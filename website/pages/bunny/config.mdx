@@ -1,20 +1,14 @@
+import { Mandatory } from "../../components/Mandatory";
+
 # Configuration
 
 Bunny can be configured using environment variables.
 If you're running Bunny as part of a composed stack of containers, these are set in the `compose.yml`.
-They can be found under
 
 ```yaml
 services:
-  # other containers, if needed
   bunny:
-    depends_on:
-      - db
-      - relay
-      - rabbitmq
-    build:
-      context: app/bunny
-      dockerfile: Dockerfile.daemon
+    image: ghcr.io/health-informatics-uon/hutch/bunny:edge
     environment:
       - DATASOURCE_DB_USERNAME=postgres
       - DATASOURCE_DB_PASSWORD=postgres
@@ -26,144 +20,78 @@ services:
       - TASK_API_BASE_URL=http://relay:8080/link_connector_api
       - TASK_API_USERNAME=username
       - TASK_API_PASSWORD=password
-      - LOW_NUMBER_SUPPRESSION_THRESHOLD=
-      - ROUNDING_TARGET=
-      - POLLING_INTERVAL=5
+      - TASK_API_TYPE=a
       - COLLECTION_ID=collection_id
+      - LOW_NUMBER_SUPPRESSION_THRESHOLD=10
+      - ROUNDING_TARGET=10
 ```
-
-In development, if you're running Bunny outside a container, you can instead set these with a `.env` file, as described in [quickstart](/bunny/quickstart).
 
 ## Task API [#task]
 
-```yaml
-TASK_API_BASE_URL=<host>:<port>/link_connector_api
-TASK_API_USERNAME=<Task API username>
-TASK_API_PASSWORD=<Task API password>
-TASK_API_ENFORCE_HTTPS=true
-```
+| Name                                     | Type    | Description                                                        | Default |
+|------------------------------------------|---------|--------------------------------------------------------------------|---------|
+|<Mandatory>`TASK_API_BASE_URL`</Mandatory>|`string` |RQUEST API URL                                                      |         |
+|<Mandatory>`TASK_API_USERNAME`</Mandatory>|`string` |API username                                                        |         |
+|<Mandatory>`TASK_API_PASSWORD`</Mandatory>|`string` |API Password                                                        |         |
+|<Mandatory>`COLLECTION_ID`</Mandatory>    |`string` |API collection_id                                                   |         |
+|`TASK_API_TYPE`                           |`"a,b,c"`|Specifies the task type to query for, needed if connecting to RQUEST|         |
+|`TASK_API_ENFORCE_HTTPS`                  |`boolean`|Specifies whether to enforce a HTTPS `TASK_API_BASE_URL`            | `true`  |
 
 To configure Bunny to communicate with a Task API, such as [Relay](/relay) or RQuest, the `TASK_API` variables must be set.
 
-- Host examples
-  - If Bunny and Relay are running in the same Docker Compose stack, the host should be the Relay service name in the stack, e.g. `http://relay`.
+Host examples:
+  - If Bunny and Relay are running in the same Docker Compose stack, the host should be the Relay service name in the stack, e.g. `http://relay`
   - If you have Relay running locally, and Bunny running locally, the host should be `http://localhost`
   - If you have any Task API running elsewhere, the host should be e.g. `https://my-task-api.com` with the correct hostname
 - The Base URL should include `/link_connector_api` at the end of the path
-- HTTP Requests from Bunny are authenticated by the `TASK_API_USERNAME` and `TASK_API_PASSWORD`, please put your Task API credentials here
-
-
-### TASK_API_ENFORCE_HTTPS
-
-Default: `true`
-
-If a non-HTTPS URL is provided in `TASK_API_BASE_URL`, Bunny will throw an error. 
-To explicitly allow HTTP URLs, set `TASK_API_ENFORCE_HTTPS` to `false` - in this case, Bunny will only display a warning.
-
-Valid values:
-- `true`
-- `false`
-
-```yaml
-TASK_API_ENFORCE_HTTPS=true
-```
+- Requests from Bunny are authenticated by the `TASK_API_USERNAME` and `TASK_API_PASSWORD`, please put your Task API credentials here
 
 ### Task Type
 
-If you would like Bunny to connect directly with Rquest, you have to add one more configuration which is `TASK_API_TYPE`.
+If you would like Bunny to connect directly with RQUEST, you need to add `TASK_API_TYPE`.
 
 This can only be either `a` (Availability), `b` (Distribution and PHEWAS) or `c` (AnalyticsGwas, AnalyticsGwasQuantitiveTrait, AnalyticsBurdenTest).
 
-More guidance is available in the [Connect to RQuest](/bunny/how_to/connect_rquest) How To Guide.
+Further guidance is available in the [Connect to RQuest](/bunny/deployment/connect_rquest) How To Guide.
 
 ## Database [#database]
 
-The database connection is configured by the variables prefixed with `DATASOURCE_DB`
+The database connection is configured by the variables prefixed with `DATASOURCE_`
 
-```
-DATASOURCE_DB_USERNAME=<username>
-DATASOURCE_DB_PASSWORD=<password>
-DATASOURCE_DB_DATABASE=<database name - ignored if using Trino>
-DATASOURCE_DB_DRIVERNAME=<driver name - ignored if using Trino>
-DATASOURCE_DB_CATALOG=<Trino catalog name - ignored if not using Trino>
-DATASOURCE_DB_SCHEMA=<database schema name>
-DATASOURCE_DB_PORT=<port served by database>
-DATASOURCE_DB_HOST=<database host>
-DATASOURCE_USE_TRINO=
-```
+| Name                                            | Type               | Description        | Default    |
+|-------------------------------------------------|--------------------|--------------------|------------|
+|<Mandatory>`DATASOURCE_DB_USERNAME`</Mandatory>  |`string`            |Database username   |`trino-user`|
+|<Mandatory>`DATASOURCE_DB_PASSWORD`</Mandatory>  |`string`            |Database password   |            |
+|<Mandatory>`DATASOURCE_DB_DATABASE`</Mandatory>  |`string`            |Database name       |            |
+|<Mandatory>`DATASOURCE_DB_SCHEMA`</Mandatory>    |`string`            |Database schema     |            |
+|<Mandatory>`DATASOURCE_DB_PORT`</Mandatory>      |`string`            |Database port       |            |
+|<Mandatory>`DATASOURCE_DB_HOST`</Mandatory>      |`string`            |Database host       |            |
+|`DATASOURCE_DB_DRIVERNAME`                       |`"postgresql,mssql"`|Database dialect    |`postgresql`|
+|`DATASOURCE_DB_CATALOG`                          |`string`            |Trino catalog name  |            |
+|`DATASOURCE_USE_TRINO`                           |`boolean`           |Use Trino to connect|`False`     |
 
-If using the supplied `compose.yml` and running the database in the same stack, unless you modify the database configuration, the defaults will connect Bunny to your database.
-If using a remote database, change accordingly.
+## Disclosure Control
 
-### DATASOURCE_DB_DRIVERNAME
+| Name                             | Type    | Description                                                                                                                 | Default |
+|----------------------------------|---------|-----------------------------------------------------------------------------------------------------------------------------|---------|
+|`LOW_NUMBER_SUPPRESSION_THRESHOLD`|`integer`|Specifies the minimum number of individuals required for a result to be returned; counts below this threshold are suppressed.|   `10`  |
+|`ROUNDING_TARGET`                 |`integer`|Specifies the value to which all returned counts are rounded                                                                 |   `10`  |
 
-Defines the database driver to use. Currently supports PostgreSQL and SQL Server.
+- Low number suppression defaults to ON with a value of 10 such that any result with a count below 10 will return 0.
+- Rounding defaults to ON with a value of 10 such that results are returned to the nearest 10.
 
-Valid values:
-- `postgresql` -> PostgreSQL
-- `mssql` -> SQL Server
-
-```yaml
-DATASOURCE_DB_DRIVERNAME=postgresql
-```
-
-### DATASOURCE_WAKE_DB
-
-Default: `false`
-
-Flag to enable waking of Azure Serverless MSSQL Databases. This will enable a soft retry to wait for the database to wake.
-
-Valid values:
-- `true`
-- `false`
-
-```yaml
-DATASOURCE_WAKE_DB=true
-```
-
-## Obfuscation
-
-Two methods of result obfuscation are provided as below. Before building your Hutch tools stack, these can be configured in `compose.yml`.
-
-<ins>Notice</ins>: The method will be applied when its related value is
-provided. When both values are provided, the Low Number Suppression will be
-applied first, then Rounding.
-
-### Low Number Suppression
-
-There's a data disclosure risk if low numbers are reported for a given query.
-
-Therefore, low number suppression defaults to ON with a value of 10 such that any result with a count below 10 will return 0.
-
-You can override this default by setting the `LOW_NUMBER_SUPPRESSION_THRESHOLD` value. To switch OFF set to 0.
-```yaml
-LOW_NUMBER_SUPPRESSION_THRESHOLD=#Add your threshold here
-```
-
-### Rounding
-There's a data disclosure risk if raw results are returned.
-
-Therefore, rounding defaults to ON with a value of 10 such that results are returned to the nearest 10.
-
-You can override the default by setting `ROUNDING_TARGET` and can switch OFF by setting it to 0.
-
-```yaml
-ROUNDING_TARGET=#Add your rounding target
-```
+Read more about [disclosure controls](/concepts/disclosure_controls).
 
 ## Polling
 
-This is set to the number of seconds provided in the environment indicating the polling interval duration.
-By default, Bunny will make `GET` request to Task API host every 5 seconds to check for jobs.
+| Name             | Type    | Description                                                                                   | Default |
+|------------------|---------|-----------------------------------------------------------------------------------------------|---------|
+|`POLLING_INTERVAL`|`integer`|Specifies how often (seconds) the Task API is polled for new jobs                              |   `5`   |
+|`INITIAL_BACKOFF` |`integer`|Specifies the starting wait time (seconds) before retrying after a network error               |   `5`   |
+|`MAX_BACKOFF`     |`integer`|Sets the maximum wait time (seconds) that exponential backoff can reach after repeated failures|   `60`  |
 
-```yaml
-POLLING_INTERVAL=5
-```
+## Logging
 
-## Collection ID
-
-This is the collection ID you would like to query.
-
-```yaml
-COLLECTION_ID=collection_id
-```
+| Name               | Type                              | Description               | Default |
+|--------------------|-----------------------------------|---------------------------|---------|
+|`BUNNY_LOGGER_LEVEL`|`"DEBUG,INFO,WARNING,ERROR,CRITICAL"`|Specifies the logging level| `INFO`  |
