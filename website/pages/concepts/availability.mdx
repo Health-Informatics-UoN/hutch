@@ -71,11 +71,11 @@ The result is a numerical count of matching records, subject to [disclosure cont
     This is the SQL executed by Bunny in response to the task.
 
     It calculates an anonymised count of individuals who have a record matching a specific concept ID (`4323688`) in any of the four core OMOP tables: measurement, observation, condition_occurrence, or drug_exposure, with the relevant event date occurring on or before `2025-04-08 21:05:24.471729`.
-    -UNION Subqueries: Each subquery selects person_ids from a different domain table where the concept_id matches 4323688.
-    -Time Filter: Each subquery includes only rows with a date on or before '2025-07-01 09:14:26.842531'.
+    -`UNION` Subqueries: Each subquery selects `person_ids` from a different domain table where the `concept_id` matches `4323688`.
+    -Time Filter: Each subquery includes only rows with a date on or before `2025-07-01 09:14:26.842531`.
     -OR Logic: A person is included if they appear in any one of the four subqueries.
-    -Deduplication: UNION ensures each person_id appears only once, even if matched in multiple tables.
-    -Outer Query: Counts the total number of unique person_ids returned from the union.
+    -Deduplication: `UNION` ensures each `person_id` appears only once, even if matched in multiple tables.
+    -Outer Query: Counts the total number of unique `person_ids` returned from the union.
 	  
     Disclosure control:
 	  - The count is rounded to the nearest 10 for disclosure control `(ROUND(count / 10) * 10)`.
