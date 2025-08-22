@@ -58,17 +58,19 @@ Further guidance is available in the [Connect to RQuest](/bunny/deployment/conne
 
 The database connection is configured by the variables prefixed with `DATASOURCE_`
 
-| Name                                            | Type               | Description        | Default    |
-|-------------------------------------------------|--------------------|--------------------|------------|
-|<Mandatory>`DATASOURCE_DB_USERNAME`</Mandatory>  |`string`            |Database username   |`trino-user`|
-|<Mandatory>`DATASOURCE_DB_PASSWORD`</Mandatory>  |`string`            |Database password   |            |
-|<Mandatory>`DATASOURCE_DB_DATABASE`</Mandatory>  |`string`            |Database name       |            |
-|<Mandatory>`DATASOURCE_DB_SCHEMA`</Mandatory>    |`string`            |Database schema     |            |
-|<Mandatory>`DATASOURCE_DB_PORT`</Mandatory>      |`string`            |Database port       |            |
-|<Mandatory>`DATASOURCE_DB_HOST`</Mandatory>      |`string`            |Database host       |            |
-|`DATASOURCE_DB_DRIVERNAME`                       |`"postgresql,mssql"`|Database dialect    |`postgresql`|
-|`DATASOURCE_DB_CATALOG`                          |`string`            |Trino catalog name  |            |
-|`DATASOURCE_USE_TRINO`                           |`boolean`           |Use Trino to connect|`False`     |
+| Name                                            | Type               | Description               | Default    |
+|-------------------------------------------------|--------------------|---------------------------|------------|
+|<Mandatory>`DATASOURCE_DB_USERNAME`</Mandatory>  |`string`            |Database username          |`trino-user`|
+|<Mandatory>`DATASOURCE_DB_PASSWORD`</Mandatory>  |`string`            |Database password          |            |
+|<Mandatory>`DATASOURCE_DB_DATABASE`</Mandatory>  |`string`            |Database name              |            |
+|<Mandatory>`DATASOURCE_DB_SCHEMA`</Mandatory>    |`string`            |Database schema            |            |
+|<Mandatory>`DATASOURCE_DB_PORT`</Mandatory>      |`string`            |Database port              |            |
+|<Mandatory>`DATASOURCE_DB_HOST`</Mandatory>      |`string`            |Database host              |            |
+|`DATASOURCE_DB_DRIVERNAME`                       |`"postgresql,mssql"`|Database dialect           |`postgresql`|
+|`DATASOURCE_DB_CATALOG`                          |`string`            |Trino catalog name         |            |
+|`DATASOURCE_USE_TRINO`                           |`boolean`           |Use Trino to connect       |`False`     |
+|`DATASOURCE_USE_AZURE_MANAGED_IDENTITY`          |`boolean`           |Use Azure Managed Identity |`False`     |
+|`DATASOURCE_AZURE_MANAGED_IDENTITY_CLIENT_ID`    |`string`            |Azure Identity Client ID   |            |
 
 ## Disclosure Control
 
