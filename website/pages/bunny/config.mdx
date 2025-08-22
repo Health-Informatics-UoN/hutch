@@ -28,21 +28,22 @@ services:
 
 ## Task API [#task]
 
-| Name                                     | Type    | Description                                                        | Default |
-|------------------------------------------|---------|--------------------------------------------------------------------|---------|
-|<Mandatory>`TASK_API_BASE_URL`</Mandatory>|`string` |RQUEST API URL                                                      |         |
-|<Mandatory>`TASK_API_USERNAME`</Mandatory>|`string` |API username                                                        |         |
-|<Mandatory>`TASK_API_PASSWORD`</Mandatory>|`string` |API Password                                                        |         |
-|<Mandatory>`COLLECTION_ID`</Mandatory>    |`string` |API collection_id                                                   |         |
-|`TASK_API_TYPE`                           |`"a,b,c"`|Specifies the task type to query for, needed if connecting to RQUEST|         |
-|`TASK_API_ENFORCE_HTTPS`                  |`boolean`|Specifies whether to enforce a HTTPS `TASK_API_BASE_URL`            | `true`  |
+| Name                                       | Type      | Description                                                          | Default |
+| ------------------------------------------ | --------- | -------------------------------------------------------------------- | ------- |
+| <Mandatory>`TASK_API_BASE_URL`</Mandatory> | `string`  | RQUEST API URL                                                       |         |
+| <Mandatory>`TASK_API_USERNAME`</Mandatory> | `string`  | API username                                                         |         |
+| <Mandatory>`TASK_API_PASSWORD`</Mandatory> | `string`  | API Password                                                         |         |
+| <Mandatory>`COLLECTION_ID`</Mandatory>     | `string`  | API collection_id                                                    |         |
+| `TASK_API_TYPE`                            | `"a,b,c"` | Specifies the task type to query for, needed if connecting to RQUEST |         |
+| `TASK_API_ENFORCE_HTTPS`                   | `boolean` | Specifies whether to enforce a HTTPS `TASK_API_BASE_URL`             | `true`  |
 
 To configure Bunny to communicate with a Task API, such as [Relay](/relay) or RQuest, the `TASK_API` variables must be set.
 
 Host examples:
-  - If Bunny and Relay are running in the same Docker Compose stack, the host should be the Relay service name in the stack, e.g. `http://relay`
-  - If you have Relay running locally, and Bunny running locally, the host should be `http://localhost`
-  - If you have any Task API running elsewhere, the host should be e.g. `https://my-task-api.com` with the correct hostname
+
+- If Bunny and Relay are running in the same Docker Compose stack, the host should be the Relay service name in the stack, e.g. `http://relay`
+- If you have Relay running locally, and Bunny running locally, the host should be `http://localhost`
+- If you have any Task API running elsewhere, the host should be e.g. `https://my-task-api.com` with the correct hostname
 - The Base URL should include `/link_connector_api` at the end of the path
 - Requests from Bunny are authenticated by the `TASK_API_USERNAME` and `TASK_API_PASSWORD`, please put your Task API credentials here
 
@@ -58,24 +59,30 @@ Further guidance is available in the [Connect to RQuest](/bunny/deployment/conne
 
 The database connection is configured by the variables prefixed with `DATASOURCE_`
 
-| Name                                            | Type               | Description        | Default    |
-|-------------------------------------------------|--------------------|--------------------|------------|
-|<Mandatory>`DATASOURCE_DB_USERNAME`</Mandatory>  |`string`            |Database username   |`trino-user`|
-|<Mandatory>`DATASOURCE_DB_PASSWORD`</Mandatory>  |`string`            |Database password   |            |
-|<Mandatory>`DATASOURCE_DB_DATABASE`</Mandatory>  |`string`            |Database name       |            |
-|<Mandatory>`DATASOURCE_DB_SCHEMA`</Mandatory>    |`string`            |Database schema     |            |
-|<Mandatory>`DATASOURCE_DB_PORT`</Mandatory>      |`string`            |Database port       |            |
-|<Mandatory>`DATASOURCE_DB_HOST`</Mandatory>      |`string`            |Database host       |            |
-|`DATASOURCE_DB_DRIVERNAME`                       |`"postgresql,mssql"`|Database dialect    |`postgresql`|
-|`DATASOURCE_DB_CATALOG`                          |`string`            |Trino catalog name  |            |
-|`DATASOURCE_USE_TRINO`                           |`boolean`           |Use Trino to connect|`False`     |
+| Name                                            | Type                 | Description                | Default      |
+| ----------------------------------------------- | -------------------- | -------------------------- | ------------ |
+| `DATASOURCE_DB_USERNAME`                        | `string`             | Database username          | `trino-user` |
+| `DATASOURCE_DB_PASSWORD`                        | `string`             | Database password          |              |
+| <Mandatory>`DATASOURCE_DB_DATABASE`</Mandatory> | `string`             | Database name              |              |
+| <Mandatory>`DATASOURCE_DB_SCHEMA`</Mandatory>   | `string`             | Database schema            |              |
+| <Mandatory>`DATASOURCE_DB_PORT`</Mandatory>     | `string`             | Database port              |              |
+| <Mandatory>`DATASOURCE_DB_HOST`</Mandatory>     | `string`             | Database host              |              |
+| `DATASOURCE_DB_DRIVERNAME`                      | `"postgresql,mssql"` | Database dialect           | `postgresql` |
+| `DATASOURCE_DB_CATALOG`                         | `string`             | Trino catalog name         |              |
+| `DATASOURCE_USE_TRINO`                          | `boolean`            | Use Trino to connect       | `False`      |
+| `DATASOURCE_USE_AZURE_MANAGED_IDENTITY`         | `boolean`            | Use Azure Managed Identity | `False`      |
+| `DATASOURCE_AZURE_MANAGED_IDENTITY_CLIENT_ID`   | `string`             | Azure Identity Client ID   |              |
+
+When `DATASOURCE_USE_AZURE_MANAGED_IDENTITY` is enabled, the application will connect to Azure SQL Server using Azure Managed Identity instead of traditional credentials.
+This allows the service to authenticate securely without requiring a stored username or password.
+If you are using a user-assigned identity, you can provide its client ID through `DATASOURCE_AZURE_MANAGED_IDENTITY_CLIENT_ID`.
 
 ## Disclosure Control
 
-| Name                             | Type    | Description                                                                                                                 | Default |
-|----------------------------------|---------|-----------------------------------------------------------------------------------------------------------------------------|---------|
-|`LOW_NUMBER_SUPPRESSION_THRESHOLD`|`integer`|Specifies the minimum number of individuals required for a result to be returned; counts below this threshold are suppressed.|   `10`  |
-|`ROUNDING_TARGET`                 |`integer`|Specifies the value to which all returned counts are rounded                                                                 |   `10`  |
+| Name                               | Type      | Description                                                                                                                   | Default |
+| ---------------------------------- | --------- | ----------------------------------------------------------------------------------------------------------------------------- | ------- |
+| `LOW_NUMBER_SUPPRESSION_THRESHOLD` | `integer` | Specifies the minimum number of individuals required for a result to be returned; counts below this threshold are suppressed. | `10`    |
+| `ROUNDING_TARGET`                  | `integer` | Specifies the value to which all returned counts are rounded                                                                  | `10`    |
 
 - Low number suppression defaults to ON with a value of 10 such that any result with a count below 10 will return 0.
 - Rounding defaults to ON with a value of 10 such that results are returned to the nearest 10.
@@ -84,14 +91,14 @@ Read more about [disclosure controls](/concepts/disclosure_controls).
 
 ## Polling
 
-| Name             | Type    | Description                                                                                   | Default |
-|------------------|---------|-----------------------------------------------------------------------------------------------|---------|
-|`POLLING_INTERVAL`|`integer`|Specifies how often (seconds) the Task API is polled for new jobs                              |   `5`   |
-|`INITIAL_BACKOFF` |`integer`|Specifies the starting wait time (seconds) before retrying after a network error               |   `5`   |
-|`MAX_BACKOFF`     |`integer`|Sets the maximum wait time (seconds) that exponential backoff can reach after repeated failures|   `60`  |
+| Name               | Type      | Description                                                                                     | Default |
+| ------------------ | --------- | ----------------------------------------------------------------------------------------------- | ------- |
+| `POLLING_INTERVAL` | `integer` | Specifies how often (seconds) the Task API is polled for new jobs                               | `5`     |
+| `INITIAL_BACKOFF`  | `integer` | Specifies the starting wait time (seconds) before retrying after a network error                | `5`     |
+| `MAX_BACKOFF`      | `integer` | Sets the maximum wait time (seconds) that exponential backoff can reach after repeated failures | `60`    |
 
 ## Logging
 
-| Name               | Type                              | Description               | Default |
-|--------------------|-----------------------------------|---------------------------|---------|
-|`BUNNY_LOGGER_LEVEL`|`"DEBUG,INFO,WARNING,ERROR,CRITICAL"`|Specifies the logging level| `INFO`  |
+| Name                 | Type                                  | Description                 | Default |
+| -------------------- | ------------------------------------- | --------------------------- | ------- |
+| `BUNNY_LOGGER_LEVEL` | `"DEBUG,INFO,WARNING,ERROR,CRITICAL"` | Specifies the logging level | `INFO`  |
