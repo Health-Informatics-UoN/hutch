@@ -124,6 +124,37 @@ Your desired approach may differ depending on the environment you're configuring
         Defaults to `true`.
       </Td>
     </Tr>
+    <Tr>
+      <Td>`ResumeOnError`</Td>
+      <Td>
+        Whether to resume polling after a non-critical error occurs, swallowing (but logging) the exception.
+
+        Container orchestrated (k8s, compose) or systemd service environments should prefer to always terminate,
+        and control restarting the application themselves.
+
+        Defaults to `false`.
+      </Td>
+    </Tr>
+    <Tr>
+      <Td>`ErrorDelay`</Td>
+      <Td>
+        The delay in seconds to wait before resuming polling after an error occurs.
+
+        Defaults to `5`.
+      </Td>
+    </Tr>
+    <Tr>
+      <Td>`QueueTypes`</Td>
+      <Td>
+        Specify which Job Type queues Relay should poll against in the Upstream Task API.
+
+        Can be an empty string, a `*`, or a list of comma separated Task API Job Type codes.
+        An empty string will cause Relay to poll single "unified" queue for jobs of any type, e.g. when connecting to Upstream Relays.
+        A comma separated list will cause Relay to poll separate queues for each supported type listed, in parallel, e.g. when connecting to upstream RQUEST.
+
+        Defaults to `*` polling all supported types from separate queues (standard RQUEST behaviour)
+      </Td>
+    </Tr>
 
   </tbody>
 </Table>
