@@ -231,6 +231,78 @@ Examples:
   </tbody>
 </Table>
 
+**Configuration Section: `Beacon.Info`**
+
+<Table>
+  <thead>
+    <Tr>
+      <Th>Key</Th>
+      <Th>Description</Th>
+    </Tr>
+  </thead>
+  <tbody>
+    <Tr>
+      <Td>`Id`</Td>
+      <Td>
+        A unique identifier for this Beacon installation.
+
+        Values should typically be in reverse domain notation e.g. `org.my-organization.beacon`
+
+        Default is empty.
+      </Td>
+    </Tr>
+    <Tr>
+      <Td>`Name`</Td>
+      <Td>
+        A friendly name for this Beacon installation.
+
+        Defaults to `Hutch Relay Beacon`
+      </Td>
+    </Tr>
+    <Tr>
+      <Td>`Description`</Td>
+      <Td>
+        Description of this Beacon installation.
+
+        Defaults to `A federated discovery service for aggregate individuals summaries across multiple downstream data sources`
+      </Td>
+    </Tr>
+    <Tr>
+      <Td>`BeaconOrganization`</Td>
+      <Td>Details of the organisation responsible for this Beacon installation.</Td>
+    </Tr>
+    <Tr>
+      <Td>`WelcomeUrl`</Td>
+      <Td>
+        Link to a web page for this Beacon installation.
+      </Td>
+    </Tr>
+    <Tr>
+      <Td>`AlternativeUrl`</Td>
+      <Td>
+        Another URL where this Beacon may be accessed; possibly with other restrictions in place.
+      </Td>
+    </Tr>
+    <Tr>
+      <Td>`CreatedDate`</Td>
+      <Td>
+        The ISO-8601 date/time this Beacon installation was made available.
+        
+        Defaults to when Beacon functionality was made available in Relay.
+      </Td>
+    </Tr>
+    <Tr>
+      <Td>`UpdatedDate`</Td>
+      <Td>
+        The ISO-8601 date/time this Beacon installation was last updated.
+        
+        Defaults to the Build timestamp of the running release of Relay.
+      </Td>
+    </Tr>
+
+  </tbody>
+</Table>
+
 Examples:
 
 <Tabs items={['Environment', 'Compose', 'JSON']}>
@@ -238,6 +310,8 @@ Examples:
     ```bash filename=".env" copy
     Beacon__Enable=true
     Beacon__RequestFilteringTermsOnStartup="IfEmpty"
+    Beacon__SecurityAttributes__DefaultGranularity="count"
+    Beacon__Info__Id="org.my-organization.beacon"
     ```
 
   </Tabs.Tab>
@@ -246,6 +320,8 @@ Examples:
     environment:
       Beacon__Enable: true
       Beacon__RequestFilteringTermsOnStartup: "IfEmpty"
+      Beacon__SecurityAttributes__DefaultGranularity: "count"
+      Beacon__Info__Id: "org.my-organization.beacon"
     ```
 
   </Tabs.Tab>
@@ -254,7 +330,13 @@ Examples:
     {
       "Beacon": {
         "Enable": "true",
-        "RequestFilteringTermsOnStartup": "IfEmpty"
+        "RequestFilteringTermsOnStartup": "IfEmpty",
+        "SecurityAttributes": {
+          "DefaultGranularity": "count"
+        },
+        "Info": {
+          "Id": "org.my-organization.beacon"
+        }
       }
     }
     ```
