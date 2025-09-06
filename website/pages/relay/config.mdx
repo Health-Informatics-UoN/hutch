@@ -475,11 +475,51 @@ Examples:
   </Tabs.Tab>
 </Tabs>
 
+## Logging
+
+**Configuration Section: `Serilog`**
+
+Logging is implemented through [Serilog](https://github.com/serilog/serilog-extensions-logging).
+
+Examples:
+
+<Tabs items={['Environment', 'Compose', 'JSON']}>
+  <Tabs.Tab>
+    ```bash filename=".env" copy
+    Serilog__MinimumLevel__Default="Information"
+    ```
+
+  </Tabs.Tab>
+  <Tabs.Tab>
+    ```yaml filename="compose.yml" copy
+    environment:
+      Serilog__MinimumLevel__Default: "Information"
+    ```
+
+  </Tabs.Tab>
+  <Tabs.Tab>
+    ```json filename="secrets.json" copy
+    {
+      "Serilog": {
+        "MinimumLevel": {
+          "Default": "Information",
+          "Override": {
+            "Microsoft": "Warning",
+            "Microsoft.AspNetCore.Hosting.Diagnostics": "Error",
+            "Microsoft.Hosting.Lifetime": "Information"
+          }
+    }
+  },
+    }
+    ```
+
+  </Tabs.Tab>
+</Tabs>
+
 ## ASP.NET Core
 
 Since Relay is an ASP.NET Core application, there are some capabilities of that framework that can be configured in the standard way.
 
-Examples of this include [logging levels](https://learn.microsoft.com/en-us/aspnet/core/fundamentals/logging/#configure-logging)
-and [hosting configuration](https://learn.microsoft.com/en-us/aspnet/core/fundamentals/servers/kestrel/endpoints) (e.g. bind addresses, TLS...).
+Examples of this include [hosting configuration](https://learn.microsoft.com/en-us/aspnet/core/fundamentals/servers/kestrel/endpoints) (e.g. bind addresses, TLS...).
 
 Please refer to the [ASP.NET Core documentation](https://learn.microsoft.com/en-us/aspnet/core/fundamentals/configuration/) on these topics.
