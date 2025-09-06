@@ -227,6 +227,42 @@ Examples:
         Defaults to `boolean`
       </Td>
     </Tr>
+    <Tr>
+      <Td>`SecurityLevels`</Td>
+      <Td>
+        [Security Level](https://b2ri-documentation.readthedocs.io/en/latest/api/#api-security-levels) for Relay's Beacon functionality.
+
+        Only `PUBLIC` is currently supported by Relay.
+
+        Defaults to `PUBLIC`
+      </Td>
+    </Tr>
+
+  </tbody>
+</Table>
+
+**Configuration Section: `Beacon.MaturityAttributes`**
+
+<Table>
+  <thead>
+    <Tr>
+      <Th>Key</Th>
+      <Th>Description</Th>
+    </Tr>
+  </thead>
+  <tbody>
+    <Tr>
+      <Td>`ProductionStatus`</Td>
+      <Td>
+        Production Status for Relay's Beacon functionality.
+
+        - `DEV`
+        - `TEST`
+        - `PROD`
+
+        Defaults to `DEV`
+      </Td>
+    </Tr>
 
   </tbody>
 </Table>
@@ -311,6 +347,7 @@ Examples:
     Beacon__Enable=true
     Beacon__RequestFilteringTermsOnStartup="IfEmpty"
     Beacon__SecurityAttributes__DefaultGranularity="count"
+    Beacon__MaturityAttributes__ProductionStatus="PROD"
     Beacon__Info__Id="org.my-organization.beacon"
     ```
 
@@ -321,6 +358,7 @@ Examples:
       Beacon__Enable: true
       Beacon__RequestFilteringTermsOnStartup: "IfEmpty"
       Beacon__SecurityAttributes__DefaultGranularity: "count"
+      Beacon__MaturityAttributes__ProductionStatus: "PROD"
       Beacon__Info__Id: "org.my-organization.beacon"
     ```
 
@@ -333,6 +371,9 @@ Examples:
         "RequestFilteringTermsOnStartup": "IfEmpty",
         "SecurityAttributes": {
           "DefaultGranularity": "count"
+        },
+        "MaturityAttributes": {
+          "ProductionStatus": "PROD"
         },
         "Info": {
           "Id": "org.my-organization.beacon"
