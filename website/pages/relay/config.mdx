@@ -424,6 +424,57 @@ Examples:
   </Tabs.Tab>
 </Tabs>
 
+## Monitoring
+
+**Configuration Section: `Monitoring`**
+
+<Table>
+  <thead>
+    <Tr>
+      <Th>Key</Th>
+      <Th>Description</Th>
+    </Tr>
+  </thead>
+  <tbody>
+    <Tr>
+      <Td>`HealthEndpoint`</Td>
+      <Td>
+        The route to use for the health check endpoint.
+
+        Defaults to `/healthz`.
+      </Td>
+    </Tr>
+  </tbody>
+</Table>
+
+Examples:
+
+<Tabs items={['Environment', 'Compose', 'JSON']}>
+  <Tabs.Tab>
+    ```bash filename=".env" copy
+    Monitoring__HealthEndpoint="/health"
+    ```
+
+  </Tabs.Tab>
+  <Tabs.Tab>
+    ```yaml filename="compose.yml" copy
+    environment:
+      Monitoring__HealthEndpoint: "/health"
+    ```
+
+  </Tabs.Tab>
+  <Tabs.Tab>
+    ```json filename="secrets.json" copy
+    {
+      "Monitoring": {
+        "HealthEndpoint": "/health",
+      }
+    }
+    ```
+
+  </Tabs.Tab>
+</Tabs>
+
 ## ASP.NET Core
 
 Since Relay is an ASP.NET Core application, there are some capabilities of that framework that can be configured in the standard way.
