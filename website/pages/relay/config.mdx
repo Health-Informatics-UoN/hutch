@@ -184,6 +184,22 @@ Examples:
       <Td>`Enable`</Td>
       <Td>
         Whether to enable Beacon functionality: `true|false`
+
+        Defaults to `false`
+      </Td>
+    </Tr>
+    <Tr>
+      <Td>`RequestFilteringTermsOnStartup`</Td>
+      <Td>
+        Whether to request filtering terms from subnodes when Relay starts.
+
+        - `Never`: do not queue Generic Code Distribution tasks at Startup
+        - `IfEmpty`: if there are no cached terms at startup, then queue Generic Code Distribution tasks if there aren't any already in progress.
+        - `ForceIfEmpty`: if there are no cached terms at startup, then queue Generic Code Distribution tasks EVEN IF there ARE some already in progress.
+        - `Always`: Regardless of the state of the cache, queue Generic Code Distribution tasks if there aren't any already in progress.
+        - `ForceAlways`: Regardless of the state of the cache, queue Generic Code Distribution tasks EVEN IF there ARE some already in progress.
+
+        Default `Never`.
       </Td>
     </Tr>
 
