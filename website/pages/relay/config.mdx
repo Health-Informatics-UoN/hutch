@@ -168,6 +168,56 @@ Examples:
   </Tabs.Tab>
 </Tabs>
 
+## GA4GH Beacon [#GA4GH-Beacon]
+
+**Configuration Section: `Beacon`**
+
+<Table>
+  <thead>
+    <Tr>
+      <Th>Key</Th>
+      <Th>Description</Th>
+    </Tr>
+  </thead>
+  <tbody>
+    <Tr>
+      <Td>`Enable`</Td>
+      <Td>
+        Whether to enable Beacon functionality: `true|false`
+      </Td>
+    </Tr>
+
+  </tbody>
+</Table>
+
+Examples:
+
+<Tabs items={['Environment', 'Compose', 'JSON']}>
+  <Tabs.Tab>
+    ```bash filename=".env" copy
+    Beacon__Enable=true
+    ```
+
+  </Tabs.Tab>
+  <Tabs.Tab>
+    ```yaml filename="compose.yml" copy
+    environment:
+      Beacon__Enable: true
+    ```
+
+  </Tabs.Tab>
+  <Tabs.Tab>
+    ```json filename="secrets.json" copy
+    {
+      "Beacon": {
+        "Enable": "true",
+      }
+    }
+    ```
+
+  </Tabs.Tab>
+</Tabs>
+
 ## Database Connections [#database]
 
 **Configuration Section: `ConnectionStrings`**
