@@ -206,12 +206,38 @@ Examples:
   </tbody>
 </Table>
 
+**Configuration Section: `Beacon.SecurityAttributes`**
+
+<Table>
+  <thead>
+    <Tr>
+      <Th>Key</Th>
+      <Th>Description</Th>
+    </Tr>
+  </thead>
+  <tbody>
+    <Tr>
+      <Td>`DefaultGranularity`</Td>
+      <Td>
+        [Default Granularity](https://b2ri-documentation.readthedocs.io/en/latest/api/#granularity) for Relay's Beacon functionality.
+
+        - `boolean`
+        - `count`
+
+        Defaults to `boolean`
+      </Td>
+    </Tr>
+
+  </tbody>
+</Table>
+
 Examples:
 
 <Tabs items={['Environment', 'Compose', 'JSON']}>
   <Tabs.Tab>
     ```bash filename=".env" copy
     Beacon__Enable=true
+    Beacon__RequestFilteringTermsOnStartup="IfEmpty"
     ```
 
   </Tabs.Tab>
@@ -219,6 +245,7 @@ Examples:
     ```yaml filename="compose.yml" copy
     environment:
       Beacon__Enable: true
+      Beacon__RequestFilteringTermsOnStartup: "IfEmpty"
     ```
 
   </Tabs.Tab>
@@ -227,6 +254,7 @@ Examples:
     {
       "Beacon": {
         "Enable": "true",
+        "RequestFilteringTermsOnStartup": "IfEmpty"
       }
     }
     ```
