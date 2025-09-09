@@ -47,14 +47,10 @@ If you are working from source, you may wish to use the developer tooling.
   <Tabs.Tab>
   You can run migrations on demand from the Relay CLI, using the [`database update` command](/relay/cli/database#update).
 
-  Here's an example of running migrations, when the database is running locally on the docker host machine:
+  Here's an example of running migrations, using the compose configuration:
 
   ```bash copy
-  docker run \
-  --network=host \
-  -e ConnectionStrings__Default="Server=localhost;Port=5432;Database=hutch-relay;User Id=postgres;Password=postgres" \
-  ghcr.io/health-informatics-uon/hutch/relay:dev-latest \
-  database update
+  docker compose run relay database update
   ```
 
   <Callout>
@@ -80,14 +76,10 @@ You can [add a user](/relay/cli/users#add) using [Relay's CLI](/relay/cli), and 
 
 The CLI will return the generated password and Sub Node Collection ID.
 
-Here's an example of adding a Relay User, when the database is running locally on the docker host machine:
+Here's an example of adding a Relay User, using the compose configuration:
 
 ```bash copy
-docker run \
---network=host \
--e ConnectionStrings__Default="Server=localhost;Port=5432;Database=hutch-relay;User Id=postgres;Password=postgres" \
-ghcr.io/health-informatics-uon/hutch/relay:dev-latest \
-users add demo1
+docker compose run relay users add demo1
 ```
 
 <Callout>

@@ -110,6 +110,51 @@ Your desired approach may differ depending on the environment you're configuring
         Defaults to `5000` (5 seconds).
       </Td>
     </Tr>
+    <Tr>
+      <Td>`Enable`</Td>
+      <Td>
+        Whether to enable UpstreamTaskApi functionality: `true|false`
+
+        When set to false, the following occur:
+
+        - All other UpstreamTaskApi configuration is not required
+        - The background polling service which polls the Upstream Task API for jobs will not start.
+        - When Relay receives results from downstream clients, it will not submit them to an Upstream Task API.
+
+        Defaults to `true`.
+      </Td>
+    </Tr>
+    <Tr>
+      <Td>`ResumeOnError`</Td>
+      <Td>
+        Whether to resume polling after a non-critical error occurs, swallowing (but logging) the exception.
+
+        Container orchestrated (k8s, compose) or systemd service environments should prefer to always terminate,
+        and control restarting the application themselves.
+
+        Defaults to `false`.
+      </Td>
+    </Tr>
+    <Tr>
+      <Td>`ErrorDelay`</Td>
+      <Td>
+        The delay in seconds to wait before resuming polling after an error occurs.
+
+        Defaults to `5`.
+      </Td>
+    </Tr>
+    <Tr>
+      <Td>`QueueTypes`</Td>
+      <Td>
+        Specify which Job Type queues Relay should poll against in the Upstream Task API.
+
+        Can be an empty string, a `*`, or a list of comma separated Task API Job Type codes.
+        An empty string will cause Relay to poll single "unified" queue for jobs of any type, e.g. when connecting to Upstream Relays.
+        A comma separated list will cause Relay to poll separate queues for each supported type listed, in parallel, e.g. when connecting to upstream RQUEST.
+
+        Defaults to `*` polling all supported types from separate queues (standard RQUEST behaviour)
+      </Td>
+    </Tr>
 
   </tbody>
 </Table>
@@ -147,6 +192,223 @@ Examples:
         "Username": "user",
         "Password": "password"
         "PollingFrequency": 5000
+      }
+    }
+    ```
+
+  </Tabs.Tab>
+</Tabs>
+
+## GA4GH Beacon [#GA4GH-Beacon]
+
+**Configuration Section: `Beacon`**
+
+<Table>
+  <thead>
+    <Tr>
+      <Th>Key</Th>
+      <Th>Description</Th>
+    </Tr>
+  </thead>
+  <tbody>
+    <Tr>
+      <Td>`Enable`</Td>
+      <Td>
+        Whether to enable Beacon functionality: `true|false`
+
+        Defaults to `false`
+      </Td>
+    </Tr>
+    <Tr>
+      <Td>`RequestFilteringTermsOnStartup`</Td>
+      <Td>
+        Whether to request filtering terms from subnodes when Relay starts.
+
+        - `Never`: do not queue Generic Code Distribution tasks at Startup
+        - `IfEmpty`: if there are no cached terms at startup, then queue Generic Code Distribution tasks if there aren't any already in progress.
+        - `ForceIfEmpty`: if there are no cached terms at startup, then queue Generic Code Distribution tasks EVEN IF there ARE some already in progress.
+        - `Always`: Regardless of the state of the cache, queue Generic Code Distribution tasks if there aren't any already in progress.
+        - `ForceAlways`: Regardless of the state of the cache, queue Generic Code Distribution tasks EVEN IF there ARE some already in progress.
+
+        Default `Never`.
+      </Td>
+    </Tr>
+
+  </tbody>
+</Table>
+
+**Configuration Section: `Beacon.SecurityAttributes`**
+
+<Table>
+  <thead>
+    <Tr>
+      <Th>Key</Th>
+      <Th>Description</Th>
+    </Tr>
+  </thead>
+  <tbody>
+    <Tr>
+      <Td>`DefaultGranularity`</Td>
+      <Td>
+        [Default Granularity](https://b2ri-documentation.readthedocs.io/en/latest/api/#granularity) for Relay's Beacon functionality.
+
+        - `boolean`
+        - `count`
+
+        Defaults to `boolean`
+      </Td>
+    </Tr>
+    <Tr>
+      <Td>`SecurityLevels`</Td>
+      <Td>
+        [Security Level](https://b2ri-documentation.readthedocs.io/en/latest/api/#api-security-levels) for Relay's Beacon functionality.
+
+        Only `PUBLIC` is currently supported by Relay.
+
+        Defaults to `PUBLIC`
+      </Td>
+    </Tr>
+
+  </tbody>
+</Table>
+
+**Configuration Section: `Beacon.MaturityAttributes`**
+
+<Table>
+  <thead>
+    <Tr>
+      <Th>Key</Th>
+      <Th>Description</Th>
+    </Tr>
+  </thead>
+  <tbody>
+    <Tr>
+      <Td>`ProductionStatus`</Td>
+      <Td>
+        Production Status for Relay's Beacon functionality.
+
+        - `DEV`
+        - `TEST`
+        - `PROD`
+
+        Defaults to `DEV`
+      </Td>
+    </Tr>
+
+  </tbody>
+</Table>
+
+**Configuration Section: `Beacon.Info`**
+
+<Table>
+  <thead>
+    <Tr>
+      <Th>Key</Th>
+      <Th>Description</Th>
+    </Tr>
+  </thead>
+  <tbody>
+    <Tr>
+      <Td>`Id`</Td>
+      <Td>
+        A unique identifier for this Beacon installation.
+
+        Values should typically be in reverse domain notation e.g. `org.my-organization.beacon`
+
+        Default is empty.
+      </Td>
+    </Tr>
+    <Tr>
+      <Td>`Name`</Td>
+      <Td>
+        A friendly name for this Beacon installation.
+
+        Defaults to `Hutch Relay Beacon`
+      </Td>
+    </Tr>
+    <Tr>
+      <Td>`Description`</Td>
+      <Td>
+        Description of this Beacon installation.
+
+        Defaults to `A federated discovery service for aggregate individuals summaries across multiple downstream data sources`
+      </Td>
+    </Tr>
+    <Tr>
+      <Td>`BeaconOrganization`</Td>
+      <Td>Details of the organisation responsible for this Beacon installation.</Td>
+    </Tr>
+    <Tr>
+      <Td>`WelcomeUrl`</Td>
+      <Td>
+        Link to a web page for this Beacon installation.
+      </Td>
+    </Tr>
+    <Tr>
+      <Td>`AlternativeUrl`</Td>
+      <Td>
+        Another URL where this Beacon may be accessed; possibly with other restrictions in place.
+      </Td>
+    </Tr>
+    <Tr>
+      <Td>`CreatedDate`</Td>
+      <Td>
+        The ISO-8601 date/time this Beacon installation was made available.
+        
+        Defaults to when Beacon functionality was made available in Relay.
+      </Td>
+    </Tr>
+    <Tr>
+      <Td>`UpdatedDate`</Td>
+      <Td>
+        The ISO-8601 date/time this Beacon installation was last updated.
+        
+        Defaults to the Build timestamp of the running release of Relay.
+      </Td>
+    </Tr>
+
+  </tbody>
+</Table>
+
+Examples:
+
+<Tabs items={['Environment', 'Compose', 'JSON']}>
+  <Tabs.Tab>
+    ```bash filename=".env" copy
+    Beacon__Enable=true
+    Beacon__RequestFilteringTermsOnStartup="IfEmpty"
+    Beacon__SecurityAttributes__DefaultGranularity="count"
+    Beacon__MaturityAttributes__ProductionStatus="PROD"
+    Beacon__Info__Id="org.my-organization.beacon"
+    ```
+
+  </Tabs.Tab>
+  <Tabs.Tab>
+    ```yaml filename="compose.yml" copy
+    environment:
+      Beacon__Enable: true
+      Beacon__RequestFilteringTermsOnStartup: "IfEmpty"
+      Beacon__SecurityAttributes__DefaultGranularity: "count"
+      Beacon__MaturityAttributes__ProductionStatus: "PROD"
+      Beacon__Info__Id: "org.my-organization.beacon"
+    ```
+
+  </Tabs.Tab>
+  <Tabs.Tab>
+    ```json filename="secrets.json" copy
+    {
+      "Beacon": {
+        "Enable": "true",
+        "RequestFilteringTermsOnStartup": "IfEmpty",
+        "SecurityAttributes": {
+          "DefaultGranularity": "count"
+        },
+        "MaturityAttributes": {
+          "ProductionStatus": "PROD"
+        },
+        "Info": {
+          "Id": "org.my-organization.beacon"
+        }
       }
     }
     ```
@@ -360,11 +622,102 @@ Examples:
   </Tabs.Tab>
 </Tabs>
 
+## Monitoring
+
+**Configuration Section: `Monitoring`**
+
+<Table>
+  <thead>
+    <Tr>
+      <Th>Key</Th>
+      <Th>Description</Th>
+    </Tr>
+  </thead>
+  <tbody>
+    <Tr>
+      <Td>`HealthEndpoint`</Td>
+      <Td>
+        The route to use for the health check endpoint.
+
+        Defaults to `/healthz`.
+      </Td>
+    </Tr>
+  </tbody>
+</Table>
+
+Examples:
+
+<Tabs items={['Environment', 'Compose', 'JSON']}>
+  <Tabs.Tab>
+    ```bash filename=".env" copy
+    Monitoring__HealthEndpoint="/health"
+    ```
+
+  </Tabs.Tab>
+  <Tabs.Tab>
+    ```yaml filename="compose.yml" copy
+    environment:
+      Monitoring__HealthEndpoint: "/health"
+    ```
+
+  </Tabs.Tab>
+  <Tabs.Tab>
+    ```json filename="secrets.json" copy
+    {
+      "Monitoring": {
+        "HealthEndpoint": "/health",
+      }
+    }
+    ```
+
+  </Tabs.Tab>
+</Tabs>
+
+## Logging
+
+**Configuration Section: `Serilog`**
+
+Logging is implemented through [Serilog](https://github.com/serilog/serilog-extensions-logging).
+
+Examples:
+
+<Tabs items={['Environment', 'Compose', 'JSON']}>
+  <Tabs.Tab>
+    ```bash filename=".env" copy
+    Serilog__MinimumLevel__Default="Information"
+    ```
+
+  </Tabs.Tab>
+  <Tabs.Tab>
+    ```yaml filename="compose.yml" copy
+    environment:
+      Serilog__MinimumLevel__Default: "Information"
+    ```
+
+  </Tabs.Tab>
+  <Tabs.Tab>
+    ```json filename="secrets.json" copy
+    {
+      "Serilog": {
+        "MinimumLevel": {
+          "Default": "Information",
+          "Override": {
+            "Microsoft": "Warning",
+            "Microsoft.AspNetCore.Hosting.Diagnostics": "Error",
+            "Microsoft.Hosting.Lifetime": "Information"
+          }
+    }
+  },
+    }
+    ```
+
+  </Tabs.Tab>
+</Tabs>
+
 ## ASP.NET Core
 
 Since Relay is an ASP.NET Core application, there are some capabilities of that framework that can be configured in the standard way.
 
-Examples of this include [logging levels](https://learn.microsoft.com/en-us/aspnet/core/fundamentals/logging/#configure-logging)
-and [hosting configuration](https://learn.microsoft.com/en-us/aspnet/core/fundamentals/servers/kestrel/endpoints) (e.g. bind addresses, TLS...).
+Examples of this include [hosting configuration](https://learn.microsoft.com/en-us/aspnet/core/fundamentals/servers/kestrel/endpoints) (e.g. bind addresses, TLS...).
 
 Please refer to the [ASP.NET Core documentation](https://learn.microsoft.com/en-us/aspnet/core/fundamentals/configuration/) on these topics.
