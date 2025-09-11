@@ -20,7 +20,7 @@ This page will guide you through getting Relay deployed in a Virtual Machine (VM
 
 ## Deployment Steps
 
-### Get the example Compose file
+### Get the sample Compose file
 
 Download the [sample Relay Compose](https://raw.githubusercontent.com/Health-Informatics-UoN/hutch/refs/heads/main/samples/Bunny/compose/relay.compose.yml) file by running the command:
 
@@ -43,6 +43,8 @@ If you want to use Relay with an Upstream Task API Query Srouce, you'll need to 
 You can choose to run migrations for Relay's Database either on demand (via the CLI, e.g. in a CI/CD process) or automatically (on startup of the Web App).
 
 If you are working from source, you may wish to use the developer tooling.
+
+By default the Sample Compose file runs migrations automatically.
 
 <Tabs items={["Automatically", "Relay CLI", "Developer tooling"]}>
   <Tabs.Tab>

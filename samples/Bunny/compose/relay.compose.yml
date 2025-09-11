@@ -23,7 +23,10 @@ services:
       - rabbitmq
     environment:
       # Configuration Docs: https://hutch.health/relay/config
+      
       ConnectionStrings__Default: Server=db_host;Port=5432;Database=hutch_relay;User Id=postgres;Password=postgres
+      ApplyMigrationsOnStartup: true
+
       RelayTaskQueue__ConnectionString: amqp://user:password@rabbitmq:5672
 
       # Declarative State Config https://hutch.health/relay/config#declarative-config
