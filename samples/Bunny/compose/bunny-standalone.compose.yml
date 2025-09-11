@@ -5,17 +5,22 @@ services:
     # We recommend pinning to a version number for your deployment.
     image: ghcr.io/health-informatics-uon/hutch/bunny:edge
     environment:
-      - DATASOURCE_DB_USERNAME=postgres
-      - DATASOURCE_DB_PASSWORD=postgres
-      - DATASOURCE_DB_DATABASE=omop
-      - DATASOURCE_DB_DRIVERNAME=postgresql
-      - DATASOURCE_DB_SCHEMA=public
-      - DATASOURCE_DB_PORT=5432
-      - DATASOURCE_DB_HOST=db_host
-      - TASK_API_BASE_URL=<task_api_host>/link_connector_api
-      - TASK_API_USERNAME=username
-      - TASK_API_PASSWORD=password
-      - LOW_NUMBER_SUPPRESSION_THRESHOLD=5
-      - ROUNDING_TARGET=10
-      - POLLING_INTERVAL=5
-      - COLLECTION_ID=collection_id
+      # db connection
+      DATASOURCE_DB_USERNAME: postgres
+      DATASOURCE_DB_PASSWORD: postgres
+      DATASOURCE_DB_DATABASE: omop
+      DATASOURCE_DB_DRIVERNAME: postgresql
+      DATASOURCE_DB_SCHEMA: public
+      DATASOURCE_DB_PORT: 5432
+      DATASOURCE_DB_HOST: db_host
+
+      # task api connection
+      TASK_API_BASE_URL: http://host.docker.internal:8080/link_connector_api
+      TASK_API_USERNAME: username
+      TASK_API_PASSWORD: password
+      COLLECTION_ID: 93258ae6-472f-45d2-8cf9-8b64cbeb03c8
+      POLLING_INTERVAL: 5
+
+      # obfuscation
+      LOW_NUMBER_SUPPRESSION_THRESHOLD: 5
+      ROUNDING_TARGET: 10
