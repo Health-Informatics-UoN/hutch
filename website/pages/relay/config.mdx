@@ -50,6 +50,7 @@ Your desired approach may differ depending on the environment you're configuring
         "ConnectionString": "amqp://user:password@localhost:5672"
       },
       "UpstreamTaskApi": {
+        "Enable": true,
         "BaseUrl": "https://my-task-api.com",
         "CollectionId": "dd52026b-5a61-4c89-b733-04ba141b3f31",
         "Username": "user",
@@ -550,6 +551,123 @@ Examples:
 
   </Tabs.Tab>
 </Tabs>
+
+## Declarative State Configuration [#declarative-config]
+
+Relay requires some local state to operate. This state can be managed imperatively via the [CLI](cli), or configured declaratively.
+
+Declarative configuration means you can specify in a configuration file or Environment Variables the state you would like to exist when Relay runs, and Relay will ensure that desired declared state at startup before doing anything else.
+
+This is good for Container Orchestration environments in particular, which favour a "desired state" model. Values could be provided via secret management mechanisms where appropriate.
+
+<Callout>
+Remember that declarative config is "desired state", NOT just data seeding; if you remove users or subnodes from config later, Relay will reconcile the local datastore with the config, removing unspecified items if they were previously declared!
+</Callout>
+
+#### Mixing declarative and imperative (CLI) config
+
+The recommendation generally is to not mix approaches, however it is possible if necessary.
+
+Declarative Config is compatible with imperatively configured state (i.e. added by CLI) and will not interfere with state added manually; it only enacts the desired state resolution on "declared" state.
+
+- When Relay resolves Declarative Config, it will only amend state that is marked as coming from a declarative source.
+  - i.e. it will ignore imperatively added state
+- If you imperatively or manually modify declared state, it will be "corrected" the next time declared state is resolved.
+
+### Downstream Users and Subnodes [#declarative-subnodes]
+
+At minimum Relay requires at least one user and an associated subnode, to represent a downstream client and the credentials they use to interact with Relay.
+
+<Callout>Users and Subnodes can alternatively be configured via the [users cli](cli/users), particularly `users add`.</Callout>
+
+**Configuration Section: `DownstreamUsers.<username>`**
+
+<Callout>
+Note that for these configuration options, `DownstreamUsers` is a dictionary, and the keys are the desired username of each user.
+</Callout>
+<br />
+
+<Table>
+  <thead>
+    <Tr>
+      <Th>Key</Th>
+      <Th>Description</Th>
+    </Tr>
+  </thead>
+  <tbody>
+    <Tr>
+      <Td>
+        <Mandatory>`Password`</Mandatory>
+      </Td>
+      <Td>The desired password for this user</Td>
+    </Tr>
+    <Tr>
+      <Td>
+        `Subnode`
+      </Td>
+      <Td>The ID to use when creating a subnode for this user (i.e. Collection ID). This *must* be a valid UUID format string.</Td>
+    </Tr>
+    <Tr>
+      <Td>
+        `Subnodes`
+      </Td>
+      <Td>An array of IDs to use when creating multiple subnodes for this user (i.e. Collection IDs). These *must* be a valid UUID format string.</Td>
+    </Tr>
+  </tbody>
+</Table>
+
+Examples:
+
+<Tabs items={['Environment', 'Compose', 'JSON']}>
+  <Tabs.Tab>
+    ```bash filename=".env" copy
+    # user with single subnode
+    DownstreamUsers__user1__Password=abc123
+    DownstreamUsers__user1__Subnode=93258ae6-472f-45d2-8cf9-8b64cbeb03c8
+
+    # user with multiple subnodes
+    DownstreamUsers__user2__Password=def456
+    DownstreamUsers__user2__Subnodes__0=b8c58ab0-51c7-4842-ac96-efffc2c02472
+    DownstreamUsers__user2__Subnodes__1=50401056-8d4a-44c7-a257-f57ab2dcfb01
+    ```
+
+  </Tabs.Tab>
+  <Tabs.Tab>
+    ```yaml filename="compose.yml" copy
+    environment:
+      # user with single subnode
+      DownstreamUsers__user1__Password: abc123
+      DownstreamUsers__user1__Subnode: "93258ae6-472f-45d2-8cf9-8b64cbeb03c8"
+
+      # user with multiple subnodes
+      DownstreamUsers__user2__Password: def456
+      DownstreamUsers__user2__Subnodes__0: "b8c58ab0-51c7-4842-ac96-efffc2c02472"
+      DownstreamUsers__user2__Subnodes__1: "50401056-8d4a-44c7-a257-f57ab2dcfb01"
+    ```
+
+  </Tabs.Tab>
+  <Tabs.Tab>
+    ```json filename="secrets.json" copy
+    {
+      "DownstreamUsers": {
+        "user1": {
+          "Password": "abc123",
+          "Subnode": "93258ae6-472f-45d2-8cf9-8b64cbeb03c8"
+        },
+        "user2": {
+          "Password": "def456",
+          "Subnodes": [
+            "b8c58ab0-51c7-4842-ac96-efffc2c02472",
+            "50401056-8d4a-44c7-a257-f57ab2dcfb01"
+          ]
+        }
+      }
+    }
+    ```
+
+  </Tabs.Tab>
+</Tabs>
+
 
 ## Results Obfuscation
 
