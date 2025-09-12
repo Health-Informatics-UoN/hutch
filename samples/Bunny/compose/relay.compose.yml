@@ -22,11 +22,22 @@ services:
     depends_on:
       - rabbitmq
     environment:
-      # Configuration Docs: https://health-informatics-uon.github.io/hutch/relay/config
+      # Configuration Docs: https://hutch.health/relay/config
+
       ConnectionStrings__Default: Server=db_host;Port=5432;Database=hutch_relay;User Id=postgres;Password=postgres
+      Database__ApplyMigrationsOnStartup: true
+
       RelayTaskQueue__ConnectionString: amqp://user:password@rabbitmq:5672
 
-      # Connection settings for the Task API to relay tasks from (e.g. BC|RQuest, Hutch Relay...)
+      # Declarative State Config https://hutch.health/relay/config#declarative-config
+      DownstreamUsers__username__Password: password
+      DownstreamUsers__username__Subnode: 93258ae6-472f-45d2-8cf9-8b64cbeb03c8
+
+      # Query Sources
+      Beacon__Enable: true # GA4GH Beacon interface enabled for sample purposes; see additional config: https://hutch.health/relay/config#ga4gh-beacon
+      Beacon__RequestFilteringTermsOnStartup: IfEmpty
+
+      UpstreamTaskApi__Enable: false # change to true and populate below to use with an Upstream Task API https://hutch.health/relay/config#upstream-task-api
       UpstreamTaskApi__BaseUrl: https://my-task-api.com
       UpstreamTaskApi__CollectionId: dd52026b-5a61-4c89-b733-04ba141b3f31
       UpstreamTaskApi__Username: user

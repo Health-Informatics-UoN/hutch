@@ -20,7 +20,7 @@ This page will guide you through getting Relay deployed in a Virtual Machine (VM
 
 ## Deployment Steps
 
-### Get the example Compose file
+### Get the sample Compose file
 
 Download the [sample Relay Compose](https://raw.githubusercontent.com/Health-Informatics-UoN/hutch/refs/heads/main/samples/Bunny/compose/relay.compose.yml) file by running the command:
 
@@ -32,13 +32,19 @@ wget https://raw.githubusercontent.com/Health-Informatics-UoN/hutch/refs/heads/m
 
 Modify the configuration of the newly downloaded `relay.compose.yml` file as described in [Configuring Relay](/relay/config)
 
-You will need to [configure the database connection](/relay/config#database), and your [Upstream Task API host connection](/relay/config#upstream-task-api)
+You will need to [configure the database connection](/relay/config#database).
+
+The sample enables Relay's GA4GH Beacon interface by default; you may wish to [configure it](/relay/config#ga4gh-beacon) more richly, or disable it.
+
+If you want to use Relay with an Upstream Task API Query Source, you'll need to enable it and configure your [Upstream Task API host connection](/relay/config#upstream-task-api).
 
 #### Database Migrations
 
 You can choose to run migrations for Relay's Database either on demand (via the CLI, e.g. in a CI/CD process) or automatically (on startup of the Web App).
 
 If you are working from source, you may wish to use the developer tooling.
+
+By default the Sample Compose file runs migrations automatically.
 
 <Tabs items={["Automatically", "Relay CLI", "Developer tooling"]}>
   <Tabs.Tab>
@@ -70,30 +76,25 @@ If you are working from source, you may wish to use the developer tooling.
 
 Relay's job is to relay tasks from an upstream Task Api to one or more downstream "Sub Nodes".
 
-Each Sub Node requires a set of credentials (in effect a user) to communicate with Relay.
+Each Sub Node requires a set of credentials (in effect a user) to communicate with Relay, and Relay requires at minimum one user and subnode to be configured.
 
-You can [add a user](/relay/cli/users#add) using [Relay's CLI](/relay/cli), and when you do, Relay will create an associated Sub Node, and generate a password.
-
-The CLI will return the generated password and Sub Node Collection ID.
-
-Here's an example of adding a Relay User, using the compose configuration:
-
-```bash copy
-docker compose run relay users add demo1
-```
-
-<Callout>
-  We've used `docker run` to ensure we run the same version of Relay for the CLI
-  as is running in our Compose stack.
-</Callout>
+The sample Compose file [declaratively preconfigures](/relay/config#declarative-subnodes) one user and subnode, but you can also perform this setup imperatively via the [CLI](/relay/cli/users#add).
 
 #### Sub Node Bunny setup
 
-For a Sub Node's Bunny to talk to Relay, you (or someone else) will need to configure it with:
+For a Sub Node's Bunny to talk to Relay, it will need to be [configured](/bunny/config) with:
 
 - The base URL to your Relay instance (scheme, hostname and port)
-- The username and password created for them
+- The username and password created for the Bunny
 - The Sub Node ID (Collection ID) created for that user
+
+The Sample Compose file specifies the following declarative user and subnode configuration:
+
+| | |
+|-|-|
+Username | `username`
+Password | `password`
+Sub Node ID | `93258ae6-472f-45d2-8cf9-8b64cbeb03c8`
 
 <Callout type="warning">
   Remember, Bunny will need network access to Relay (outbound from Bunny;
@@ -121,8 +122,18 @@ relay-1     | info: Microsoft.Hosting.Lifetime[0]
 relay-1     |       Content root path: /app
 ```
 
-Relay establishes a connection to your upstream Task API server, then polls for a task.
-When it receives a task, it enqueues it for each configured downstream SubNode.
-When results have been received from all SubNodes, Relay passes the aggregated results back to the upstream Task API.
+### Submitting Queries
+
+<Tabs items={["GA4GH Beacon", "Upstream Task API"]}>
+  <Tabs.Tab>
+  Sending an HTTP Request to a Beacon endpoint, such as <dfn title="/ga4gh/beacon/v2/filtering_terms">Filtering Terms</dfn> or <dfn title="/ga4gh/beacon/v2/individuals">Individuals</dfn> will cause Relay to enqueue a task for each configured downstream SubNode.
+  When results have been received from all SubNodes, Relay returns the aggregated results as the HTTP Response.
+  </Tabs.Tab>
+  <Tabs.Tab>
+  Relay establishes a connection to your Upstream Task API server, then polls for a task.
+  When it receives a task, it enqueues it for each configured downstream SubNode.
+  When results have been received from all SubNodes, Relay passes the aggregated results back to the Upstream Task API.
+  </Tabs.Tab>
+</Tabs>
 
 <Callout emoji="🎉">Congratulations on your first Relay deployment!</Callout>

@@ -7,7 +7,7 @@ services:
     env_file:
       - .env
     environment:
-      - TASK_API_TYPE=a
+      TASK_API_TYPE: a
 
   distri-bunny:
     # We recommend pinning to a version number for your deployment.
@@ -15,4 +15,4 @@ services:
     env_file:
       - .env
     environment:
-      - TASK_API_TYPE=b
+      TASK_API_TYPE: b

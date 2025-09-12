@@ -1,3 +1,6 @@
+*.env
+!*.sample.env
+
 website/.next
 website/node_modules
 out
