@@ -1,0 +1,260 @@
+import { Steps } from "nextra/components";
+import { Callout } from "nextra/components";
+
+# Quickstart
+
+The easiest way to run Relay is by using the provided [Relay Image](https://github.com/Health-Informatics-UoN/hutch-relay/pkgs/container/hutch%2Frelay) configured to use the GA4GH Beacon API as a Query Source.
+
+This guide will help you quickly set up locally a demonstration federated network, consisting of:
+
+- one Relay
+- two downstream [Bunnies](/bunny), each with an OMOP CDM database
+
+You will be able to run queries against Relay, and receive aggregated results from each Bunny's underlying data.
+
+<Callout>
+  If you are interested in running Relay with an Upstream Task API as a Query Source, you can:
+    - modify this sample with [Upstream Task API configuration](/relay/config#upstream-task-api)
+    - submit queries via the Task API GUI instead of the Beacon REST API
+</Callout>
+
+## Prerequisites
+
+- Docker
+- curl
+
+## Run a federated query
+
+<Steps>
+### Get the Demo Compose file
+
+Download the [sample Relay Demo Compose](https://raw.githubusercontent.com/Health-Informatics-UoN/hutch/refs/heads/main/samples/Bunny/compose/relay-demo.compose.yml) file by running the command:
+
+```bash copy
+curl -O https://raw.githubusercontent.com/Health-Informatics-UoN/hutch/refs/heads/main/samples/Bunny/compose/relay-demo.compose.yml
+```
+
+Or manually saving it to a file `relay-demo.compose.yml`
+
+### Run the Compose file
+
+This will start three groups of services, each on their own networks:
+
+1. Relay and its dependencies
+   - RabbitMQ
+   - Postgres
+   - Relay will automatically prepare its local datastore and register credentials and IDs for each expected Bunny as [configured](/relay/config#declarative-subnodes)
+   - Relay will automatically queue a [Distribution Task](/concepts/distribution) for all registered Bunnies, in order to populate the Beacon Filtering Terms cache.
+1. A Bunny and its dependencies
+   - Postgres
+   - The database will be automatically initialised with a synthetic OMOP CDM dataset
+   - Configured to communicate with Relay as `bunny1`.
+1. A second Bunny configured similarly to the first (with the same synthetic dataset)
+   - Configured to communicate with Relay as `bunny2`.
+
+```bash copy
+docker compose -f relay-demo.compose.yml up
+```
+
+This will take a minute or so to download the images and start the containers.
+
+Once the stack is stood up successfully, each Bunny will respond to the Distribution Tasks that were automatically queued.
+
+### Make a Beacon Filtering Terms request
+
+You can confirm that the Bunnies resolved the initial Distribution Tasks by making a Beacon Filtering Terms request to Relay:
+
+```bash copy
+curl http://localhost:8190/ga4gh/beacon/v2/filtering_terms
+```
+
+This should give you a non-empty result containing a page of terms from the Bunnies' synthetic datasets:
+
+```json filename="Beacon Filtering Terms Response"
+{
+  "meta": {
+    "beaconId": "",
+    "apiVersion": "v2.0",
+    "returnedSchemas": [
+      {
+        "entityType": "filteringTerm",
+        "schema": "https://raw.githubusercontent.com/ga4gh-beacon/beacon-framework-v2/main/definitions/FilteringTerm"
+      }
+    ]
+  },
+  "response": {
+    "filteringTerms": [
+      {
+        "type": "ontologyTerm",
+        "id": "OMOP:1001716",
+        "label": "XR Middle phalanx of fifth finger Bone development stage"
+      },
+      {
+        "type": "ontologyTerm",
+        "id": "OMOP:1001904",
+        "label": "Total score [Quality of Working Life Questionnaire for Cancer Survivors]"
+      },
+      {
+        "type": "ontologyTerm",
+        "id": "OMOP:1001995",
+        "label": "Left atrial End-systolic volume/Body surface area [Volume/Area] by US.2D.A4C+Calculated by single plane method of disks"
+      },
+      {
+        "type": "ontologyTerm",
+        "id": "OMOP:1242398",
+        "label": "Qualitative distribution of primary malignant neoplasm of nasal cavity and/or nasal sinus in excised tissue specimen"
+      },
+      {
+        "type": "ontologyTerm",
+        "id": "OMOP:1243734",
+        "label": "Thermomyces lanuginosus"
+      },
+      {
+        "type": "ontologyTerm",
+        "id": "OMOP:1244250",
+        "label": "Central cord syndrome of cervical spinal cord due to closed dislocation of cervical spine"
+      },
+      {
+        "type": "ontologyTerm",
+        "id": "OMOP:1244368",
+        "label": "Eruption of skin caused by Salmonella Paratyphi"
+      },
+      {
+        "type": "ontologyTerm",
+        "id": "OMOP:1244591",
+        "label": "Neuroendocrine neoplasm of large intestine"
+      },
+      {
+        "type": "ontologyTerm",
+        "id": "OMOP:1244600",
+        "label": "Growth hormone releasing factor-secreting tumor of pancreas"
+      },
+      {
+        "type": "ontologyTerm",
+        "id": "OMOP:1244804",
+        "label": "Biphasic synovial sarcoma"
+      }
+    ]
+  }
+}
+```
+
+<Callout type="info" emoji="🎉">
+  Congratulations on getting Relay running!
+</Callout>
+
+### Make a Beacon Individuals Request
+
+With your running demonstration stack, you can now interrogate the Bunny datasets to [discover record counts](/concepts/availability) for cohorts matching terms.
+
+```bash copy
+curl http://localhost:8190/ga4gh/beacon/v2/individuals?filters=OMOP:8507
+```
+
+This should give you a result containing the aggregated count of matches for that term from the Bunnies' synthetic datasets:
+
+```json filename="Beacon Individuals response"
+{
+  "meta": {
+    "returnedGranularity": "count",
+    "receivedRequestSummary": {
+      "apiVersion": "v2.0",
+      "requestedSchemas": [
+        {
+          "entityType": "Individual",
+          "schema": "ga4gh-beacon-individual-v2.0.0"
+        }
+      ],
+      "filters": ["OMOP:8507"],
+      "includeResultsetResponses": "HIT",
+      "pagination": {},
+      "requestedGranularity": "count",
+      "testMode": false
+    },
+    "testMode": false,
+    "beaconId": "",
+    "apiVersion": "v2.0",
+    "returnedSchemas": [
+      {
+        "entityType": "Individual",
+        "schema": "ga4gh-beacon-individual-v2.0.0"
+      }
+    ]
+  },
+  "responseSummary": {
+    "exists": true,
+    "numTotalResults": 90
+  }
+}
+```
+
+<Callout emoji="👍">
+  You can choose your own terms to filter by, selecting from those in the `filtering_terms` endpoint.
+
+Note that `filtering_terms` is paginated, and you can control pagination with query parameters, e.g. `?skip=0&limit=10`.
+
+</Callout>
+
+### (Optionally) Compare Aggregated and Raw results
+
+You can see in the above result, aggregated by Relay from each Bunny's results, that there are `90` matching records reported.
+
+By observing the container logs, we can compare these results with those returned by each Bunny:
+
+```bash copy
+docker compose -f relay-demo.compose.yml logs bunny1
+```
+
+If you find where Bunny sends the results back to Relay, you can inspect the JSON payload for the results:
+
+```bash filename="Example log output for Availability Task"
+INFO - 12-Sep-25 13:05:53 - Solved availability query
+bunny1-1  | DEBUG - 12-Sep-25 13:05:53 - Sending post request to http://relay:8080/link_connector_api/task/result/01993e08-42e2-794b-8a4b-acdc0539c16c/[REDACTED] with data { ... }
+```
+
+```json filename="Availability Task Results"
+{
+  "uuid": "01993e08-42e2-794b-8a4b-acdc0539c16c",
+  "status": "ok",
+  "collection_id": "[REDACTED]",
+  "message": "",
+  "protocolVersion": "v2",
+  "queryResult": {
+    "count": 44,
+    "datasetCount": 0,
+    "files": []
+  }
+}
+```
+
+Here, Bunny 1 has returned `44` matching records; if you check Bunny 2 you will see the same, as they are both using the same synthetic dataset.
+
+Relay has aggregated the results by summing each Bunny's output, which comes to `88`, and then rounded up to the nearest `10`, to get the final result of `90`.
+
+### Clean up
+
+```bash copy
+docker compose -f relay-demo.compose.yml down
+```
+
+This will stop the database and remove the containers.
+
+To remove the images, run:
+
+```bash copy
+docker rmi -f \
+ghcr.io/health-informatics-uon/omop-lite:latest \
+ghcr.io/health-informatics-uon/hutch/bunny:edge \
+ghcr.io/health-informatics-uon/hutch/relay:edge
+```
+
+</Steps>
+
+## Next Steps
+
+To learn more about configuring a Relay deployment, read the [deployment](deployment) guide.
+
+This will help you:
+- deploy a Relay instance and control how it operates
+- connect your Relay to an Upstream Task API
+- connect distributed Bunny nodes to your Relay

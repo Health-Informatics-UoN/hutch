@@ -8,6 +8,11 @@ services:
       - 15672:15672 # expose the management gui to the host
       # - 5672:5672 # but not the amqp server
     restart: always
+    healthcheck:
+      test: rabbitmq-diagnostics check_port_connectivity
+      interval: 30s
+      timeout: 30s
+      retries: 10
     environment:
       RABBITMQ_DEFAULT_USER: user
       RABBITMQ_DEFAULT_PASS: password
@@ -19,8 +24,6 @@ services:
     ports:
       - 8080:8080
       - 8081:8081
-    depends_on:
-      - rabbitmq
     environment:
       # Configuration Docs: https://hutch.health/relay/config
 
@@ -42,3 +45,6 @@ services:
       UpstreamTaskApi__CollectionId: dd52026b-5a61-4c89-b733-04ba141b3f31
       UpstreamTaskApi__Username: user
       UpstreamTaskApi__Password: password
+    depends_on:
+      rabbitmq:
+        condition: service_healthy

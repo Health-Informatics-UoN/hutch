@@ -1,0 +1,159 @@
+# A self contained demonstration stack configured as follows:
+# - Hutch Relay with its own local postgres datastore, and 2 subnodes registered
+#   - GA4GH Beacon interface enabled
+# - 2 Bunnies on separate networks with their own postgres omop datastores, configured to connect to Relay
+#
+# Send Beacon requests to Relay on http://localhost:8190 and they will be fulfilled by both connected Bunnies <3
+
+name: relay-demo
+
+services:
+
+  # Bunny 1
+  bunny1_db:
+    image: postgres:16
+    networks:
+      - subnode1
+    environment:
+      POSTGRES_PASSWORD: postgres
+      POSTGRES_DB: omop
+
+  bunny1_omop-lite:
+    image: ghcr.io/health-informatics-uon/omop-lite
+    networks:
+      - subnode1
+    depends_on:
+      - bunny1_db
+    environment:
+      DB_HOST: bunny1_db
+      DB_PASSWORD: postgres
+      DB_NAME: omop
+      SYNTHETIC: true
+
+  bunny1:
+    image: ghcr.io/health-informatics-uon/hutch/bunny:edge
+    networks:
+      - subnode1
+      - parent
+    environment:
+      BUNNY_LOGGER_LEVEL: DEBUG
+
+      # db connection
+      DATASOURCE_DB_USERNAME: postgres
+      DATASOURCE_DB_PASSWORD: postgres
+      DATASOURCE_DB_DATABASE: omop
+      DATASOURCE_DB_DRIVERNAME: postgresql
+      DATASOURCE_DB_SCHEMA: public
+      DATASOURCE_DB_PORT: 5432
+      DATASOURCE_DB_HOST: bunny1_db
+
+      # task api connection
+      TASK_API_BASE_URL: http://relay:8080/link_connector_api
+      TASK_API_USERNAME: bunny1
+      TASK_API_PASSWORD: password
+      TASK_API_ENFORCE_HTTPS: false
+      COLLECTION_ID: 93258ae6-472f-45d2-8cf9-8b64cbeb03c8
+      POLLING_INTERVAL: 5
+
+      # obfuscation
+      LOW_NUMBER_SUPPRESSION_THRESHOLD: 0
+      ROUNDING_TARGET: 0
+    depends_on:
+      relay:
+        condition: service_started
+      bunny1_omop-lite:
+        condition: service_completed_successfully
+
+  # Bunny 2
+  bunny2_db:
+    extends: bunny1_db
+    networks: !override
+      - subnode2
+  
+  bunny2_omop-lite:
+    extends: bunny1_omop-lite
+    networks: !override
+      - subnode2
+    depends_on: !override
+      - bunny2_db
+    environment:
+      DB_HOST: bunny2_db
+
+  bunny2:
+    extends: bunny1
+    networks: !override
+      - subnode2
+      - parent
+    environment:
+      DATASOURCE_DB_HOST: bunny2_db
+      TASK_API_USERNAME: bunny2
+      COLLECTION_ID: ca6a900c-ab49-425f-8cb3-39200729b2b3
+    depends_on:
+      bunny1_omop-lite: !reset null
+      bunny2_omop-lite:
+        condition: service_completed_successfully
+
+  # Relay
+  relay_db:
+    image: postgres:16
+    networks:
+      - parent
+    environment:
+      POSTGRES_PASSWORD: postgres
+      POSTGRES_DB: hutch_relay
+
+  relay_rabbitmq:
+    image: rabbitmq:3-management
+    restart: always
+    networks:
+      - parent
+    healthcheck:
+      test: rabbitmq-diagnostics check_port_connectivity
+      interval: 30s
+      timeout: 30s
+      retries: 10
+    environment:
+      RABBITMQ_DEFAULT_USER: user
+      RABBITMQ_DEFAULT_PASS: password
+
+  relay:
+    # We recommend pinning to a version number for your deployment.
+    image: ghcr.io/health-informatics-uon/hutch/relay:edge
+    restart: always
+    ports:
+      - 8190:8080
+    networks:
+      - parent
+    environment:
+      # Configuration Docs: https://hutch.health/relay/config
+      DOTNET_Environment: Development
+      ConnectionStrings__Default: Server=relay_db;Port=5432;Database=hutch_relay;User Id=postgres;Password=postgres
+      Database__ApplyMigrationsOnStartup: true
+
+      RelayTaskQueue__ConnectionString: amqp://user:password@relay_rabbitmq:5672
+
+      # Declarative State Config https://hutch.health/relay/config#declarative-config
+      DownstreamUsers__bunny1__Password: password
+      DownstreamUsers__bunny1__Subnode: 93258ae6-472f-45d2-8cf9-8b64cbeb03c8
+      DownstreamUsers__bunny2__Password: password
+      DownstreamUsers__bunny2__Subnode: ca6a900c-ab49-425f-8cb3-39200729b2b3
+
+      # Query Sources
+      Beacon__Enable: true # GA4GH Beacon interface enabled for sample purposes; see additional config: https://hutch.health/relay/config#ga4gh-beacon
+      Beacon__RequestFilteringTermsOnStartup: IfEmpty
+      Beacon__SecurityAttributes__DefaultGranularity: count
+
+      # Increase Logging Verbosity for Demo
+      Serilog__MinimumLevel__Default: Information
+      Serilog__MinimumLevel__Override__Hutch: Debug
+    depends_on:
+      relay_db:
+        condition: service_started
+      relay_rabbitmq:
+        condition: service_healthy
+
+
+networks:
+  subnode1:
+  subnode2:
+  parent:
