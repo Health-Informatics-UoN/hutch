@@ -1,0 +1,31 @@
+# Aggregation
+
+As Relay federates queries to multiple downstream data sources, but represents a single upstream collection,
+it is necessary to aggregate downstream results into a single upstream result.
+
+The general process for this is as follows:
+
+1. Relay sends a query to all downstream subnodes
+1. Relay waits for results from every subnode.
+1. Once all results have been recieved - or a timeout has been reached:
+    1. All received data are aggregated appropriately for the type of result (see below).
+    1. The aggregated results (at a record or final level as appropriate) are obfuscated per configuration.
+1. Aggregated (and obfuscated) results are transformed to the query source result format and returned.
+
+The actual aggregation behaviour differs for different Task types, described below.
+
+### Missing data
+
+// TODO:
+
+## Availability Results
+
+// TODO:
+
+## Generic Code Distribution
+
+// TODO:
+
+## Demographics Distribution
+
+// TODO:
