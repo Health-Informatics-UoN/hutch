@@ -1,0 +1,46 @@
+import { Steps } from "nextra/components";
+
+# Security Model
+
+This document outlines the security considerations, infrastructure requirements, and trust model for deploying and running Relay.
+
+Information about Cohort Discovery can be found on the [HDR Gateway](https://healthdatagateway.org/en/about/cohort-discovery).
+
+## Container Security
+
+### Image Build Process
+- Relay images are built using GitHub Actions, using a repeatable and transparent build process. 
+- Each dependency from the build process is pinned to a git hash.
+- This automation helps ensure that each build is consistent and can be traced back to its source code and build instructions.
+
+### Container Registry
+- Every Relay image is published to the GitHub container registry. 
+- Images are pinned to specific workflow commit hashes, which prevents unauthorized modifications and ensures that only verified builds are used. 
+- This pinning mechanism helps maintain security by ensuring that the exact version of the code that was reviewed and tested is the one being deployed.
+
+### Code Security & Review
+- All code contributions must pass a set of unit, integration, and end to end tests. 
+- Contributions are reviewed by the University of Nottingham Centre for Health Informatics developer team, before they are approved and merged into the codebase.
+- Code scanning using GitHub's CodeQL analysis is enabled on the repository and contributions to automatically identify potential security vulnerabilities and coding issues.
+- Relay has a [security policy](https://github.com/Health-Informatics-UoN/hutch-relay/security) for vulnerability reporting.
+
+### Dependency & Supply Chain Security
+- The base image and all dependencies are reviewed for security updates.
+- GitHub’s [dependency-review-action](https://github.com/actions/dependency-review-action) is used to detect vulnerable dependencies before they are introduced into the codebase.
+- Relay uses Dependabot to automatically scan and update dependencies, ensuring security vulnerabilities are identified and patched promptly.
+- Updates are published with release notes on the [Relay releases page](https://github.com/Health-Informatics-UoN/hutch-relay/releases). 
+- A Software Bill of Materials (SBOM) for Relay [is published](https://github.com/Health-Informatics-UoN/hutch-relay/network/dependencies) providing visibility into dependencies and supply chain security.
+
+## Infrastructure Security
+
+- Relay is deployed in a secure environment by a data partner. 
+- Relay makes only outgoing connections to RQUEST / Relay API.
+- No incoming requests are made into the data partner's secure environment.
+- Outbound access is restricted to the RQUEST / Relay API, no other access is required.
+
+## Authentication & Access Control
+- Credentials (database access, RQUEST / Relay authentication) are managed through environment variables.
+- Relay connections to RQUEST / Relay are secured using the 'Basic' HTTP Authentication Scheme, consistent with the API specification.
+
+## Data Security & Compliance
+- Low-number suppression and rounding can be configured to custom values to comply with data protection policies.
