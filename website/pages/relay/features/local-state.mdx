@@ -1,0 +1,53 @@
+import { Callout } from "nextra/components";
+
+# Local State
+
+Relay uses a local datastore to store the state it needs to federate cohort discovery queries.
+
+There are two types of local state Relay requires, with a third needed only for Beacon functionality:
+
+- Configuration state
+- Transient task results state
+- Cached distribution summaries (Beacon only)
+
+## Configuration State
+
+Relay retains some state in order to federate queries downstream.
+
+At minimum Relay requires at least one user and an associated subnode, to represent a downstream client and the credentials they use to interact with Relay.
+
+Users and Subnodes can be managed imperatively via the [Relay CLI](/relay/cli/users), or declaratively via [configuration](/relay/config#declarative-subnodes).
+
+Storing state related to the configured subnodes enables Relay to track what tasks it has passed downstream and which subnodes have responded to which tasks.
+
+## Transient Task Results State
+
+Relay temporarily stores task results from each subnode until such time as it aggregates those results and returns the final result upstream.
+
+By default, when Tasks are completed either by all SubTasks resolving, or by expiry, Task state (including results) is removed from the local datastore.
+
+Relay can be [configured](/relay/config#database) to retain this state, in which case Task and SubTask records will be retained in the local datastore.
+
+<Callout>
+Note that when returned to `false`, previously retained records will continue to be retained, requiring manual cleanup. Newly created Tasks will be cleaned up automatically.
+</Callout>
+
+## Cached Distribution Summaries
+
+When GA4GH Beacon functionality is enabled, Relay requires storing a cache of an aggregated code distribution summary from all subnodes.
+
+This enables Beacon's filtering terms endpoints, as well as generating accurate Availability Tasks from Beacon Individuals queries.
+
+This is due to the combination of distribution tasks taking potentially a long time to resolve, and Beacon offering its functionality over a realtime HTTP interface, rather than an asynchronous queue.
+
+The aggregated cache simply holds the terms that exist in at least one subnode, and what category that term resides in for Task API purposes.
+
+For example, the term `OMOP:8507` for `MALE` is categorised by the Task API models as a `GENDER` term.
+
+### Cache invalidation
+
+When enabled, this distribution summary cache is refreshed:
+
+- At Relay startup, subject to [configuration](/relay/config#ga4gh-beacon).
+- any time a [Distribution Task](/concepts/distribution) is handled from an upstream Task API.
+- When requested via a custom header in a Beacon `filtering_terms` request.
