@@ -1,0 +1,77 @@
+# Aggregation
+
+As Relay federates queries to multiple downstream data sources, but represents a single upstream collection,
+it is necessary to aggregate downstream results into a single upstream result.
+
+The general process for this is as follows:
+
+1. Relay sends a query to all downstream subnodes
+1. Relay waits for results from every subnode.
+1. Once all results have been recieved - or a timeout has been reached:
+    1. All received data are aggregated appropriately for the type of result (see below).
+    1. The aggregated results (at a record or final level as appropriate) are obfuscated per configuration.
+1. Aggregated (and obfuscated) results are transformed to the query source result format and returned.
+
+The actual aggregation behaviour differs for different Task types, described in detail below.
+
+The behaviours described are covered by automated software tests to ensure Relay is behaving as expected.
+
+### Obfuscation / Disclosure Control
+
+Relay performs [obfuscation](/concepts/disclosure_control) of its aggregated results based on its [configuration](relay/config#results-obfuscation).
+
+Exactly where this obfuscation is applied depends on the aggregation process, and is covered in the breakdown below.
+
+## Availability Results
+
+Since [availability](/concepts/availability) results return only a count from each subnode, the aggregation behaviour is quite simple:
+
+1. Each subnode's count is added to a running total
+1. Once the final total is reached, it is obfuscated per configuration.
+
+### Missing data
+
+Missing subnode results (i.e. a subnode did not return results within the timeout period) are omitted - essentially represented by a count of 0.
+
+## Generic Code Distribution
+
+For generic code [distribution](/concepts/distribution), each subnode returns a list of rows by code and a count of matches, along with optionally some summary statistics.
+
+From the downstream results alone, Relay can aggregate the counts and some of the trivial statistics (e.g. min, max), but cannot aggregate other statistics (e.g. mean, quartiles...)
+
+The aggregation behaviour is effectively done per-row per-subnode, building an aggregated row for each code:
+
+1. Each subnode's results are iterated row by row
+    1. Each row's count is added to a running total for that row's code
+1. When all subnode's results have been aggregated by code
+    1. Each coded row count is obfuscated per configuration
+    1. Each coded row's summary statistics are calculated where possible
+
+### Missing data
+
+It's not necessary for every subnode to have rows for all codes; it will depend on the subnode's dataset.
+
+Relay will aggregate by each code present.
+
+Missing subnode results simply don't contribute to any code's totals.
+
+## Demographics Distribution
+
+For demographics [distribution](/concepts/distribution) results, each subnode returns a list of rows by code that can present results in several ways:
+
+- Most commonly: A lookup of valid values for that code to a count of matches
+    - e.g. for `GENDER` - valid values of `MALE`, `FEMALE` and `OTHER` might each have counts of matches.
+- A simple count of matches for the code, similar to Generic Code Distribution
+- Alternative code specific value representations such as for `AGE`.
+
+For the most common form, with a break down of counts per valid value for the code, Relay aggregates by each code and value:
+
+1. Each subnode's results are iterated row by row.
+1. Each row's valid value counts are added to running totals per value.
+1. When all subnode's results have been aggregated by code and valid value
+    1. Each coded value count is obfuscated per configuration
+    1. Each coded row's count and summary statistics are calculated from the obfuscated value counts where possible
+
+For rows similar to Generic Code Distribution, [that aggregation process](#generic-code-distribution) is followed.
+
+Currently Relay does not aggregate special case codes such as `AGE`, though it is architected such that specialist aggregators could be added later.
