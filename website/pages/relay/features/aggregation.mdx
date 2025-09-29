@@ -16,13 +16,15 @@ The actual aggregation behaviour differs for different Task types, described in 
 
 The behaviours described are covered by automated software tests to ensure Relay is behaving as expected.
 
-### Obfuscation
+### Obfuscation / Disclosure Control
 
-// TODO:
+Relay performs [obfuscation](/concepts/disclosure_control) of its aggregated results based on its [configuration](relay/config#results-obfuscation).
+
+Exactly where this obfuscation is applied depends on the aggregation process, and is covered in the breakdown below.
 
 ## Availability Results
 
-Since availability results return only a count from each subnode, the aggregation behaviour is quite simple:
+Since [availability](/concepts/availability) results return only a count from each subnode, the aggregation behaviour is quite simple:
 
 1. Each subnode's count is added to a running total
 1. Once the final total is reached, it is obfuscated per configuration.
@@ -33,7 +35,7 @@ Missing subnode results (i.e. a subnode did not return results within the timeou
 
 ## Generic Code Distribution
 
-For generic code distribution, each subnode returns a list of rows by code and a count of matches, along with optionally some summary statistics.
+For generic code [distribution](/concepts/distribution), each subnode returns a list of rows by code and a count of matches, along with optionally some summary statistics.
 
 From the downstream results alone, Relay can aggregate the counts and some of the trivial statistics (e.g. min, max), but cannot aggregate other statistics (e.g. mean, quartiles...)
 
@@ -55,7 +57,7 @@ Missing subnode results simply don't contribute to any code's totals.
 
 ## Demographics Distribution
 
-For demographics distribution results, each subnode returns a list of rows by code that can present results in several ways:
+For demographics [distribution](/concepts/distribution) results, each subnode returns a list of rows by code that can present results in several ways:
 
 - Most commonly: A lookup of valid values for that code to a count of matches
     - e.g. for `GENDER` - valid values of `MALE`, `FEMALE` and `OTHER` might each have counts of matches.
@@ -69,10 +71,6 @@ For the most common form, with a break down of counts per valid value for the co
 1. When all subnode's results have been aggregated by code and valid value
     1. Each coded value count is obfuscated per configuration
     1. Each coded row's count and summary statistics are calculated from the obfuscated value counts where possible
-
-e.g.
-
-// TODO: example of GENDER row aggregation
 
 For rows similar to Generic Code Distribution, [that aggregation process](#generic-code-distribution) is followed.
 
