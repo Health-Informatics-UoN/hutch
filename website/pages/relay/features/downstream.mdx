@@ -1,0 +1,78 @@
+import { Callout } from "nextra/components";
+
+# Downstream Subnodes
+
+Relay enables federation by fanning out to one or more targets downstream of itself. We call these targets "subnodes".
+
+To allow subnodes to interact with it, Relay implements a subset of the Link Connector Task API.
+
+To connect to Relay as a subnode, you need to:
+
+1. Configure Relay with a user and subnode record ([declaratively](/relay/config#declarative-subnodes) or via [cli](/relay/cli/users))
+1. Deploy a compatible subnode client (such as [Bunny](/bunny), or [Relay](/relay) itself)
+
+## Interacting with Relay
+
+Relay implements a subset of the Task API - only the endpoints needed to retrieve tasks and return their results.
+
+These match the endpoints Relay and Bunny interact with when connected to an upstream Task API.
+
+Any client that is compatible with interacting with these endpoints (and does not **require** additional endpoints) should be usable as a subnode client.
+
+The endpoints Relay implements for downstream interaction are described below.
+
+<Callout>
+You can examine Relay's Task API implementation documentation from a running Relay instance:
+    - displayed by default when navigating to Relay in a browser
+    - or explicitly at `/swagger/index.html?urls.primaryName=Downstream+Task+API`
+
+The [Quickstart](/relay/quickstart) can help you run a Relay instance.
+
+</Callout>
+
+### Endpoints
+
+#### `nextjob` endpoint
+
+When Relay receives a Task from an upstream source, it enqueues it for each configured subnode.
+
+A subnode client can then retrieve the next task in its queue by hitting this endpoint.
+
+If no tasks are available, an empty (`HTTP 204`) response is sent.
+
+It is expected that a downstream client will regularly poll this endpoint for tasks.
+
+Relay and Bunny do exactly this when running as daemons connected to an upstream Task API.
+
+<Callout type="warning">
+  Note that while Relay implements the `nextjob` interface, its [queueing
+  behaviour](#task-queue-behaviour) differs from other Task API implementations,
+  which may affect client compatibility.
+</Callout>
+
+#### `results` endpoint
+
+When a downstream client has finished processing a task, it returns the results to Relay via this endpoint.
+
+### Task Queue behaviour
+
+Some Task API implementations will use separate queues for different task types.
+
+Relay instead puts all tasks regardless of type into a single queue for each downstream subnode.
+
+A side-effect of this is that downstream clients need to interact differently with their upstream Task API, in order to get to the right queue.
+
+- Relay expects requests to look like `/nextjob/{subnode_collection_id}`.
+    - e.g. `/nextjob/93258ae6-472f-45d2-8cf9-8b64cbeb03c8`
+- Other implementations expect `/nextjob/{collection_id}.{task_type_id}`.
+    - e.g. `/nextjob/RQ-CC-93258ae6-472f-45d2-8cf9-8b64cbeb03c8.a`
+
+Upstream support for both Relay and other Task APIs can be configured in both [Bunny](/bunny/config#task-type) and [Relay](/relay/config#upstream-task-api).
+
+### Supported task types
+
+Relay supports [Availability tasks](/concepts/availability) and [Distribution tasks](/concepts/distribution) (Generic Code and Demographics in Task API terms).
+
+There is therefore an expectation that downstream clients can handle these supported task types.
+
+Furthermore, clients should not expect (i.e. require) task types which Relay does not support.

@@ -460,6 +460,14 @@ Examples:
         Defaults to `false`.
       </Td>
     </Tr>
+    <Tr>
+      <Td>`RetainCompletedTaskState`</Td>
+      <Td>
+        Should Relay keep Task and SubTask records for completed Tasks (including results)? `true` / `false`.
+        
+        Defaults to `false`.
+      </Td>
+    </Tr>
   </tbody>
 </Table>
 
@@ -470,6 +478,7 @@ Examples:
     ```bash filename=".env" copy
     ConnectionStrings__Default="Server=localhost;Port=5432;Database=hutch-relay;User Id=postgres;Password=postgres"
     Database__ApplyMigrationsOnStartup=true
+    Database__RetainCompletedTaskState=true
     ```
 
   </Tabs.Tab>
@@ -478,6 +487,7 @@ Examples:
     environment:
       ConnectionStrings__Default: "Server=localhost;Port=5432;Database=hutch-relay;User Id=postgres;Password=postgres"
       Database__ApplyMigrationsOnStartup: true
+      Database__RetainCompletedTaskState: true
     ```
 
   </Tabs.Tab>
@@ -488,7 +498,8 @@ Examples:
         "Default": "Server=localhost;Port=5432;Database=hutch-relay;User Id=postgres;Password=postgres"
       },
       "Database": {
-        "ApplyMigrationsOnStartup": true
+        "ApplyMigrationsOnStartup": true,
+        "RetainCompletedTaskState": true
       }
     }
     ```
