@@ -62,7 +62,7 @@ The request payload is then used to generate a Task API Availability Task which 
 Once Relay has received results from all subnodes - or the [Task expiry threshold](/relay/features/aggregation#task-expiry) has been reached - Relay will produce [aggregated results](/relay/features/aggregation) to return as an HTTP response to the `individuals` request.
 
 <Callout>
-Note that Relay only supports `boolean` or `ccount` granularity for individuals queries.
+Note that Relay only supports `boolean` or `count` granularity for individuals queries.
 
 Relay only returns summary data and never record-level data, since it never receives that sort of data from its downstream subnodes.
 </Callout>
