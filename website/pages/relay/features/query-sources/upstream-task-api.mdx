@@ -1,0 +1,44 @@
+import { Callout } from "nextra/components";
+
+# Upstream Task API
+
+Relay supports connecting to an upstream Task API, so that it can fetch supported tasks from that system and federate them downstream.
+
+This is Relay's default mode of operation, but it can be [disabled][task-api-config].
+
+## Behaviour
+
+Relay regularly polls all configured Task API queues in parallel, using the Task API's `nextjob` endpoint, and the [configured Collection details][task-api-config].
+
+<Callout>
+By default, a Relay instance will try to poll for tasks in separate [Availability](/concepts/availability) and [Distribution](/concepts/distsribution) queues, every 5 seconds.
+
+This polling behaviour can be [configured][task-api-config].
+</Callout>
+
+When a task is received from the Task API queue, Relay creates a `Task` record in its local datastore, as well as `Subtask`s for each registered [subnode](/relay/features/subnodes).
+
+The upstream task payload is then [queued downstream](/relay/features/subnodes#interacting-with-relay) for each subnode.
+
+Once Relay has received results from all subnodes - or the [Task expiry threshold](/relay/features/aggregation#task-expiry) has been reached - Relay will produce [aggregated results](/relay/features/aggregation) to send back to the Upstream Task API at its `results` endpoint.
+
+<Callout>
+Note that Relay only uses the endpoints described herein and does not provide other Link Connector features.
+
+Relay only fetches [supported Tasks](#task-support), and returns only inline results payloads.
+</Callout>
+
+## Task support
+
+Relay supports [Availability tasks](/concepts/availability) and [Distribution tasks](/concepts/distribution) (Generic Code and Demographics).
+
+Relay will only poll queues for supported task types (as [configured][task-api-config]).
+
+If Relay receives a task type it cannot handle from a queue it is polling, it will ignore that task.
+
+## See also
+
+- Relay also supports the [GA4GH Beacon API](ga4gh-beacon) as a query source
+- Explore [deploying](/relay/deployment) Relay
+
+[task-api-config]: /relay/config#upstream-task-api
