@@ -1,0 +1,30 @@
+import { Tabs } from "nextra/components"
+
+# Requirements
+
+## System 
+
+<Tabs items={['Virtual Machine']}>
+  <Tabs.Tab>
+
+  | Requirement         | Minimum Specification                                       |
+  |---------------------|-------------------------------------------------------------|
+  | CPU                 | 2 vCPUs                                                     |
+  | Memory (RAM)        | 4 GB                                                        |
+  | Container Runtime   | OCI-compliant container runtime (Docker, Podman, Kubernetes)|
+  | Network             | Outbound HTTPS (port 443)                                   |
+
+  - Any operating system that supports running containers is sufficient.
+  - Requirements may vary depending on workload and deployment environment.
+
+  </Tabs.Tab>
+</Tabs >
+
+## Supported Database Versions
+
+Relay supports the following database versions:
+
+| Database Type | Supported Versions |
+|---------------|--------------------|
+| PostgreSQL    | 14, 15, 16, 17     |
+
