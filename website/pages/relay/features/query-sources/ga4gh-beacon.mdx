@@ -1,0 +1,141 @@
+import { Callout } from "nextra/components";
+
+# GA4GH Beacon API
+
+Relay supports certain features of the GA4GH Beacon v2 API, if the functionality is [enabled][beacon-config].
+
+Beacon functionality is disabled by default, and use of the Beacon API will require inbound network connectivity to Relay.
+
+The primary supported features are:
+
+- Individuals summaries (boolean or count) - via GET endpoints
+    - facilitating [Availability](/concepts/availability)
+- Individuals Filtering Terms - via GET endpoints
+    - facilitating Generic Code [Distribution](/concepts/distribution)
+- Service information endpoints
+
+Supported Beacon functionality is covered in detail below.
+
+## Beacon configuration
+
+Relay supports [configuration options][beacon-config] for a Beacon [per the specification](https://docs.genomebeacons.org/framework/#the-beacon-configuration-file), though values are provided from typical .NET configuration sources rather than a single configuration file.
+
+`maturityAttributes` and `securityAttributes` configuration match the specification within Relay's `Beacon` configuration section.
+
+Relay's `Beacon.Info` section allows configuration of the values to be surfaced via the Service Information endpoints.
+
+## Supported endpoints
+
+Relay supports a number of Beacon endpoints. Relay-specific details around the implementation of these is detailed below.
+
+<Callout>
+You can examine Relay's Beacon API implementation documentation from a running Relay instance at `/swagger/index.html?urls.primaryName=GA4GH+Beacon`
+
+The [Quickstart](/relay/quickstart) can help you run a Relay instance.
+</Callout>
+
+### `filtering_terms`
+
+Relay supports the [`filtering_terms` GET endpoint](https://b2ri-documentation.readthedocs.io/en/latest/endpoints/beacon-v2.html#tag/Informational-endpoints/operation/getFilteringTerms) by returning cached distribution results from its downstream subnodes.
+
+Per the Beacon spec, the endpoint lists the presence of terms, so doesn't include counts or other summaries like Task API [Distribution](/concepts/distribution) results would.
+
+Relay supports configuration and refreshing of the caching behaviour:
+
+  - Cache refresh can be triggered on Relay startup, if [configured][beacon-config]
+  - Cache refresh can by triggered by including a [custom header](#manual-cache-refresh) with a `filtering_terms` request.
+
+#### Manually refreshing the Filtering Terms Cache [#manual-cache-refresh]
+
+Including the custom HTTP Header `X-Relay-Beacon-UpdateTerms` in a `filtering_terms` request allows a user to trigger a refresh of Relay's filtering terms cache.
+
+Updating the cache consists of Relay queueing a Generic Code Distribution task for each registered subnode.
+
+### `individuals`
+
+Relay supports the [`individuals` GET endpoint](https://b2ri-documentation.readthedocs.io/en/latest/endpoints/individuals.html#tag/GET-Endpoints/operation/getIndividuals) by generating an availability task from the individuals request and queueing it for its downstream subnodes.
+
+When a request is received at the `individuals` endpoint, Relay creates a `Task` record in its local datastore, as well as `Subtask`s for each registered [subnode](/relay/features/subnodes).
+
+The request payload is then used to generate a Task API Availability Task which is then [queued downstream](/relay/features/subnodes#interacting-with-relay) for each subnode.
+
+Once Relay has received results from all subnodes - or the [Task expiry threshold](/relay/features/aggregation#task-expiry) has been reached - Relay will produce [aggregated results](/relay/features/aggregation) to return as an HTTP response to the `individuals` request.
+
+<Callout>
+Note that Relay only supports `boolean` or `ccount` granularity for individuals queries.
+
+Relay only returns summary data and never record-level data, since it never receives that sort of data from its downstream subnodes.
+</Callout>
+
+### `individuals/filtering_terms`
+
+Relay supports the [`individuals/filtering_terms` GET endpoint](https://b2ri-documentation.readthedocs.io/en/latest/endpoints/individuals.html#tag/GET-Endpoints/operation/getIndivualsFilteringTerms) by returning cached distribution results from its downstream subnodes.
+
+### Information and Configuration endpoints
+
+Relay supports all information and configuration endpoints detailed [here](https://b2ri-documentation.readthedocs.io/en/latest/endpoints/beacon-v2.html#tag/Informational-endpoints).
+
+Some response details are derived automatically from Relay; others are [configurable][beacon-config].
+
+Mappings to informational endpoint responses is detailed below - if you are deploying a Relay Beacon, you should consider setting the relevant `Beacon.Info` configuration values.
+
+```json filename="/service-info"
+{
+  "id": "Beacon.Info.Id",
+  "name": "Beacon.Info.Name", // Relay provides a fallback Name
+  "type": { // Set by Relay
+    "group": "org.ga4gh",
+    "artifact": "beacon",
+    "version": "2.0.0"
+  },
+  "description": "Beacon.Info.Description", // Relay provides a fallback Description
+  "organization": {
+    "name": "Beacon.Info.Organization.Name",
+    "url": "Beacon.Info.Organization.WelcomeUrl"
+  },
+  "contactUrl": "Beacon.Info.Organization.ContactUrl",
+  "documentationUrl": "https://hutch.health/relay", // Set by Relay
+  "createdAt": "Beacon.Info.CreatedDate", // ISO-8601, falls back to the date of this Release
+  "updatedAt": "Beacon.Info.UpdatedDate", // ISO-8601, falls back to the running Relay Build timestamp
+  "environment": "dev", // derived from Relay's Environment setting
+  "version": "1.1.0-alpha6" // the running Relay instance's version
+}
+```
+```json filename="/info"
+{
+  "meta": {
+    "beaconId": "Beacon.Info.Id",
+    "apiVersion": "v2.0",
+    "returnedSchemas": [] // the info endpoint response schema
+  },
+  "response": {
+    "id": "Beacon.Info.Id",
+    "name": "Beacon.Info.Name", // Relay provides a fallback Name
+    "apiVersion": "v2.0",
+    "environment": "dev", // derived from Relay's Environment setting
+    "organization": {
+      "id": "Beacon.Info.Organization.Id",
+      "name": "Beacon.Info.Organization.Name",
+      "description": "Beacon.Info.Organization.Description",
+      "address": "Beacon.Info.Organization.Address",
+      "welcomeUrl": "Beacon.Info.Organization.WelcomeUrl",
+      "contactUrl": "Beacon.Info.Organization.ContactUrl",
+      "logoUrl": "Beacon.Info.Organization.LogoUrl"
+    },
+    "description": "Beacon.Info.Description", // Relay provides a fallback Description
+    "version": "1.1.0-alpha.6",  // the running Relay instance's version
+    "createDateTime": "Beacon.Info.CreatedDate", // ISO-8601, falls back to the date of this Release
+    "updateDateTime": "Beacon.Info.UpdatedDate", // ISO-8601, falls back to the running Relay Build timestamp
+  }
+}
+```
+
+
+
+[beacon-config]: /relay/config#ga4gh-beacon
+
+// TODO: #114, #115
+
+// TODO: Overview
+
+// TODO: config restructure? #115
