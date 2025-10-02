@@ -75,6 +75,20 @@ Your desired approach may differ depending on the environment you're configuring
   </thead>
   <tbody>
     <Tr>
+      <Td>`Enable`</Td>
+      <Td>
+        Whether to enable [Upstream Task Api](/relay/features/query-sources/upstream-task-api) functionality: `true|false`
+
+        When set to false, the following occur:
+
+        - All other `UpstreamTaskApi` configuration is not required
+        - The background polling service which polls the Upstream Task API for jobs will not start.
+        - When Relay receives results from downstream clients, it will not submit them to an Upstream Task API.
+
+        Defaults to `true`.
+      </Td>
+    </Tr>
+    <Tr>
       <Td>
         <Mandatory>`BaseUrl`</Mandatory>
       </Td>
@@ -109,20 +123,6 @@ Your desired approach may differ depending on the environment you're configuring
         API.
 
         Defaults to `5000` (5 seconds).
-      </Td>
-    </Tr>
-    <Tr>
-      <Td>`Enable`</Td>
-      <Td>
-        Whether to enable UpstreamTaskApi functionality: `true|false`
-
-        When set to false, the following occur:
-
-        - All other UpstreamTaskApi configuration is not required
-        - The background polling service which polls the Upstream Task API for jobs will not start.
-        - When Relay receives results from downstream clients, it will not submit them to an Upstream Task API.
-
-        Defaults to `true`.
       </Td>
     </Tr>
     <Tr>

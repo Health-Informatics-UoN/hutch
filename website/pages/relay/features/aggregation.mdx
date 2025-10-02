@@ -7,14 +7,27 @@ The general process for this is as follows:
 
 1. Relay sends a query to all downstream subnodes
 1. Relay waits for results from every subnode.
-1. Once all results have been recieved - or a timeout has been reached:
-    1. All received data are aggregated appropriately for the type of result (see below).
-    1. The aggregated results (at a record or final level as appropriate) are obfuscated per configuration.
+1. Once all results have been received - or a [timeout has been reached](#task-expiry):
+   1. All received data are aggregated appropriately for the type of result (see below).
+   1. The aggregated results (at a record or final level as appropriate) are obfuscated per configuration.
 1. Aggregated (and obfuscated) results are transformed to the query source result format and returned.
 
 The actual aggregation behaviour differs for different Task types, described in detail below.
 
 The behaviours described are covered by automated software tests to ensure Relay is behaving as expected.
+
+### Task expiry
+
+Relay "expires" running Tasks if not all subnodes have returned results after a certain amount of time, to provide a timely response to the [query source](/relay/features/query-sources), and prevent blocking by offline subnodes.
+
+The timeout differs for different Task types:
+
+| Type         | Timeout   | Notes                                                                                                                                  |
+| ------------ | --------- | -------------------------------------------------------------------------------------------------------------------------------------- |
+| Availability | 4 minutes | <ul style={{listStyle: "inside"}}><li>fits within RQuest 5 minute response window</li><li>suitable for Beacon HTTP Requests</li></ul> |
+| Distribution | 2 hours   | <ul style={{listStyle: "inside"}}><li>Matches default RQuest deployment</li><li>Allows time for subnodes to produce results</li><li>Filtering Terms cache services Beacon Requests</li></ul>
+
+When Tasks expire, Relay aggregates what subnode results it has, and responds to the Query Source with the aggregate results.
 
 ### Obfuscation / Disclosure Control
 
@@ -42,10 +55,10 @@ From the downstream results alone, Relay can aggregate the counts and some of th
 The aggregation behaviour is effectively done per-row per-subnode, building an aggregated row for each code:
 
 1. Each subnode's results are iterated row by row
-    1. Each row's count is added to a running total for that row's code
+   1. Each row's count is added to a running total for that row's code
 1. When all subnode's results have been aggregated by code
-    1. Each coded row count is obfuscated per configuration
-    1. Each coded row's summary statistics are calculated where possible
+   1. Each coded row count is obfuscated per configuration
+   1. Each coded row's summary statistics are calculated where possible
 
 ### Missing data
 
@@ -60,7 +73,7 @@ Missing subnode results simply don't contribute to any code's totals.
 For demographics [distribution](/concepts/distribution) results, each subnode returns a list of rows by code that can present results in several ways:
 
 - Most commonly: A lookup of valid values for that code to a count of matches
-    - e.g. for `GENDER` - valid values of `MALE`, `FEMALE` and `OTHER` might each have counts of matches.
+  - e.g. for `GENDER` - valid values of `MALE`, `FEMALE` and `OTHER` might each have counts of matches.
 - A simple count of matches for the code, similar to Generic Code Distribution
 - Alternative code specific value representations such as for `AGE`.
 
@@ -69,8 +82,8 @@ For the most common form, with a break down of counts per valid value for the co
 1. Each subnode's results are iterated row by row.
 1. Each row's valid value counts are added to running totals per value.
 1. When all subnode's results have been aggregated by code and valid value
-    1. Each coded value count is obfuscated per configuration
-    1. Each coded row's count and summary statistics are calculated from the obfuscated value counts where possible
+   1. Each coded value count is obfuscated per configuration
+   1. Each coded row's count and summary statistics are calculated from the obfuscated value counts where possible
 
 For rows similar to Generic Code Distribution, [that aggregation process](#generic-code-distribution) is followed.
 
