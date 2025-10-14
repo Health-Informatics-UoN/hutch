@@ -3,4 +3,5 @@ export default {
   config: "Configuration",
   deployment: "Deployment",
   developers: "Developers",
+  branding: "Branding",
 };
