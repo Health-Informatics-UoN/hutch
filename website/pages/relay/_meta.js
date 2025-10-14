@@ -2,5 +2,7 @@ export default {
   quickstart: "Quickstart",
   "features": "Features",
   config: "Configuration",
-  deployment: "Deployment"
+  deployment: "Deployment",
+  cli: "CLI",
+  branding: "Branding",
 };
