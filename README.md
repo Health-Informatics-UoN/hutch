@@ -11,7 +11,7 @@
 
 ## Cohort Discovery
 
-### 🐇 [Bunny][bunny-repo]
+[![Bunny Logo][bunny-logo]][bunny-logo]
 
 ![MIT License][license-badge] [![Bunny Repo][github-badge]][bunny-repo] [![Bunny Releases][bunny-releases-badge]][bunny-releases] [![Bunny Tests][bunny-tests-badge]][bunny-tests]
 
@@ -21,7 +21,7 @@ A Cohort Discovery Task Resolver.
 
 Fetches and resolves Availability and Distribution Queries against a PostgreSQL OMOP CDM database.
 
-### 🔄 [Relay][relay-repo]
+[![Relay Logo][relay-logo]][relay-logo]
 
 [![MIT License][license-badge]][license-badge] [![Relay Repo][github-badge]][relay-repo] [![Relay Releases][relay-releases-badge]][relay-releases] [![Relay Tests][relay-tests-badge]][relay-tests]
 
@@ -36,7 +36,8 @@ A Federated Proxy for a Cohort Discovery Task API.
 - Submits aggregate results to the upstream Task API.
 - Implements a subset of the Task API for the downstream nodes to interact with.
 
-[hutch-logo]: https://raw.githubusercontent.com/HDRUK/hutch/main/assets/Hutch%20splash%20bg.svg
+[bunny-logo]: https://github.com/Health-Informatics-UoN/hutch/blob/main/website/public/images/logos/bunny/primary.svg
+[relay-logo]: https://github.com/Health-Informatics-UoN/hutch/blob/main/website/public/images/logos/relay/primary.svg
 [roadmap]: https://github.com/orgs/Health-Informatics-UoN/projects/1/views/15
 [bunny-repo]: https://github.com/Health-Informatics-UoN/hutch-bunny
 [bunny-docs]: https://hutch.health/bunny
