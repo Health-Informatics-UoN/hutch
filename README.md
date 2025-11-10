@@ -13,6 +13,8 @@
 
 ### 🐇 [Bunny][bunny-repo]
 
+[![Bunny Logo][bunny-logo]][bunny-logo]
+
 ![MIT License][license-badge] [![Bunny Repo][github-badge]][bunny-repo] [![Bunny Releases][bunny-releases-badge]][bunny-releases] [![Bunny Tests][bunny-tests-badge]][bunny-tests]
 
 ![Python][python-badge] [![Bunny Docker Images][docker-badge]][bunny-containers] [![Bunny Docs][docs-badge]][bunny-docs] [![Bunny Roadmap][roadmap-badge]][roadmap]
@@ -36,7 +38,8 @@ A Federated Proxy for a Cohort Discovery Task API.
 - Submits aggregate results to the upstream Task API.
 - Implements a subset of the Task API for the downstream nodes to interact with.
 
-[hutch-logo]: https://raw.githubusercontent.com/HDRUK/hutch/main/assets/Hutch%20splash%20bg.svg
+[bunny-logo]: https://github.com/Health-Informatics-UoN/hutch/blob/main/website/public/images/logos/bunny/bunny.svg
+[relay-logo]: https://github.com/Health-Informatics-UoN/hutch/blob/main/website/public/images/logos/relay/primary.svg
 [roadmap]: https://github.com/orgs/Health-Informatics-UoN/projects/1/views/15
 [bunny-repo]: https://github.com/Health-Informatics-UoN/hutch-bunny
 [bunny-docs]: https://hutch.health/bunny
