@@ -59,19 +59,37 @@ Further guidance is available in the [Connect to RQuest](/bunny/deployment/conne
 
 The database connection is configured by the variables prefixed with `DATASOURCE_`
 
-| Name                                            | Type                 | Description                | Default      |
-| ----------------------------------------------- | -------------------- | -------------------------- | ------------ |
-| `DATASOURCE_DB_USERNAME`                        | `string`             | Database username          | `trino-user` |
-| `DATASOURCE_DB_PASSWORD`                        | `string`             | Database password          |              |
-| <Mandatory>`DATASOURCE_DB_DATABASE`</Mandatory> | `string`             | Database name              |              |
-| <Mandatory>`DATASOURCE_DB_SCHEMA`</Mandatory>   | `string`             | Database schema            |              |
-| <Mandatory>`DATASOURCE_DB_PORT`</Mandatory>     | `string`             | Database port              |              |
-| <Mandatory>`DATASOURCE_DB_HOST`</Mandatory>     | `string`             | Database host              |              |
-| `DATASOURCE_DB_DRIVERNAME`                      | `"postgresql,mssql"` | Database dialect           | `postgresql` |
-| `DATASOURCE_DB_CATALOG`                         | `string`             | Trino catalog name         |              |
-| `DATASOURCE_USE_TRINO`                          | `boolean`            | Use Trino to connect       | `False`      |
-| `DATASOURCE_USE_AZURE_MANAGED_IDENTITY`         | `boolean`            | Use Azure Managed Identity | `False`      |
-| `DATASOURCE_AZURE_MANAGED_IDENTITY_CLIENT_ID`   | `string`             | Azure Identity Client ID   |              |
+| Name                                            | Type                        | Description                | Default         |
+| ----------------------------------------------- | --------------------------- | -------------------------- | --------------- |
+| `DATASOURCE_DB_USERNAME`                        | `string`                    | Database username          | `trino-user`    |
+| `DATASOURCE_DB_PASSWORD`                        | `string`                    | Database password          |                 |
+| <Mandatory>`DATASOURCE_DB_DATABASE`</Mandatory> | `string`                    | Database name              |                 |
+| <Mandatory>`DATASOURCE_DB_SCHEMA`</Mandatory>   | `string`                    | Database schema            |                 |
+| <Mandatory>`DATASOURCE_DB_PORT`</Mandatory>     | `string`                    | Database port              |                 |
+| <Mandatory>`DATASOURCE_DB_HOST`</Mandatory>     | `string`                    | Database host              |                 |
+| `DATASOURCE_DB_DRIVERNAME`                      | `"postgresql,mssql,duckdb"` | Database dialect           | `postgresql`    |
+
+### Managed Identity
+
+| Name                                            | Type                        | Description                | Default         |
+| ----------------------------------------------- | --------------------------- | -------------------------- | --------------- |
+| `DATASOURCE_USE_AZURE_MANAGED_IDENTITY`         | `boolean`                   | Use Azure Managed Identity | `False`         |
+| `DATASOURCE_AZURE_MANAGED_IDENTITY_CLIENT_ID`   | `string`                    | Azure Identity Client ID   |                 |
+
+### DuckDB
+
+| Name                                            | Type                        | Description                | Default         |
+| ----------------------------------------------- | --------------------------- | --------------------------------------------------------------------------------------- | --------------- |
+| `DATASOURCE_DUCKDB_PATH_TO_DB`                  | `string`                    | The path to the DuckDB database file                                                    | `/data/file.db` |
+| `DATASOURCE_DUCKDB_MEMORY_LIMIT`                | `string`                    | The memory limit for DuckDB (e.g. '1000mb', '2gb')                                      | `1000mb`        |
+| `DATASOURCE_DUCKDB_TEMP_DIRECTORY`              | `string`                    | The temporary directory for DuckDB - used as a swap fir larger-than-memory processing   | `/tmp`          |
+
+### Trino
+
+| Name                                            | Type                        | Description                | Default         |
+| ----------------------------------------------- | --------------------------- | -------------------------- | --------------- |
+| `DATASOURCE_DB_CATALOG`                         | `string`                    | Trino catalog name         |                 |
+| `DATASOURCE_USE_TRINO`                          | `boolean`                   | Use Trino to connect       | `False`         |
 
 When `DATASOURCE_USE_AZURE_MANAGED_IDENTITY` is enabled, the application will connect to Azure SQL Server using Azure Managed Identity instead of traditional credentials.
 This allows the service to authenticate securely without requiring a stored username or password.
