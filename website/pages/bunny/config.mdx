@@ -102,3 +102,11 @@ Read more about [disclosure controls](/concepts/disclosure_controls).
 | Name                 | Type                                  | Description                 | Default |
 | -------------------- | ------------------------------------- | --------------------------- | ------- |
 | `BUNNY_LOGGER_LEVEL` | `"DEBUG,INFO,WARNING,ERROR,CRITICAL"` | Specifies the logging level | `INFO`  |
+
+## OpenTelemetry
+
+| Name               | Type     | Description                                                                                                 | Default                      |
+| ----------------------------- | --------- | ----------------------------------------------------------------------------------------------- | ---------------------------- |
+| `OTEL_ENABLED`                | `boolean` | Whether or not telemetry data is exported through opentelemetry to the observability backend(s) | `False`                      |
+| `OTEL_SERVICE_NAME`           | `string`  | Service identification for opentelemetry                                                        | `hutch-bunny-daemon`         |
+| `OTEL_EXPORTER_OTLP_ENDPOINT` | `string`  | Opentelemetry collector endpoint for sending data                                               | `http://otel-collector:4317` |
