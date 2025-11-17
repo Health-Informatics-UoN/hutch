@@ -59,41 +59,43 @@ Further guidance is available in the [Connect to RQuest](/bunny/deployment/conne
 
 The database connection is configured by the variables prefixed with `DATASOURCE_`
 
-| Name                                            | Type                        | Description                | Default         |
-| ----------------------------------------------- | --------------------------- | -------------------------- | --------------- |
-| `DATASOURCE_DB_USERNAME`                        | `string`                    | Database username          | `trino-user`    |
-| `DATASOURCE_DB_PASSWORD`                        | `string`                    | Database password          |                 |
-| <Mandatory>`DATASOURCE_DB_DATABASE`</Mandatory> | `string`                    | Database name              |                 |
-| <Mandatory>`DATASOURCE_DB_SCHEMA`</Mandatory>   | `string`                    | Database schema            |                 |
-| <Mandatory>`DATASOURCE_DB_PORT`</Mandatory>     | `string`                    | Database port              |                 |
-| <Mandatory>`DATASOURCE_DB_HOST`</Mandatory>     | `string`                    | Database host              |                 |
-| `DATASOURCE_DB_DRIVERNAME`                      | `"postgresql,mssql,duckdb"` | Database dialect           | `postgresql`    |
+| Name                                            | Type                        | Description       | Default         |
+| ----------------------------------------------- | --------------------------- | ----------------- | --------------- |
+| `DATASOURCE_DB_USERNAME`                        | `string`                    | Database username | `trino-user`    |
+| `DATASOURCE_DB_PASSWORD`                        | `string`                    | Database password |                 |
+| <Mandatory>`DATASOURCE_DB_DATABASE`</Mandatory> | `string`                    | Database name     |                 |
+| <Mandatory>`DATASOURCE_DB_SCHEMA`</Mandatory>   | `string`                    | Database schema   |                 |
+| <Mandatory>`DATASOURCE_DB_PORT`</Mandatory>     | `string`                    | Database port     |                 |
+| <Mandatory>`DATASOURCE_DB_HOST`</Mandatory>     | `string`                    | Database host     |                 |
+| `DATASOURCE_DB_DRIVERNAME`                      | `"postgresql,mssql,duckdb"` | Database dialect  | `postgresql`    |
 
 ### Managed Identity
 
-| Name                                            | Type                        | Description                | Default         |
-| ----------------------------------------------- | --------------------------- | -------------------------- | --------------- |
-| `DATASOURCE_USE_AZURE_MANAGED_IDENTITY`         | `boolean`                   | Use Azure Managed Identity | `False`         |
-| `DATASOURCE_AZURE_MANAGED_IDENTITY_CLIENT_ID`   | `string`                    | Azure Identity Client ID   |                 |
-
-### DuckDB
-
-| Name                                            | Type                        | Description                | Default         |
-| ----------------------------------------------- | --------------------------- | --------------------------------------------------------------------------------------- | --------------- |
-| `DATASOURCE_DUCKDB_PATH_TO_DB`                  | `string`                    | The path to the DuckDB database file                                                    | `/data/file.db` |
-| `DATASOURCE_DUCKDB_MEMORY_LIMIT`                | `string`                    | The memory limit for DuckDB (e.g. '1000mb', '2gb')                                      | `1000mb`        |
-| `DATASOURCE_DUCKDB_TEMP_DIRECTORY`              | `string`                    | The temporary directory for DuckDB - used as a swap fir larger-than-memory processing   | `/tmp`          |
-
-### Trino
-
-| Name                                            | Type                        | Description                | Default         |
-| ----------------------------------------------- | --------------------------- | -------------------------- | --------------- |
-| `DATASOURCE_DB_CATALOG`                         | `string`                    | Trino catalog name         |                 |
-| `DATASOURCE_USE_TRINO`                          | `boolean`                   | Use Trino to connect       | `False`         |
+| Name                                          | Type      | Description                | Default         |
+| --------------------------------------------- | --------- | -------------------------- | --------------- |
+| `DATASOURCE_USE_AZURE_MANAGED_IDENTITY`       | `boolean` | Use Azure Managed Identity | `False`         |
+| `DATASOURCE_AZURE_MANAGED_IDENTITY_CLIENT_ID` | `string`  | Azure Identity Client ID   |                 |
 
 When `DATASOURCE_USE_AZURE_MANAGED_IDENTITY` is enabled, the application will connect to Azure SQL Server using Azure Managed Identity instead of traditional credentials.
 This allows the service to authenticate securely without requiring a stored username or password.
 If you are using a user-assigned identity, you can provide its client ID through `DATASOURCE_AZURE_MANAGED_IDENTITY_CLIENT_ID`.
+
+### DuckDB
+
+| Name                               | Type     | Description                                                                           | Default         |
+| ---------------------------------- | -------- | ------------------------------------------------------------------------------------- | --------------- |
+| `DATASOURCE_DUCKDB_PATH_TO_DB`     | `string` | The path to the DuckDB database file                                                  | `/data/file.db` |
+| `DATASOURCE_DUCKDB_MEMORY_LIMIT`   | `string` | The memory limit for DuckDB (e.g. '1000mb', '2gb')                                    | `1000mb`        |
+| `DATASOURCE_DUCKDB_TEMP_DIRECTORY` | `string` | The temporary directory for DuckDB - used as a swap fir larger-than-memory processing | `/tmp`          |
+
+### Trino
+
+Bunny can connect to databases Trino, though this functionality is untested.
+
+| Name                    | Type                        | Description                | Default         |
+| ----------------------- | --------------------------- | -------------------------- | --------------- |
+| `DATASOURCE_DB_CATALOG` | `string`                    | Trino catalog name         |                 |
+| `DATASOURCE_USE_TRINO`  | `boolean`                   | Use Trino to connect       | `False`         |
 
 ## Disclosure Control
 
@@ -109,11 +111,26 @@ Read more about [disclosure controls](/concepts/disclosure_controls).
 
 ## Polling
 
+Bunny continually polls upstream to a Task API for new tasks, these settings will configure that functionality.
+
 | Name               | Type      | Description                                                                                     | Default |
 | ------------------ | --------- | ----------------------------------------------------------------------------------------------- | ------- |
-| `POLLING_INTERVAL` | `integer` | Specifies how often (seconds) the Task API is polled for new jobs                               | `5`     |
+| `POLLING_INTERVAL` | `integer` | Specifies how often (seconds) the Task API is polled for new tasks                               | `5`     |
 | `INITIAL_BACKOFF`  | `integer` | Specifies the starting wait time (seconds) before retrying after a network error                | `5`     |
 | `MAX_BACKOFF`      | `integer` | Sets the maximum wait time (seconds) that exponential backoff can reach after repeated failures | `60`    |
+
+## Distribution Jobs Cache
+
+Bunny can cache the results of a distribution task when it starts, and respond to those queries with the cached result. This is useful for large OMOP databases, where distribution tasks can take longer. 
+
+These settings can configure the specifics of this functionality.
+
+| Name                       | Type      | Description                                                       | Default      |
+| -------------------------- | --------- | ----------------------------------------------------------------- | ------------ |
+| `CACHE_ENABLED`            | `boolean` | Enable caching of distribution query results                      | `False`      |
+| `CACHE_DIR`                | `string`  | Directory to store cached distribution results                    | `/app/cache` |
+| `CACHE_TTL_HOURS`          | `float`   | Cache validity (time-to-live) period in hours (0 = never expires) | `24.0`       |
+| `CACHE_REFRESH_ON_STARTUP` | `boolean` | Refresh cache when Bunny starts                                   | `True`       |
 
 ## Logging
 
