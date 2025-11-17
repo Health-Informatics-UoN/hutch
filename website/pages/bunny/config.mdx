@@ -119,9 +119,9 @@ Bunny continually polls upstream to a Task API for new tasks, these settings wil
 | `INITIAL_BACKOFF`  | `integer` | Specifies the starting wait time (seconds) before retrying after a network error                | `5`     |
 | `MAX_BACKOFF`      | `integer` | Sets the maximum wait time (seconds) that exponential backoff can reach after repeated failures | `60`    |
 
-## Distribution Jobs Cache
+## Distribution Tasks Cache
 
-Bunny can cache the results of a distribution task when it starts, and respond to those queries with the cached result. This is useful for large OMOP databases, where distribution tasks can take longer. 
+Bunny can cache the results of a [distribution](/concepts/distribution) task when it starts, and respond to those queries with the cached result. This is useful for large OMOP databases, where distribution tasks can take longer. 
 
 These settings can configure the specifics of this functionality.
 
