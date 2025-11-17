@@ -8,7 +8,7 @@
 | Memory (RAM)        | 4 GB                                                        |
 | Container Runtime   | OCI-compliant container runtime (Docker, Podman, Kubernetes)|
 | Network             | Outbound HTTPS (port 443)                                   |
-| Database Access     | OMOP CDM PostgreSQL / SQL Server                             |
+| Database Access     | OMOP CDM PostgreSQL / SQL Server / DuckDB                   |
 
 - Any operating system that supports running containers is sufficient.
 - Requirements may vary depending on workload and deployment environment.
@@ -18,9 +18,10 @@
 Bunny supports the following database versions for OMOP CDM:
 
 | Database Type | Supported Versions |
-|---------------|-------------------|
-| PostgreSQL    | 14, 15, 16, 17   |
-| SQL Server    | 2019, 2022        |
+|---------------|--------------------|
+| PostgreSQL    | 14, 15, 16, 17     |
+| SQL Server    | 2019, 2022         |
+| DuckDB        | 1.X                |
 
 ## OMOP CDM
 
@@ -37,6 +38,7 @@ Recommended tables and field names:
 | Person                 | person_id, gender_concept_id, year_of_birth, race_concept_id, **ethnicity_concept_id*** |
 | **Concept***           | **concept_id***, **domain_id***                                                         |
 | Condition Occurrence   | condition_occurrence_id, person_id, condition_concept_id, condition_start_date          |
+| Procedure Occurrence   | procedure_occurrence_id, person_id, procedure_concept_id, procedure_date                |
 | Drug Exposure          | drug_exposure_id, person_id, drug_concept_id, drug_exposure_start_date                  |
 | Observation            | observation_id, person_id, observation_concept_id, observation_date                     |
 | Measurement            | measurement_id, person_id, measurement_concept_id, measurement_date                     |
@@ -50,5 +52,6 @@ The following indexes are also recommended from the CDM to ensure queries are pr
 | Person                 | idx_person_id                      |
 | Concept                | idx_concept_concept_id             |
 | Condition Occurrence   | idx_condition_concept_id_1         |
+| Procedure Occurrence   | idx_procedure_concept_id_1         |
 | Observation            | idx_observation_concept_id_1       |
 | Measurement            | idx_measurement_concept_id_1       |
