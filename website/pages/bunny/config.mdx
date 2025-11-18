@@ -140,7 +140,7 @@ These settings can configure the specifics of this functionality.
 
 ## OpenTelemetry
 
-Bunny can use OpenTelemetry to export traces and metrics to your chosen collector. 
+Bunny can use OpenTelemetry to export traces and metrics to your chosen collector. You will need to either have your own observability backend setup (for traces, metrics, and logs) or modify/use our minimal implementation (Loki, Tempo, Prometheus, Grafana) specified in the [`observability.compose.yml`](https://github.com/Health-Informatics-UoN/hutch-bunny/blob/main/observability.compose.yml). 
 
 | Name               | Type     | Description                                                                                                 | Default                      |
 | ----------------------------- | --------- | ----------------------------------------------------------------------------------------------- | ---------------------------- |
