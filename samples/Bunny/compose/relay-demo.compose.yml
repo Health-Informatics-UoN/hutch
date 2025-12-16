@@ -8,10 +8,9 @@
 name: relay-demo
 
 services:
-
   # Bunny 1
   bunny1_db:
-    image: postgres:16
+    image: postgres:18
     networks:
       - subnode1
     environment:
@@ -69,7 +68,7 @@ services:
     extends: bunny1_db
     networks: !override
       - subnode2
-  
+
   bunny2_omop-lite:
     extends: bunny1_omop-lite
     networks: !override
@@ -95,7 +94,7 @@ services:
 
   # Relay
   relay_db:
-    image: postgres:16
+    image: postgres:18
     networks:
       - parent
     environment:
@@ -151,7 +150,6 @@ services:
         condition: service_started
       relay_rabbitmq:
         condition: service_healthy
-
 
 networks:
   subnode1:
