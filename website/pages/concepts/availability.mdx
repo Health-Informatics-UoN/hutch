@@ -107,7 +107,15 @@ The result is a numerical count of matching records, subject to [disclosure cont
               SELECT drug_exposure.person_id AS person_id
               FROM drug_exposure
               WHERE drug_exposure.drug_concept_id = 4323688
-                AND drug_exposure.drug_exposure_start_date <= '2025-07-01 09:14:26.842531'))
+                AND drug_exposure.drug_exposure_start_date <= '2025-07-01 09:14:26.842531'
+
+              UNION
+
+              SELECT procedure_occurrence.person_id AS person_id 
+              FROM procedure_occurrence 
+              WHERE procedure_occurrence.procedure_concept_id = 4323688 
+                AND procedure_occurrence.procedure_date <= '2025-07-01 09:14:26.842531'))
+
     SELECT round(count(*) / CAST(10 AS NUMERIC), 0) * 10 AS anon_1
     FROM (SELECT final_group_0.person_id AS person_id
           FROM final_group_0) AS anon_2

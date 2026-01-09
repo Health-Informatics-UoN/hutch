@@ -1,7 +1,9 @@
-import { Callout } from "nextra/components";
-import { Steps } from "nextra/components";
+import { Callout, Tabs, Steps, } from "nextra/components";
 
 # Bunny Deployment
+
+<Tabs items={["Virtual Machine", "AWS EKS Terraform", "Kubernetes" ]}>
+  <Tabs.Tab>
 
 This page will guide you through getting Bunny deployed in a Virtual Machine (VM) or locally on your machine.
 
@@ -64,6 +66,27 @@ You won't see the results here, but if you see the messages, then it's successfu
 <Callout emoji="🎉">Congratulations on your first Bunny deployment!</Callout>
 
 </Steps>
+
+</Tabs.Tab>
+  
+<Tabs.Tab>
+
+  Health Informatics Centre (HIC) at the University of Dundee have open-sourced their Terraform for deploying Bunny in AWS Elastic Kubernetes Services (EKS).
+
+  [Follow the guidance](https://github.com/hic-infra/bunny-deploy)
+
+</Tabs.Tab>
+
+<Tabs.Tab>
+
+  We have sample [Kubernetes Helm charts](https://github.com/Health-Informatics-UoN/hutch/tree/main/charts/hutch) for deploying Bunny.
+
+  It's early in our Kubernetes journey, so welcome feedback and patience as our documentation emerges. 
+
+</Tabs.Tab>
+</Tabs>
+
+
 ## Best Practices
 
 When deploying Bunny, follow these best practices to ensure stability and consistency:
