@@ -8,7 +8,7 @@
 | Memory (RAM)        | 4 GB                                                        |
 | Container Runtime   | OCI-compliant container runtime (Docker, Podman, Kubernetes)|
 | Network             | Outbound HTTPS (port 443)                                   |
-| Database Access     | OMOP CDM PostgreSQL / SQL Server / DuckDB                   |
+| Database Access     | OMOP CDM PostgreSQL / SQL Server / Snowflake / DuckDB       |
 
 - Any operating system that supports running containers is sufficient.
 - Requirements may vary depending on workload and deployment environment.
@@ -19,9 +19,10 @@ Bunny supports the following database versions for OMOP CDM:
 
 | Database Type | Supported Versions |
 |---------------|--------------------|
-| PostgreSQL    | 14, 15, 16, 17     |
+| PostgreSQL    | 14, 15, 16, 17, 18 |
 | SQL Server    | 2019, 2022         |
 | DuckDB        | 1.x                |
+| Snowflake     | Tested against X   |
 
 ## OMOP CDM
 

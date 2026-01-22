@@ -59,15 +59,15 @@ Further guidance is available in the [Connect to RQuest](/bunny/deployment/conne
 
 The database connection is configured by the variables prefixed with `DATASOURCE_`
 
-| Name                                            | Type                        | Description       | Default         |
-| ----------------------------------------------- | --------------------------- | ----------------- | --------------- |
-| `DATASOURCE_DB_USERNAME`                        | `string`                    | Database username | `trino-user`    |
-| `DATASOURCE_DB_PASSWORD`                        | `string`                    | Database password |                 |
-| <Mandatory>`DATASOURCE_DB_DATABASE`</Mandatory> | `string`                    | Database name     |                 |
-| <Mandatory>`DATASOURCE_DB_SCHEMA`</Mandatory>   | `string`                    | Database schema   |                 |
-| <Mandatory>`DATASOURCE_DB_PORT`</Mandatory>     | `string`                    | Database port     |                 |
-| <Mandatory>`DATASOURCE_DB_HOST`</Mandatory>     | `string`                    | Database host     |                 |
-| `DATASOURCE_DB_DRIVERNAME`                      | `"postgresql,mssql,duckdb"` | Database dialect  | `postgresql`    |
+| Name                                            | Type                                                   | Description       | Default         |
+| ----------------------------------------------- | ------------------------------------------------------ | ----------------- | --------------- |
+| `DATASOURCE_DB_USERNAME`                        | `string`                                               | Database username | `trino-user`    |
+| `DATASOURCE_DB_PASSWORD`                        | `string`                                               | Database password |                 |
+| <Mandatory>`DATASOURCE_DB_DATABASE`</Mandatory> | `string`                                               | Database name     |                 |
+| <Mandatory>`DATASOURCE_DB_SCHEMA`</Mandatory>   | `string`                                               | Database schema   |                 |
+| <Mandatory>`DATASOURCE_DB_PORT`</Mandatory>     | `string`                                               | Database port     |                 |
+| <Mandatory>`DATASOURCE_DB_HOST`</Mandatory>     | `string`                                               | Database host     |                 |
+| `DATASOURCE_DB_DRIVERNAME`                      | `"postgresql,mssql,duckdb,snowflake-connector-python"` | Database dialect  | `postgresql`    |
 
 ### Managed Identity
 
@@ -79,6 +79,16 @@ The database connection is configured by the variables prefixed with `DATASOURCE
 When `DATASOURCE_USE_AZURE_MANAGED_IDENTITY` is enabled, the application will connect to Azure SQL Server using Azure Managed Identity instead of traditional credentials.
 This allows the service to authenticate securely without requiring a stored username or password.
 If you are using a user-assigned identity, you can provide its client ID through `DATASOURCE_AZURE_MANAGED_IDENTITY_CLIENT_ID`.
+
+### Snowflake 
+
+| Name                                | Type     | Description                                                                                                | Default               |
+| ----------------------------------- | -------- | ---------------------------------------------------------------------------------------------------------- | --------------------- |
+| `DATASOURCE_DB_ACCOUNT`             | `string` | The Snowflake account identifier (e.g., 'LGGOZEC-CJ54726')                                                 | `/data/file.db`       |
+| `DATASOURCE_DB_SNOWFLAKE_WAREHOUSE` | `string` | The Snowflake warehouse to use for queries                                                                 | `COMPUTE_WH`          |
+| `DATASOURCE_DB_SNOWFLAKE_ROLE`      | `string` | The Snowflake role to use for queries                                                                      | `SYSADMIN`            |
+| `DATASOURCE_PRIVATE_KEY_PATH`       | `string` | Path to the private key file. This must be provided at runtime, for example via a mounted secret or volume | `/app/private_key.p8` |
+| `DATASOURCE_PRIVATE_KEY_PASSPHRASE` | `string` | Passphrase for the encrypted private key                                                                   | `password`            |
 
 ### DuckDB
 

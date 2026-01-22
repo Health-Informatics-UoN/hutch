@@ -19,7 +19,7 @@
 
 A Cohort Discovery Task Resolver.
 
-Fetches and resolves Availability and Distribution Queries against a PostgreSQL OMOP CDM database.
+Fetches and resolves Availability and Distribution Queries against a OMOP CDM database.
 
 [![Relay Logo][relay-logo]][relay-logo]
 
