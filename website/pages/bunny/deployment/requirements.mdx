@@ -34,15 +34,21 @@ Ideally the database should comply with the common data model, and the minimum d
 
 Recommended tables and field names:
 
-| OMOP Table            | OMOP Field Names                                                                         |
-|------------------------|-----------------------------------------------------------------------------------------|
-| Person                 | person_id, gender_concept_id, year_of_birth, race_concept_id, **ethnicity_concept_id*** |
-| **Concept***           | **concept_id***, **domain_id***                                                         |
-| Condition Occurrence   | condition_occurrence_id, person_id, condition_concept_id, condition_start_date          |
-| Procedure Occurrence   | procedure_occurrence_id, person_id, procedure_concept_id, procedure_date                |
-| Drug Exposure          | drug_exposure_id, person_id, drug_concept_id, drug_exposure_start_date                  |
-| Observation            | observation_id, person_id, observation_concept_id, observation_date                     |
-| Measurement            | measurement_id, person_id, measurement_concept_id, measurement_date                     |
+| OMOP Table           | OMOP Field Names                                                                        |
+|----------------------|-----------------------------------------------------------------------------------------|
+| Person               | person_id, gender_concept_id, year_of_birth, race_concept_id, **ethnicity_concept_id*** |
+| **Concept***         | **concept_id***, **domain_id***                                                         |
+| Condition Occurrence | condition_occurrence_id, person_id, condition_concept_id, condition_start_date          |
+| Procedure Occurrence | procedure_occurrence_id, person_id, procedure_concept_id, procedure_date                |
+| Drug Exposure        | drug_exposure_id, person_id, drug_concept_id, drug_exposure_start_date                  |
+| Observation          | observation_id, person_id, observation_concept_id, observation_date                     |
+| Measurement          | measurement_id, person_id, measurement_concept_id, measurement_date                     |
+
+Optional tables set by configuration:
+
+| OMOP Table | OMOP Field Names                                           | Supported from |
+|------------|------------------------------------------------------------|----------------|
+| Specimen   | specimen_id, person_id, specimen_concept_id, specimen_date | v1.7 onwards   |
 
 _*Not included in the HDR Gateway minimum data model._
 
