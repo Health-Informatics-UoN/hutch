@@ -1,0 +1,53 @@
+name: Hutch Chart
+
+on:
+  pull_request:
+    # Only consider PRs that change files for this asset, including ci scripts
+    paths:
+      - '.github/workflows/hutch.yaml'
+      - 'chart/hutch/**'
+    # Make sure all workflows that are "required checks" for a given
+    # branch protection rule have the same paths: and branches-ignore:
+    # filters. Otherwise, you can end up in a deadlock waiting on a
+    # required check that will never be executed.
+  push:
+    # Only release off of release and maintenance branches for this asset
+    branches:
+      - 'main'
+    # Only consider pushes that change files for this asset, including ci scripts.
+    paths:
+      - '.github/workflows/hutch.yaml'
+      - 'chart/hutch/**'
+
+permissions:
+  contents: write
+  pull-requests: write
+  actions: read
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  # Needed to generate releases safely
+  cancel-in-progress: ${{ github.event_name == 'pull_request' }}
+
+jobs:
+  # Job name must be unique across repo to target
+  # branch protection rules "required checks" properly!
+  hutch-chart:
+    uses: SwanseaUniversityMedical/workflows/.github/workflows/pr-and-release-chart.yaml@v4.0.0-charts
+    with:
+      job-name: hutch-chart
+      comment-pr: "true"
+      comment-release: "true"
+      registry: ${{ vars.HARBOR_REGISTRY }}
+      registry-user: ${{ vars.HARBOR_USER }}
+      registry-project: ${{ vars.HARBOR_PROJECT }}
+      registry-repo: hutch
+      release-tag-format: 'v${version}-hutch-chart'
+      notation-cert: ${{ vars.NOTATION_CERT }}
+      chart: charts/hutch
+      test-command: |
+        helm template $CHART --debug
+
+    secrets:
+      notation-key: ${{ secrets.NOTATION_KEY }}
+      registry-token: ${{ secrets.HARBOR_TOKEN }}
