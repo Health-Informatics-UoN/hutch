@@ -49,8 +49,13 @@ Optional tables set by configuration:
 | OMOP Table | OMOP Field Names                                           | Supported from |
 |------------|------------------------------------------------------------|----------------|
 | Specimen   | specimen_id, person_id, specimen_concept_id, specimen_date | v1.7 onwards   |
+| Location   | location_id, location_source_value, country_concept_id†, latitude†, longitude† | vX.Y onwards |
+
+Location is joined via `person.location_id` → `location.location_id`.
 
 _*Not included in the HDR Gateway minimum data model._
+
+_†`country_concept_id`, `latitude`, and `longitude` were added to the Location table in OMOP CDM v5.4 — a v5.3 database only supports filtering on `location_source_value`._
 
 The following indexes are also recommended from the CDM to ensure queries are processed quickly.
 

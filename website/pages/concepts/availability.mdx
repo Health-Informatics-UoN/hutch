@@ -124,6 +124,71 @@ The result is a numerical count of matching records, subject to [disclosure cont
   </Tabs.Tab>
 </Tabs>
 
+## Location filtering
+
+`varcat: "Location"` is a special case. Unlike the other varcats, a Location rule does not union
+across the clinical event tables (measurement, observation, condition_occurrence, drug_exposure,
+procedure_occurrence) — it queries the OMOP `location` table alone, joined via
+`person.location_id → location.location_id`. This requires `OMOP_LOCATION_ENABLED` to be set (see
+[Configuration](/bunny/config#database)).
+
+There are three mutually exclusive ways to filter on `Location` within a single rule:
+
+<Tabs items={["Geo-radius", "Source value", "Country concept"]}>
+  <Tabs.Tab>
+    `type: "GEO_RADIUS"` filters by great-circle (haversine) distance from a centre point against
+    `location.latitude`/`location.longitude`. The `value` field is a pipe-delimited
+    `latitude|longitude|radius_metres` string. Rows with a NULL latitude or longitude are always
+    excluded.
+
+    ```json
+    {
+      "varname": "OMOP",
+      "varcat": "Location",
+      "type": "GEO_RADIUS",
+      "oper": "=",
+      "value": "51.5074|-0.1278|5000"
+    }
+    ```
+
+    This example matches patients within 5km of central London. Set `"oper": "!="` to exclude
+    patients within the radius instead.
+  </Tabs.Tab>
+  <Tabs.Tab>
+    `type: "TEXT"` with `secondary_modifier` filters on `location.location_source_value` — useful
+    for country/region codes recorded in the source data.
+
+    ```json
+    {
+      "varname": "OMOP",
+      "varcat": "Location",
+      "type": "TEXT",
+      "oper": "=",
+      "secondary_modifier": ["GBR"]
+    }
+    ```
+  </Tabs.Tab>
+  <Tabs.Tab>
+    `type: "TEXT"` with a `value` filters on `location.country_concept_id` — the `value` is an OMOP
+    concept ID, matched the same way a concept-based rule would be for other varcats.
+
+    ```json
+    {
+      "varname": "OMOP",
+      "varcat": "Location",
+      "type": "TEXT",
+      "oper": "=",
+      "value": "4330435"
+    }
+    ```
+
+    `country_concept_id` is an OMOP CDM v5.4 column — see [Requirements](/bunny/deployment/requirements#omop-cdm).
+  </Tabs.Tab>
+</Tabs>
+
+To combine two Location filters (e.g. UK patients within a radius), use two separate rules in the
+same group with `rules_oper: "AND"`, rather than combining fields in a single rule.
+
 ## Response Schema
 
 Bunny returns a structured JSON response upon completing an Availability Query. 
