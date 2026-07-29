@@ -28,7 +28,7 @@ Bunny supports the following database versions for OMOP CDM:
 
 Bunny requires an [OMOP CDM](https://ohdsi.github.io/CommonDataModel/background.html) database to query for data.
 
-Bunny supports OMOP CDM 5.3 and 5.4, as the [differences](https://ohdsi.github.io/CommonDataModel/cdm54Changes.html) between the two are not relevant. 
+Bunny supports OMOP CDM 5.3 and 5.4, as the [differences](https://ohdsi.github.io/CommonDataModel/cdm54Changes.html) between the two are not relevant, with the exception of the Location table's `latitude` and `longitude` fields†.
 
 Ideally the database should comply with the common data model, and the minimum data model that Bunny requires is slightly different than the [HDR Gateway](https://healthdatagateway.org/en/data-custodian/support/cohort-discovery). 
 
@@ -49,7 +49,7 @@ Optional tables set by configuration:
 | OMOP Table | OMOP Field Names                                           | Supported from |
 |------------|------------------------------------------------------------|----------------|
 | Specimen   | specimen_id, person_id, specimen_concept_id, specimen_date | v1.7 onwards   |
-| Location   | location_id, latitude†, longitude†                         | vX.Y onwards |
+| Location   | location_id, latitude†, longitude†                         | v1.8 onwards |
 
 Location is joined via `person.location_id` → `location.location_id`.
 
