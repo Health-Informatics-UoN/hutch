@@ -124,6 +124,29 @@ The result is a numerical count of matching records, subject to [disclosure cont
   </Tabs.Tab>
 </Tabs>
 
+## Location filtering
+
+`varcat: "Location"` filters patients by geographic location, using the `GEO_RADIUS` rule type. It
+must be enabled with `OMOP_LOCATION_ENABLED` (see [Configuration](/bunny/config#database)), and
+requires an OMOP CDM v5.4 database — see [Requirements](/bunny/deployment/requirements#omop-cdm).
+
+`type: "GEO_RADIUS"` matches patients whose location falls within a given radius of a centre point.
+The `value` field is a pipe-delimited `latitude|longitude|radius_metres` string. Patients with no
+recorded latitude/longitude are never matched.
+
+```json
+{
+  "varname": "OMOP",
+  "varcat": "Location",
+  "type": "GEO_RADIUS",
+  "oper": "=",
+  "value": "51.5074|-0.1278|5000"
+}
+```
+
+This example matches patients within 5km of central London. Set `"oper": "!="` to exclude patients
+within the radius instead.
+
 ## Response Schema
 
 Bunny returns a structured JSON response upon completing an Availability Query. 
