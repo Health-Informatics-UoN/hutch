@@ -58,7 +58,7 @@ _*Not included in the HDR Gateway minimum data model._
 
 _†`latitude` and `longitude` were added to the Location table in OMOP CDM v5.4 — a v5.3 database cannot use the geo-radius filter._
 
-_‡`cause_concept_id` is nullable — only required if you want to filter by a specific cause of death rather than death alone._
+_‡`cause_concept_id` is nullable — only required to allow filtering by specific causes of death, without this, Bunny is still able to query on any death record._
 
 The following indexes are also recommended from the CDM to ensure queries are processed quickly.
 
