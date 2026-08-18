@@ -147,6 +147,55 @@ recorded latitude/longitude are never matched.
 This example matches patients within 5km of central London. Set `"oper": "!="` to exclude patients
 within the radius instead.
 
+## Death filtering
+
+`varcat: "Death"` filters patients by whether, and how, they died, using the OMOP `death` table. It
+must be enabled with `OMOP_DEATH_ENABLED` (see [Configuration](/bunny/config#database)).
+
+`type: "TEXT"` is used for all Death rules. The `value` field is optional — leave it empty to match
+on the presence of a death record at all, or set it to an OMOP concept ID to match a specific cause
+of death (`death.cause_concept_id`).
+
+**Deceased patients (any cause):**
+
+```json
+{
+  "varname": "OMOP",
+  "varcat": "Death",
+  "type": "TEXT",
+  "oper": "=",
+  "value": ""
+}
+```
+
+**Living patients** — set `"oper": "!="` with an empty `value` to match patients with *no* death record:
+
+```json
+{
+  "varname": "OMOP",
+  "varcat": "Death",
+  "type": "TEXT",
+  "oper": "!=",
+  "value": ""
+}
+```
+
+**Specific cause of death** — set `value` to a concept ID to match patients whose recorded cause of
+death is that concept:
+
+```json
+{
+  "varname": "OMOP",
+  "varcat": "Death",
+  "type": "TEXT",
+  "oper": "=",
+  "value": "4329847"
+}
+```
+
+Combine a Death rule with rules from other varcats in the same group (`rules_oper: "AND"`) to find,
+for example, deceased patients who also have a specific condition recorded.
+
 ## Response Schema
 
 Bunny returns a structured JSON response upon completing an Availability Query. 

@@ -50,12 +50,15 @@ Optional tables set by configuration:
 |------------|------------------------------------------------------------|----------------|
 | Specimen   | specimen_id, person_id, specimen_concept_id, specimen_date | v1.7 onwards   |
 | Location   | location_id, latitude†, longitude†                         | v1.8 onwards |
+| Death      | person_id, death_date, cause_concept_id‡                   | v1.9 onwards |
 
 Location is joined via `person.location_id` → `location.location_id`.
 
 _*Not included in the HDR Gateway minimum data model._
 
 _†`latitude` and `longitude` were added to the Location table in OMOP CDM v5.4 — a v5.3 database cannot use the geo-radius filter._
+
+_‡`cause_concept_id` is nullable — only required if you want to filter by a specific cause of death rather than death alone._
 
 The following indexes are also recommended from the CDM to ensure queries are processed quickly.
 
