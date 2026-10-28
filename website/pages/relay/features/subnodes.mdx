@@ -55,17 +55,25 @@ When a downstream client has finished processing a task, it returns the results 
 
 ### Task Queue behaviour
 
-Some Task API implementations will use separate queues for different task types.
+Some Task API implementations use separate queues for different task types.
 
-Relay instead puts all tasks regardless of type into a single queue for each downstream subnode.
+By default, Relay puts all tasks, regardless of type, into a single queue for each downstream subnode.
 
-A side-effect of this is that downstream clients need to interact differently with their upstream Task API, in order to get to the right queue.
+This behaviour can be changed by configuring `TypedQueues.Enable`, which creates a separate queue for each task type and downstream subnode.
 
-- Relay expects requests to look like `/nextjob/{subnode_collection_id}`.
-    - e.g. `/nextjob/93258ae6-472f-45d2-8cf9-8b64cbeb03c8`
-- Other implementations expect `/nextjob/{collection_id}.{task_type_id}`.
-    - e.g. `/nextjob/RQ-CC-93258ae6-472f-45d2-8cf9-8b64cbeb03c8.a`
+**When typed queues are disabled**, downstream clients fetch tasks using the collection ID:
 
+- Relay expects requests to look like: `/nextjob/{subnode_collection_id}`
+- For example: `/nextjob/93258ae6-472f-45d2-8cf9-8b64cbeb03c8`
+
+A side-effect of this is that downstream clients need to interact differently with their upstream Task API to get to the right queue.
+
+**When typed queues are enabled**, the task type is appended to the collection ID to identify the queue:
+
+- Relay expects requests to look like: `/nextjob/{subnode_collection_id}.{taskType}`
+- For example: `/nextjob/93258ae6-472f-45d2-8cf9-8b64cbeb03c8.a`
+
+In both modes, access to the queue is authorised using the collection ID.
 Upstream support for both Relay and other Task APIs can be configured in both [Bunny](/bunny/config#task-type) and [Relay](/relay/config#upstream-task-api).
 
 ### Supported task types
