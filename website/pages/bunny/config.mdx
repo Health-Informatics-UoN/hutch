@@ -1,3 +1,4 @@
+import { Callout } from "nextra/components";
 import { Mandatory } from "../../components/Mandatory";
 
 # Configuration
@@ -122,6 +123,48 @@ Bunny can connect to databases Trino, though this functionality is untested.
 - Rounding defaults to ON with a value of 10 such that results are returned to the nearest 10.
 
 Read more about [disclosure controls](/concepts/disclosure_controls).
+
+## Persisting Query Results
+
+Bunny can optionally store the people matched by each availability query in the OMOP CDM [`cohort_definition`](https://ohdsi.github.io/CommonDataModel/cdm54.html#cohort_definition) and [`cohort`](https://ohdsi.github.io/CommonDataModel/cdm54.html#cohort) tables.
+This gives data custodians an audit trail: when a researcher later returns with their query reference to request access, the custodian can find the query and the cohort behind the count they were given.
+The researcher receives no additional data; only the count is returned, as before.
+
+| Name                      | Type      | Description                                                                               | Default |
+|---------------------------|-----------|-------------------------------------------------------------------------------------------|---------|
+| `PERSIST_RESULTS_ENABLED` | `boolean` | Enable persisting availability query results to the OMOP `cohort` and `cohort_definition` tables | `false` |
+
+<Callout type="warning">
+  This feature requires **OMOP CDM 5.4 or above**, and the `cohort` and `cohort_definition` tables must exist in the configured schema. Bunny will fail to start if they are missing while this setting is enabled.
+</Callout>
+
+For each availability query, Bunny writes the following in a single transaction:
+
+- **`cohort_definition`**: one row, with
+  - `cohort_definition_id` set to the current maximum `cohort_definition_id` + 1 (the CDM column has no identity or sequence, so Bunny supplies the value)
+  - `cohort_definition_name` set to the query UUID
+  - `cohort_definition_description` set to `auto generated from cohort discovery search: <query JSON>`
+  - `definition_type_concept_id` set to `0`
+  - `subject_concept_id` set to `1147314` (person)
+  - `cohort_initiation_date` set to today's date
+- **`cohort`**: one row per matching person, with `subject_id` set to the `person_id` and `cohort_start_date` / `cohort_end_date` set to today's date.
+  Person IDs are inserted directly in the database with `INSERT ... SELECT` and never pass through Bunny itself.
+
+The returned count is then calculated from the stored rows, so the number sent back always matches the persisted cohort.
+[Disclosure controls](#disclosure-control) (rounding and low number suppression) are applied to the returned count as usual; the stored cohort contains the unmodified set of people.
+
+On startup, Bunny logs the number of cohort definitions, person entries and distinct persons already stored.
+
+The database user Bunny connects with needs `INSERT` permission on the `cohort` and `cohort_definition` tables in addition to read access.
+
+### Database support
+
+| Database                        | Supported | Notes                                                                                                                                                                                                       |
+|---------------------------------|-----------|-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
+| PostgreSQL, SQL Server, Azure SQL | ✅        |                                                                                                                                                                                                             |
+| DuckDB                          | ✅        | The database file is opened read-write instead of read-only. DuckDB then locks the file, so no other process (another Bunny, DBeaver, the DuckDB CLI) can open it while Bunny is running. A warning is logged at startup. |
+| Snowflake                       | ❌        | The setting is ignored, and a warning is logged at startup.                                                                                                                                                 |
+| Trino                           | ❌        | Not supported.                                                                                                                                                                                              |
 
 ## Polling
 
