@@ -29,6 +29,7 @@ Bunny supports the following database versions for OMOP CDM:
 Bunny requires an [OMOP CDM](https://ohdsi.github.io/CommonDataModel/background.html) database to query for data.
 
 Bunny supports OMOP CDM 5.3 and 5.4, as the [differences](https://ohdsi.github.io/CommonDataModel/cdm54Changes.html) between the two are not relevant, with the exception of the Location table's `latitude` and `longitude` fields†.
+Persisting query results to the cohort tables also requires OMOP CDM 5.4 or above; see [Persisting Query Results](/bunny/config#persisting-query-results).
 
 Ideally the database should comply with the common data model, and the minimum data model that Bunny requires is slightly different than the [HDR Gateway](https://healthdatagateway.org/en/data-custodian/support/cohort-discovery). 
 
@@ -51,6 +52,8 @@ Optional tables set by configuration:
 | Specimen   | specimen_id, person_id, specimen_concept_id, specimen_date | v1.7 onwards   |
 | Location   | location_id, latitude†, longitude†                         | v1.8 onwards |
 | Death      | person_id, death_date, cause_concept_id‡                   | v1.9 onwards |
+| Cohort Definition | cohort_definition_id, cohort_definition_name, cohort_definition_description, definition_type_concept_id, subject_concept_id, cohort_initiation_date | Required when `PERSIST_RESULTS_ENABLED` is set. OMOP CDM 5.4+ only |
+| Cohort     | cohort_definition_id, subject_id, cohort_start_date, cohort_end_date | Required when `PERSIST_RESULTS_ENABLED` is set. OMOP CDM 5.4+ only |
 
 Location is joined via `person.location_id` → `location.location_id`.
 
