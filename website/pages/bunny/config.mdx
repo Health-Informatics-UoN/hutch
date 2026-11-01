@@ -135,16 +135,20 @@ Bunny continually polls upstream to a Task API for new tasks, these settings wil
 
 ## Distribution Tasks Cache
 
-Bunny can cache the results of a [distribution](/concepts/distribution) task when it starts, and respond to those queries with the cached result. This is useful for large OMOP databases, where distribution tasks can take longer. 
+Bunny can cache the results of [distribution](/concepts/distribution) tasks, and respond to those queries with the cached result. This is useful for large OMOP databases, where distribution tasks can take longer.
 
 These settings can configure the specifics of this functionality.
 
-| Name                       | Type      | Description                                                       | Default      |
-|----------------------------|-----------|-------------------------------------------------------------------|--------------|
-| `CACHE_ENABLED`            | `boolean` | Enable caching of distribution query results                      | `False`      |
-| `CACHE_DIR`                | `string`  | Directory to store cached distribution results                    | `/app/cache` |
-| `CACHE_TTL_HOURS`          | `float`   | Cache validity (time-to-live) period in hours (0 = never expires) | `24.0`       |
-| `CACHE_REFRESH_ON_STARTUP` | `boolean` | Refresh cache when Bunny starts                                   | `True`       |
+| Name                       | Type      | Description                                                       | Default                                          |
+|----------------------------|-----------|-------------------------------------------------------------------|--------------------------------------------------|
+| `CACHE_ENABLED`            | `boolean` | Enable caching of distribution query results                      | `False`                                          |
+| `CACHE_DIR`                | `string`  | Directory to store cached distribution results                    | `/app/cache`                                     |
+| `CACHE_TTL_HOURS`          | `float`   | Cache validity (time-to-live) period in hours (0 = never expires) | `168.0` (7 days), `24.0` in Bunny  v1.9.8 and earlier    |
+| `CACHE_REFRESH_ON_STARTUP` | `boolean` | Refresh cache when Bunny starts                                   | `True`                                           |
+
+Cache files older than `CACHE_TTL_HOURS` are deleted when Bunny starts and after each scheduled refresh. This tidies up results from CLI runs and files left by earlier versions.
+
+`CACHE_REFRESH_ON_STARTUP` recomputes all cached results when Bunny starts, even if they have not expired. In 1.9.8 and earlier, it respected the TTL and only recomputed results that had expired.
 
 ## Logging
 
