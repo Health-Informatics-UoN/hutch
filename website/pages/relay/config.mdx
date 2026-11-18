@@ -25,6 +25,7 @@ Your desired approach may differ depending on the environment you're configuring
           RelayTaskQueue__ConnectionString: amqp://user:password@rabbitmq:5672
 
           UpstreamTaskApi__BaseUrl: https://my-task-api.com
+          UpstreamTaskApi__AppendRoutePrefix: true
           UpstreamTaskApi__CollectionId: dd52026b-5a61-4c89-b733-04ba141b3f31
           UpstreamTaskApi__Username: user
           UpstreamTaskApi__Password: password
@@ -64,7 +65,7 @@ Your desired approach may differ depending on the environment you're configuring
 
 ## Upstream Task API [#upstream-task-api]
 
-**Configuration Section: `UptreamTaskApi`**
+**Configuration Section: `UpstreamTaskApi`**
 
 <Table>
   <thead>
@@ -96,6 +97,14 @@ Your desired approach may differ depending on the environment you're configuring
         The Base URL for an Upstream Task API that Relay should fetch jobs from.
         This only needs to include scheme (e.g. `https://`), host
         (`my-task-api.com`) and optionally port `8080`
+      </Td>
+    </Tr>
+    <Tr>
+      <Td>
+        `AppendRoutePrefix`
+      </Td>
+      <Td>
+       Whether Relay automatically appends `link_connector_api` to BaseUrl when calling the upstream Task API. Set to false when the upstream Task API does not use that route prefix. Defaults to true.
       </Td>
     </Tr>
     <Tr>
@@ -166,6 +175,7 @@ Examples:
   <Tabs.Tab>
     ```bash filename=".env" copy
     UpstreamTaskApi__BaseUrl="https://my-task-api.com"
+    UpstreamTaskApi__AppendRoutePrefix=true
     UpstreamTaskApi__CollectionId="dd52026b-5a61-4c89-b733-04ba141b3f31"
     UpstreamTaskApi__Username=user
     UpstreamTaskApi__Password=password
@@ -177,6 +187,7 @@ Examples:
     ```yaml filename="compose.yml" copy
     environment:
       UpstreamTaskApi__BaseUrl: https://my-task-api.com
+      UpstreamTaskApi__AppendRoutePrefix: true
       UpstreamTaskApi__CollectionId: dd52026b-5a61-4c89-b733-04ba141b3f31
       UpstreamTaskApi__Username: user
       UpstreamTaskApi__Password: password
@@ -189,9 +200,10 @@ Examples:
     {
       "UpstreamTaskApi": {
         "BaseUrl": "https://my-task-api.com",
+        "AppendRoutePrefix": true,
         "CollectionId": "dd52026b-5a61-4c89-b733-04ba141b3f31",
         "Username": "user",
-        "Password": "password"
+        "Password": "password",
         "PollingFrequency": 5000
       }
     }
